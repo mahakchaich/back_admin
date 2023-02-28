@@ -27,10 +27,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //admin
 Route::prefix('admin')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
 
 
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
-        Route::post('login', [AuthController::class, 'login']);
         Route::get('user', [AuthController::class, 'user']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::put('users/info', [AuthController::class, 'updateInfo']);
@@ -65,3 +65,4 @@ Route::get('getcommandefinal/{id}', [CommandeController::class, 'getcommandefina
 
 //Les Paniers Commandés
 Route::get('commandepanier', [CommandePanierController::class, 'index']);
+Route::get('test', [AuthController::class, 'test']);

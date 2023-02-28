@@ -16,6 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    }
+
     //
     public function register(Request $request)
     {
@@ -59,7 +64,8 @@ class AuthController extends Controller
             $response = ['user' => $user, 'token' => $token];
             $cookie = cookie('token', $token, 60 * 24); // 1 day
             return response([
-                'message' => 'succes'
+                'message' => 'succes',
+                'data' => $response
             ])->withCookie($cookie);
         }
         $response = ['message' => 'Incorrect email or password'];
@@ -84,13 +90,13 @@ class AuthController extends Controller
         // return new UserResource($user);
     }
 
-    public function logout()
-    {
-        $cookie = \Cookie::forget('token');
-        return response([
-            'message' => 'success'
-        ])->withCookie($cookie);
-    }
+    // public function logout()
+    // {
+    //     $cookie = \Cookie::forget('token');
+    //     return response([
+    //         'message' => 'success'
+    //     ])->withCookie($cookie);
+    // }
 
     public function updateInfo(UpdateInfoRequest $request)
     {
@@ -98,12 +104,17 @@ class AuthController extends Controller
         $user->update($request->only('name', 'email'));
         return response($user, Response::HTTP_ACCEPTED);
     }
+    public function test()
+    {
+      
+        return response()->json(["msg"=>"test"]);
+    }
 
     public function updatePassword(UpdatePasswordRequest $request)
     {
         $user = $request->user();
         $user->update([
-            'password' => \Hash::make($request->input('password'))
+            'password' => Hash::make($request->input('password'))
         ]);
         return response($user, Response::HTTP_ACCEPTED);
     }
