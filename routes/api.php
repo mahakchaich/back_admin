@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\CommandePanierController;
 use App\Http\Controllers\PanierController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UtilisateurController;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
@@ -77,5 +78,5 @@ Route::get('test', [AuthController::class, 'test']);
 
 
 //
-Route::post('forgetPassWord',[UtilisateurController::class, 'forgetPassWord']);
-Route::put('forgetPassWord',[UtilisateurController::class, 'forgetPassWordReset']);
+Route::post('forgetPassWord',[UserController::class, 'forgetPassWord']);
+Route::put('forgetPassWord',[UserController::class, 'forgetPassWordReset']);
