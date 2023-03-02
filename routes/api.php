@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CommandeController;
-use App\Http\Controllers\CommandePanierController;
-use App\Http\Controllers\PanierController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UtilisateurController;
+
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PanierController;
+use App\Http\Controllers\CommandeController;
+use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\CommandePanierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,15 +39,16 @@ function common(string $scope)
 //admin
 Route::prefix('admin')->group(function () {
 
-    common('scope.admin');
-    Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
-        //User Management
-        Route::get('users', [UtilisateurController::class, 'getusers']);
-        Route::get('user/{id}', [UtilisateurController::class, 'getUserById']);
-        Route::post('adduser', [UtilisateurController::class, 'addUser']);
-        Route::put('updateuser/{id}', [UtilisateurController::class, 'updateUser']);
-        Route::delete('deleteuser/{id}', [UtilisateurController::class, 'deleteUser']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
 
+
+    Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
+        Route::get('user', [AuthController::class, 'user']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::put('users/info', [AuthController::class, 'updateInfo']);
+        Route::put('users/password', [AuthController::class, 'updatePassword']);
+        Route::get('utilisateur', [UtilisateurController::class, 'index']);
     });
 });
 
@@ -64,8 +66,7 @@ Route::prefix('user')->group(function () {
 
 
 
-//Panier
-Route::apiResource('paniers', PanierController::class);
+
 
 //Commande
 Route::get('commandes', [CommandeController::class, 'index']);

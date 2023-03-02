@@ -7,61 +7,52 @@ use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
 use App\Models\verification_code;
 use Illuminate\Support\Facades\Mail;
+
+use Symfony\Component\HttpFoundation\Response;
+
+
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    //trouver tout les utilisateurs
     public function index()
     {
-        //
+
+        return User::utilisateurs()->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        $user = User::utilisateurs()->create($request->only('name', 'email', 'phone', 'password'));
+        return response($user, Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(User $user)
     {
-        //
+        return $user = User::utilisateurs();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
+
+    public function update(Request $request, $id)
     {
-        //
+        $user = User::utilisateurs()->find($id);
+        if (is_null($user)) {
+            return response()->json(['message' => 'utilisateur introuvable'], 404);
+        }
+        $user->update($request->only('name', 'email', 'phone', 'password'));
+        return response($user, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
+
+    public function destroy($id)
     {
-        //
+        $user = User::utilisateurs()->find($id);
+        if (is_null($user)) {
+            return response()->json(['message' => 'utilisateur introuvable'], 404);
+        }
+        $user->delete();
+        return response(null, 204);
     }
 
 

@@ -28,6 +28,7 @@ class AuthController extends Controller
         $rules = [
             'name' => 'required|string',
             'email' => 'required|string|unique:users',
+            'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6'
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -38,6 +39,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'is_admin' => $request->path() === 'api/admin/login' ? 1 : 0
         ]);
@@ -62,7 +64,7 @@ class AuthController extends Controller
 
 
         $adminLogin = $request->path() === 'api/admin/login';
-        if ($adminLogin && !$user->is_admin) {
+        if (!$adminLogin && $user->is_admin) {
             return response([
                 'error' => 'Access Denied!'
             ], Response::HTTP_UNAUTHORIZED);
@@ -102,14 +104,10 @@ class AuthController extends Controller
     public function updateInfo(UpdateInfoRequest $request)
     {
         $user = $request->user();
-        $user->update($request->only('name', 'email'));
+        $user->update($request->only('name', 'email', 'phone'));
         return response($user, Response::HTTP_ACCEPTED);
     }
-    public function test()
-    {
 
-        return response()->json(["msg" => "test"]);
-    }
 
     public function updatePassword(UpdatePasswordRequest $request)
     {
