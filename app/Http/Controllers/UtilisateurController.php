@@ -10,39 +10,33 @@ class UtilisateurController extends Controller
 {
 
     //trouver tout les utilisateurs
-    public function index()
+    public function getusers()
     {
         return User::utilisateurs()->get();
     }
 
-    //get utilisateur
-    public function getUtilisateur()
-    {
-        return response()->json(Utilisateur::all(), 200);
-    }
-
     //get utilisateur by Id
-    public function getUtilisateurById($id)
+    public function getUserById($id)
 
     {
-        $utilisateur = Utilisateur::find($id);
+        $utilisateur = User::utilisateurs()->find($id);
         if (is_null($utilisateur)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
-        return response()->json(Utilisateur::find($id), 200);
+        return response()->json(User::find($id), 200);
     }
 
     //add utilisateur
-    public function addUtilisateur(Request $request)
+    public function addUser(Request $request)
     {
-        $utilisateur = Utilisateur::create($request->all());
+        $utilisateur = User::utilisateurs()->create($request->all());
         return response($utilisateur, 201);
     }
 
     //update utilisateur
-    public function updateUtilisateur(Request $request, $id)
+    public function updateUser(Request $request, $id)
     {
-        $utilisateur = Utilisateur::find($id);
+        $utilisateur = User::utilisateurs()->find($id);
         if (is_null($utilisateur)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
@@ -51,9 +45,9 @@ class UtilisateurController extends Controller
     }
 
     //delete utilisateur
-    public function deleteUtilisateur(Request $request, $id)
+    public function deleteUser(Request $request, $id)
     {
-        $utilisateur = Utilisateur::find($id);
+        $utilisateur = User::utilisateurs()->find($id);
         if (is_null($utilisateur)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }

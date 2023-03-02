@@ -18,7 +18,7 @@ class PanierController extends Controller
 
     public function store(Request $request)
     {
-        //
+
         $panier = Panier::create($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_dispo', 'quantite', 'image', 'categorie'));
         return response($panier, Response::HTTP_CREATED);
     }
@@ -26,7 +26,7 @@ class PanierController extends Controller
 
     public function show(Panier $panier)
     {
-        //
+
         return $panier;
     }
 

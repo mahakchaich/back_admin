@@ -20,40 +20,46 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+function common(string $scope)
+{
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::middleware(['auth:sanctum', $scope])->group(
+        function () {
+            Route::get('user', [AuthController::class, 'user']);
+            Route::post('logout', [AuthController::class, 'logout']);
+            Route::put('users/info', [AuthController::class, 'updateInfo']);
+            Route::put('users/password', [AuthController::class, 'updatePassword']);
+        }
+    );
+}
 
 //admin
 Route::prefix('admin')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
-
-
+    common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
-        Route::post('login', [AuthController::class, 'login']);
-        Route::get('user', [AuthController::class, 'user']);
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::put('users/info', [AuthController::class, 'updateInfo']);
-        Route::put('users/password', [AuthController::class, 'updatePassword']);
-        Route::get('utilisateur', [UtilisateurController::class, 'index']);
+        //User Management
+        Route::get('users', [UtilisateurController::class, 'getusers']);
+        Route::get('user/{id}', [UtilisateurController::class, 'getUserById']);
+        Route::post('adduser', [UtilisateurController::class, 'addUser']);
+        Route::put('updateuser/{id}', [UtilisateurController::class, 'updateUser']);
+        Route::delete('deleteuser/{id}', [UtilisateurController::class, 'deleteUser']);
     });
 });
 
 
-//user
 
 
-//Utilisateur
-//Get all Utilisateurs
-Route::get('utilisateurs', [UtilisateurController::class, 'getUtilisateur']);
-//Get Utilisateur By Id
-Route::get('utilisateur/{id}', [UtilisateurController::class, 'getUtilisateurById']);
-//Add Utilisateur
-Route::post('addutilisateur', [UtilisateurController::class, 'addUtilisateur']);
-//Update Utilisateur By Id
-Route::put('updateutilisateur/{id}', [UtilisateurController::class, 'updateUtilisateur']);
-//Delete Utilisateur By Id
-Route::delete('deleteutilisateur/{id}', [UtilisateurController::class, 'deleteUtilisateur']);
+
+//User
+Route::prefix('user')->group(function () {
+    common('scope.user');
+});
+
+
+//Partenaire
+
+
 
 //Panier
 Route::apiResource('paniers', PanierController::class);

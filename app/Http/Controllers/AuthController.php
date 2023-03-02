@@ -34,7 +34,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_admin' => 1
+            'is_admin' => $request->path() === 'api/admin/login' ? 1 : 0
         ]);
 
         $token = $user->createToken('Personal Access Token')->plainTextToken;
@@ -51,38 +51,42 @@ class AuthController extends Controller
             'password' => 'required|string'
         ];
         $request->validate($rules);
+
         // find user email in users table
         $user = User::where('email', $request->email)->first();
+
+
+        $adminLogin = $request->path() === 'api/admin/login';
+        if ($adminLogin && !$user->is_admin) {
+            return response([
+                'error' => 'Access Denied!'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
         // if user email found and password is correct
         if ($user && Hash::check($request->password, $user->password)) {
-            $token = $user->createToken('Personal Access Token', ['admin'])->plainTextToken;
+            $scope = $adminLogin ? 'admin' : 'ambassador';
+            $token = $user->createToken('Personal Access Token', [$scope])->plainTextToken;
             $response = ['user' => $user, 'token' => $token];
             $cookie = cookie('token', $token, 60 * 24); // 1 day
             return response([
-                'message' => 'succes'
+                'message' => 'succes',
+                'token' => $token,
             ])->withCookie($cookie);
         }
+
         $response = ['message' => 'Incorrect email or password'];
         return response()->json($response, 401);
     }
 
 
+
     public function user(Request $request)
     {
-        $user = Auth::user(); // Récupère l'utilisateur authentifié
-
-        if ($user) {
-            return response()->json([
-                'user' => $user
-            ]);
-        } else {
-            return response()->json([
-                'error' => 'Aucun utilisateur authentifié'
-            ]);
-        }
-        // $user = $request->user();
-        // return new UserResource($user);
+        $user = $request->user();
+        return new UserResource($user);
     }
+
 
     public function logout()
     {
