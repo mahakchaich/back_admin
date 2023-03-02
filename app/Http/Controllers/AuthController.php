@@ -70,14 +70,15 @@ class AuthController extends Controller
 
         // if user email found and password is correct
         if ($user && Hash::check($request->password, $user->password)) {
-            $scope = $adminLogin ? 'admin' : 'ambassador';
+            $scope = $adminLogin ? 'admin' : 'user';
             $token = $user->createToken('Personal Access Token', [$scope])->plainTextToken;
+           
             $response = ['user' => $user, 'token' => $token];
-            $cookie = cookie('token', $token, 60 * 24); // 1 day
+           
             return response([
                 'message' => 'succes',
                 'token' => $token
-            ])->withCookie($cookie);
+            ]);
         }
 
         $response = ['message' => 'Incorrect email or password'];
@@ -93,10 +94,9 @@ class AuthController extends Controller
     }
     public function logout()
     {
-        $cookie = \Cookie::forget('token');
         return response([
             'message' => 'success'
-        ])->withCookie($cookie);
+        ]);
     }
 
     public function updateInfo(UpdateInfoRequest $request)

@@ -15,4 +15,8 @@ class Utilisateur extends Model
     {
         return $this->hasMany(Commande::class);
     }
+    public function verificationCode()
+    {
+        return $this->hasMany(verification_code::class);
+    }
 }
