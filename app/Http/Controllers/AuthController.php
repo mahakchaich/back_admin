@@ -16,6 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    }
+
     //
     public function register(Request $request)
     {
@@ -71,7 +76,7 @@ class AuthController extends Controller
             $cookie = cookie('token', $token, 60 * 24); // 1 day
             return response([
                 'message' => 'succes',
-                'token' => $token,
+                'token' => $token
             ])->withCookie($cookie);
         }
 
@@ -86,8 +91,6 @@ class AuthController extends Controller
         $user = $request->user();
         return new UserResource($user);
     }
-
-
     public function logout()
     {
         $cookie = \Cookie::forget('token');
@@ -102,12 +105,17 @@ class AuthController extends Controller
         $user->update($request->only('name', 'email'));
         return response($user, Response::HTTP_ACCEPTED);
     }
+    public function test()
+    {
+
+        return response()->json(["msg" => "test"]);
+    }
 
     public function updatePassword(UpdatePasswordRequest $request)
     {
         $user = $request->user();
         $user->update([
-            'password' => \Hash::make($request->input('password'))
+            'password' => Hash::make($request->input('password'))
         ]);
         return response($user, Response::HTTP_ACCEPTED);
     }

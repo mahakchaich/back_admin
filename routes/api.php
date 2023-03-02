@@ -36,6 +36,7 @@ function common(string $scope)
 
 //admin
 Route::prefix('admin')->group(function () {
+<<<<<<< HEAD
     common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
         //User Management
@@ -44,6 +45,18 @@ Route::prefix('admin')->group(function () {
         Route::post('adduser', [UtilisateurController::class, 'addUser']);
         Route::put('updateuser/{id}', [UtilisateurController::class, 'updateUser']);
         Route::delete('deleteuser/{id}', [UtilisateurController::class, 'deleteUser']);
+=======
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+
+
+    Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
+        Route::get('user', [AuthController::class, 'user']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::put('users/info', [AuthController::class, 'updateInfo']);
+        Route::put('users/password', [AuthController::class, 'updatePassword']);
+        Route::get('utilisateur', [UtilisateurController::class, 'index']);
+>>>>>>> a165a3fa0ca3e0f898182721987280afb2b8c717
     });
 });
 
@@ -71,3 +84,4 @@ Route::get('getcommandefinal/{id}', [CommandeController::class, 'getcommandefina
 
 //Les Paniers Commandés
 Route::get('commandepanier', [CommandePanierController::class, 'index']);
+Route::get('test', [AuthController::class, 'test']);
