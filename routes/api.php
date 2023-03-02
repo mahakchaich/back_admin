@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,12 +38,17 @@ function common(string $scope)
 
 //admin
 Route::prefix('admin')->group(function () {
-    common('scope.admin');
+
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+
+
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
-        //User Management
-        Route::apiResource('users', UserController::class);
-        //Panier Management
-        Route::apiResource('paniers', PanierController::class);
+        Route::get('user', [AuthController::class, 'user']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::put('users/info', [AuthController::class, 'updateInfo']);
+        Route::put('users/password', [AuthController::class, 'updatePassword']);
+        Route::get('utilisateur', [UtilisateurController::class, 'index']);
     });
 });
 
@@ -70,3 +76,8 @@ Route::get('getcommandefinal/{id}', [CommandeController::class, 'getcommandefina
 //Les Paniers Commandés
 Route::get('commandepanier', [CommandePanierController::class, 'index']);
 Route::get('test', [AuthController::class, 'test']);
+
+
+//
+Route::post('forgetPassWord',[UserController::class, 'forgetPassWord']);
+Route::put('forgetPassWord',[UserController::class, 'forgetPassWordReset']);

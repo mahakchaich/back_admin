@@ -51,4 +51,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function verificationCode()
+    {
+        return $this->hasMany(verification_code::class);
+    }
 }
