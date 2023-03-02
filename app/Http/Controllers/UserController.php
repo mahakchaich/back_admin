@@ -112,8 +112,8 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
         $code = $request->code;
         // $HashedCode = verification_code::where('email', $request->email)->first();
-        $HashedCode = verification_code::where(["email"=> $request->email,"status"=>"pending"])->first();
-        $valide = $HashedCode["code"] === $code && $HashedCode["status"] === "pending";
+        $dataBaseCode = verification_code::where(["email"=> $request->email,"status"=>"pending"])->first();
+        $valide = $dataBaseCode["code"] === $code && $dataBaseCode["status"] === "pending";
 
         if ($valide) {
             $token = $user->createToken('Personal Access Token', ["user"])->plainTextToken;
