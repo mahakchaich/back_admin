@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreatePaniersTable extends Migration
 {
@@ -19,7 +20,7 @@ class CreatePaniersTable extends Migration
             $table->text('description')->nullable();
             $table->decimal('ancien_prix');
             $table->decimal('nouveau_prix');
-            $table->date('date_dispo')->format('d/m/y');
+            $table->date('date_dispo');
             $table->integer('quantite');
             $table->string('image');
             $table->enum('categorie', ['Fruits_Légumes', 'Viande', 'Pâtisserie', 'Poisson', 'Produits_Laitiers', 'Plas_Préparés', 'Sucreries', 'Boissons', 'Végétarien']);

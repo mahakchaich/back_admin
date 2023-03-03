@@ -38,17 +38,10 @@ function common(string $scope)
 
 //admin
 Route::prefix('admin')->group(function () {
-
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
-
-
+    common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
-        Route::get('user', [AuthController::class, 'user']);
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::put('users/info', [AuthController::class, 'updateInfo']);
-        Route::put('users/password', [AuthController::class, 'updatePassword']);
-        Route::get('utilisateur', [UtilisateurController::class, 'index']);
+        Route::apiResource('paniers', PanierController::class);
+        Route::apiResource('users', UserController::class);
     });
 });
 
@@ -79,5 +72,5 @@ Route::get('test', [AuthController::class, 'test']);
 
 
 //
-Route::post('forgetPassWord',[UserController::class, 'forgetPassWord']);
-Route::put('forgetPassWord',[UserController::class, 'forgetPassWordReset']);
+Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
+Route::put('forgetPassWord', [UserController::class, 'forgetPassWordReset']);
