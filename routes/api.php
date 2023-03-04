@@ -40,8 +40,17 @@ function common(string $scope)
 Route::prefix('admin')->group(function () {
     common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
+        //Paniers Management
         Route::apiResource('paniers', PanierController::class);
+        //Users Management
         Route::apiResource('users', UserController::class);
+        Route::get('getuser/{id}', [UserController::class, 'getUserById']);
+        //Orders Management
+        Route::get('orders', [CommandeController::class, 'getOrder']);
+        Route::get('orders/getorder/{id}', [CommandeController::class, 'getOrderById']);
+        Route::post('orders/addorder', [CommandeController::class, 'addOrder']);
+        Route::put('orders/updateorder/{id}', [CommandeController::class, 'updateOrder']);
+        Route::delete('orders/deleteorder/{id}', [CommandeController::class, 'deleteOrder']);
     });
 });
 

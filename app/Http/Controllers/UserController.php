@@ -28,9 +28,13 @@ class UserController extends Controller
     }
 
 
-    public function show(User $user)
+    public function show($id)
     {
-        return $user = User::utilisateurs();
+        $user = User::utilisateurs()->find($id);
+        if (is_null($user)) {
+            return response()->json(['message' => 'utilisateur introuvable'], 404);
+        }
+        return response()->json(User::find($id), 200);
     }
 
 
@@ -40,7 +44,7 @@ class UserController extends Controller
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
-        $user->update($request->only('name', 'email', 'phone', 'password'));
+        $user->update($request->only('name', 'email', 'phone'));
         return response($user, 200);
     }
 
@@ -51,12 +55,18 @@ class UserController extends Controller
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
+
+        // Supprimer toutes les commandes liées à l'utilisateur
+        $user->commandes()->delete();
+
+        // Supprimer l'utilisateur
         $user->delete();
+
         return response(null, 204);
     }
 
 
-     //forget password section >>>
+    //forget password section >>>
     // generate random code 
     function randomcode($_length)
     {
@@ -112,22 +122,22 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
         $code = $request->code;
         // $HashedCode = verification_code::where('email', $request->email)->first();
-        $dataBaseCode = verification_code::where(["email"=> $request->email,"status"=>"pending"])->first();
+        $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending"])->first();
         $valide = $dataBaseCode["code"] === $code && $dataBaseCode["status"] === "pending";
 
         if ($valide) {
             $token = $user->createToken('Personal Access Token', ["user"])->plainTextToken;
-            verification_code::where(["email"=> $request->email,"status"=>"pending"])->first()->update(["status"=>"used"]);
+            verification_code::where(["email" => $request->email, "status" => "pending"])->first()->update(["status" => "used"]);
             return response()->json([
                 'message' => "verification success",
                 'token' => $token,
             ]);
-        }else{
+        } else {
             return response()->json([
-                "message"=> "invalide verification code"
+                "message" => "invalide verification code"
             ]);
         }
-       
+
         // return response()->json([
         //     "message" => $valide
         // ]);

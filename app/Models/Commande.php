@@ -11,6 +11,9 @@ class Commande extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public $timestamps = false;
+    protected $fillable = ['date_cmd', 'heure_cmd', 'user_id', 'statut'];
+
     public function utilisateur()
     {
         return $this->belongsTo(Utilisateur::class);

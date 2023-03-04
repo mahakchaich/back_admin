@@ -17,10 +17,11 @@ class CreateCommandesTable extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
-            $table->date('date_cmd')->default(now()->toDateString());;
+            $table->date('date_cmd')->default(now()->toDateString());
             $table->time('heure_cmd')->default(now()->toTimeString());
             $table->unsignedBigInteger('user_id');
-            $table->float('total_prix');
+            $table->float('total_prix')->default(0);
+            $table->enum('statut', ['En_attente', 'Validée', 'Annulée', 'Récupéré'])->default('En_attente');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

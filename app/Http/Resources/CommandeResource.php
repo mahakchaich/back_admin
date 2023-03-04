@@ -18,6 +18,7 @@ class CommandeResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'total_prix' => $this->total_prix,
+            'statut' => $this->statut,
             'commande_paniers' => $this->commandePaniers,
         ];
     }

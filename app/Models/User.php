@@ -22,6 +22,12 @@ class User extends Authenticatable
     public $timestamps = false;
     protected $fillable = ['name', 'email', 'phone', 'password'];
 
+
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

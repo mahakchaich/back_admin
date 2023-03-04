@@ -14,9 +14,4 @@ class Panier extends Model
 
     public $timestamps = false;
     protected $fillable = ['title', 'description', 'ancien_prix', 'nouveau_prix', 'date_dispo', 'quantite', 'image', 'categorie'];
-
-    // public function setDateDispoAttribute($value)
-    // {
-    //     $this->attributes['date_dispo'] = Carbon::createFromFormat('m/d/Y', $value)->format('-m-d');
-    // }
 }
