@@ -51,6 +51,7 @@ Route::prefix('admin')->group(function () {
         Route::post('orders/addorder', [CommandeController::class, 'addOrder']);
         Route::put('orders/updateorder/{id}', [CommandeController::class, 'updateOrder']);
         Route::delete('orders/deleteorder/{id}', [CommandeController::class, 'deleteOrder']);
+        Route::get('orders/orderdetails/{id}', [CommandeController::class, 'commandedetails']);
     });
 });
 
@@ -73,11 +74,12 @@ Route::prefix('user')->group(function () {
 //Commande
 Route::get('commandes', [CommandeController::class, 'index']);
 Route::get('commande/{id}', [CommandeController::class, 'commande']);
-Route::get('getcommandefinal/{id}', [CommandeController::class, 'getcommandefinal']);
 
-//Les Paniers Commandés
-Route::get('commandepanier', [CommandePanierController::class, 'index']);
-Route::get('test', [AuthController::class, 'test']);
+
+
+// //Les Paniers Commandés
+// Route::get('commandepanier', [CommandePanierController::class, 'index']);
+// Route::get('test', [AuthController::class, 'test']);
 
 
 //

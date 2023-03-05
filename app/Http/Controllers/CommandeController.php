@@ -22,11 +22,15 @@ class CommandeController extends Controller
         return response()->json($commande);
     }
 
-    public function getcommandefinal($commande_id)
+    public function commandedetails($commande_id)
 
     {
         // Récupérer une commande et ses détails de panier correspondants
         $commande = Commande::with('commandePaniers')->find($commande_id);
+
+        if (!$commande) {
+            return response()->json(['error' => 'Commande introuvable'], 404);
+        }
         // Calculer le total des prix pour chaque panier et mettre à jour le total_prix de la commande
         $total_prix = 0;
         foreach ($commande->commandePaniers as $panier) {

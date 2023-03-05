@@ -142,4 +142,23 @@ class UserController extends Controller
         //     "message" => $valide
         // ]);
     }
+
+
+    //Search User
+    public function backend(Request $request)
+    {
+        /** @var Collection $products */
+        $users =  User::all();
+
+
+        //recherche product par titre et description:
+        if ($s = $request->input('s')) {
+            $products = $products
+                ->filter(
+                    fn (Product $product) => Str::contains($product->title, $s) || Str::contains($product->description, $s)
+                );
+        }
+        //count products:
+        $total = $products->count();
+    }
 }

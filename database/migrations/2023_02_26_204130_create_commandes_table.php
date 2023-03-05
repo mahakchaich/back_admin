@@ -20,6 +20,7 @@ class CreateCommandesTable extends Migration
             $table->date('date_cmd')->default(now()->toDateString());
             $table->time('heure_cmd')->default(now()->toTimeString());
             $table->unsignedBigInteger('user_id');
+            $table->string('email')->nullable();
             $table->float('total_prix')->default(0);
             $table->enum('statut', ['En_attente', 'Validée', 'Annulée', 'Récupéré'])->default('En_attente');
             $table->timestamps();
@@ -33,6 +34,7 @@ class CreateCommandesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('commande_id');
             $table->unsignedBigInteger('panier_id');
+            $table->string('title');
             $table->integer('quantite');
             $table->float('prix');
             $table->timestamps();

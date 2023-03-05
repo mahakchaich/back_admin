@@ -16,6 +16,6 @@ class CommandePanier extends Model
 
     public function panier()
     {
-        return $this->belongsTo(Panier::class);
+        return $this->belongsTo(Panier::class)->with('title');
     }
 }

@@ -12,15 +12,21 @@ class Commande extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['date_cmd', 'heure_cmd', 'user_id', 'statut'];
-
-    public function utilisateur()
-    {
-        return $this->belongsTo(Utilisateur::class);
-    }
+    protected $fillable = [
+        'date_cmd',
+        'heure_cmd',
+        'user_id',
+        'email',
+        'statut'
+    ];
 
     public function commandePaniers()
     {
         return $this->hasMany(CommandePanier::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class)->with('email');
     }
 }
