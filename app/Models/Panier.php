@@ -13,5 +13,10 @@ class Panier extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['title', 'description', 'ancien_prix', 'nouveau_prix', 'date_dispo', 'quantite', 'image', 'categorie'];
+    protected $fillable = ['title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantite initial', 'quantite restante', 'image', 'categorie', 'statut'];
+
+    public function commandePaniers()
+    {
+        return $this->hasMany(CommandePanier::class)->with('commande');
+    }
 }

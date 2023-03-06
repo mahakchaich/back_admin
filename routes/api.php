@@ -45,6 +45,7 @@ Route::prefix('admin')->group(function () {
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
+        Route::get('searchUsers', [UserController::class, 'searchUsers']);
         //Orders Management
         Route::get('orders', [CommandeController::class, 'getOrder']);
         Route::get('orders/getorder/{id}', [CommandeController::class, 'getOrderById']);
