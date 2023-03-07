@@ -29,7 +29,8 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|unique:users',
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6',
+            'roleId' => 'exists:roles,id'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -41,7 +42,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'is_admin' => $request->path() === 'api/admin/login' ? 1 : 0
+            'role_id' => $request->roleId
         ]);
 
         $token = $user->createToken('Personal Access Token')->plainTextToken;
@@ -64,7 +65,7 @@ class AuthController extends Controller
 
 
         $adminLogin = $request->path() === 'api/admin/login';
-        if (!$adminLogin && $user->is_admin) {
+        if (!$adminLogin && !($user->role_id == 2)) {
             return response([
                 'error' => 'Access Denied!'
             ], Response::HTTP_UNAUTHORIZED);
@@ -75,12 +76,10 @@ class AuthController extends Controller
             $scope = $adminLogin ? 'admin' : 'user';
             $token = $user->createToken('token', [$scope])->plainTextToken;
 
-            $cookie = cookie('token', $token, 60 * 24); // 1 day
-
             return response([
                 'message' => 'success',
                 'token' => $token
-            ])->withCookie($cookie);
+            ]);
         }
 
         $response = ['message' => 'Incorrect email or password'];
