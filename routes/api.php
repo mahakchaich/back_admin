@@ -52,7 +52,8 @@ Route::prefix('admin')->group(function () {
         Route::post('orders/addorder', [CommandeController::class, 'addOrder']);
         Route::put('orders/updateorder/{id}', [CommandeController::class, 'updateOrder']);
         Route::delete('orders/deleteorder/{id}', [CommandeController::class, 'deleteOrder']);
-        Route::get('orders/orderdetails/{id}', [CommandeController::class, 'commandedetails']);
+        Route::get('orders/orderdetails', [CommandeController::class, 'index']);
+        Route::get('orders/orderdetails/{id}', [CommandeController::class, 'show']);
     });
 });
 

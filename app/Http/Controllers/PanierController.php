@@ -39,7 +39,7 @@ class PanierController extends Controller
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $panier = Panier::create($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantite initial', 'quantite restante', 'image', 'categorie', 'statut'));
+        $panier = Panier::create($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantity', 'remaining_quantity', 'image', 'categorie', 'status'));
         return response($panier, Response::HTTP_CREATED);
     }
 
@@ -74,7 +74,7 @@ class PanierController extends Controller
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $panier->update($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantite initial', 'quantite restante', 'image', 'categorie', 'statut'));
+        $panier->update($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantity', 'remaining_quantity', 'image', 'categorie', 'status'));
         return response($panier, Response::HTTP_CREATED);
     }
 
