@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UpdateInfoRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Models\Roles;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -62,10 +63,10 @@ class AuthController extends Controller
 
         // find user email in users table
         $user = User::where('email', $request->email)->first();
-
+        $user_role = $user->Roles;
 
         $adminLogin = $request->path() === 'api/admin/login';
-        if (!$adminLogin && !($user->role_id == 2)) {
+        if ((!$adminLogin) || ($user_role->type != "admin")) {
             return response([
                 'error' => 'Access Denied!'
             ], Response::HTTP_UNAUTHORIZED);
@@ -77,6 +78,8 @@ class AuthController extends Controller
             $token = $user->createToken('token', [$scope])->plainTextToken;
 
             return response([
+                "user"=>$user ,
+                // "role"=> $user_role,
                 'message' => 'success',
                 'token' => $token
             ]);

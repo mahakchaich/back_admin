@@ -14,7 +14,8 @@ class Roles extends Model
 
     public $timestamps = false;
     protected $fillable = [
-        'type'
+        'type',
+        'id'
     ];
 
     protected $hidden = [];
