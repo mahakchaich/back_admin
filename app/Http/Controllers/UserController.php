@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
 // use App\Models\Role;
 use App\Models\Roles;
 use App\Models\verification_code;
+
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -164,24 +167,24 @@ class UserController extends Controller
 
     }
 
-
-
-
     //Search User
-    public function backend(Request $request)
+    public function searchUsers(Request $request)
     {
-        /** @var Collection $products */
-        $users =  User::all();
+        //récupération du paramètre de recherche:
+        $search = $request->input('search');
 
-
-        //recherche product par titre et description:
-        if ($s = $request->input('s')) {
-            $products = $products
-                ->filter(
-                    fn (Product $product) => Str::contains($product->title, $s) || Str::contains($product->description, $s)
-                );
+        //vérification que le paramètre de recherche est présent:
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
         }
-        //count products:
-        $total = $products->count();
+
+        //recherche des utilisateurs en fonction du paramètre:
+        $users = User::where('name', 'LIKE', "%{$search}%")
+            ->orWhere('email', 'LIKE', "%{$search}%")
+            ->orWhere('phone', 'LIKE', "%{$search}%")
+            ->get();
+
+        //retourne les résultats de recherche:
+        return response()->json($users);
     }
 }

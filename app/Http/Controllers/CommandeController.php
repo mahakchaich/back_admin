@@ -2,89 +2,151 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Commande;
-use App\Http\Resources\CommandeResource;
+use Exception;
+
+use App\Models\Panier;
+use App\Models\Command;
 use Illuminate\Http\Request;
+use App\Models\CommandPanier;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\CommandeResource;
+
 
 
 class CommandeController extends Controller
 {
+    public function addOrder(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $panierId = $request->input('panier_id');
+        $quantity = $request->input('quantity');
+
+        // Récupérer les informations du panier
+        $panier = Panier::find($panierId);
+
+        // Calculer le prix en fonction de la quantité et du nouveau prix
+        $price = $quantity * $panier->nouveau_prix;
+
+        // Créer la commande
+        $command = new Command;
+        $command->user_id = $userId;
+        $command->price = $price;
+        $command->save();
+
+        // Ajouter le panier à la commande
+        $commandPanier = new CommandPanier;
+        $commandPanier->command_id = $command->id;
+        $commandPanier->panier_id = $panierId;
+        $commandPanier->quantity = $quantity;
+        $commandPanier->save();
+
+        // Mettre à jour la quantité restante du panier
+        $panier->remaining_quantity -= $quantity;
+        $panier->save();
+
+        return response()->json(['message' => 'Commande créée avec succès'], 201);
+    }
+
+    public function updateOrder(Request $request, $id)
+    {
+        // Trouver la commande à mettre à jour
+        $command = Command::find($id);
+
+        // Vérifier si la commande existe
+        if (!$command) {
+            return response()->json(['message' => 'Commande non trouvée'], 404);
+        }
+
+        // Mettre à jour les champs de la commande
+        $command->user_id = $request->input('user_id', $command->user_id);
+        $command->price = $request->input('price', $command->price);
+        $command->status = $request->input('status', $command->status);
+        $command->save();
+
+        // Retourner la commande mise à jour
+        return response()->json($command);
+    }
+
+
     public function index()
     {
-        return CommandeResource::collection(Commande::with('commandePaniers')->get());
+        $commandes = Command::with('user', 'paniers')->get();
+        return CommandeResource::collection($commandes);
     }
 
-    public function commande($commande_id)
-
+    public function show($id)
     {
-        // Récupérer une commande et ses détails de panier correspondants
-        $commande = Commande::with('commandePaniers')->find($commande_id);
-        return response()->json($commande);
+        $commande = Command::with('user', 'paniers')->findOrFail($id);
+        return new CommandeResource($commande);
     }
 
-    public function commandedetails($commande_id)
 
-    {
-        // Récupérer une commande et ses détails de panier correspondants
-        $commande = Commande::with('commandePaniers')->find($commande_id);
 
-        if (!$commande) {
-            return response()->json(['error' => 'Commande introuvable'], 404);
-        }
-        // Calculer le total des prix pour chaque panier et mettre à jour le total_prix de la commande
-        $total_prix = 0;
-        foreach ($commande->commandePaniers as $panier) {
-            $total_prix += $panier->prix * $panier->quantite;
-        }
-        $commande->total_prix = $total_prix;
-        $commande->save();
-        return response()->json($commande);
-    }
+
+
+
+
+    // public function index()
+    // {
+    //     return CommandeResource::collection(Commande::with('commandePaniers')->get());
+    // }
+
+    // public function commande($commande_id)
+
+    // {
+    //     // Récupérer une commande et ses détails de panier correspondants
+    //     $commande = Commande::with('commandePaniers')->find($commande_id);
+    //     return response()->json($commande);
+    // }
+
+    // public function commandedetails($commande_id)
+
+    // {
+    //     // Récupérer une commande et ses détails de panier correspondants
+    //     $commande = Commande::with('commandePaniers')->find($commande_id);
+
+    //     if (!$commande) {
+    //         return response()->json(['error' => 'Commande introuvable'], 404);
+    //     }
+    //     // Calculer le total des prix pour chaque panier et mettre à jour le total_prix de la commande
+    //     $total_prix = 0;
+    //     foreach ($commande->commandePaniers as $panier) {
+    //         $total_prix += $panier->prix * $panier->quantite;
+    //     }
+    //     $commande->total_prix = $total_prix;
+    //     $commande->save();
+    //     return response()->json($commande);
+    // }
 
     //Crud
     //get order
     public function getOrder()
     {
-        return response()->json(Commande::all(), 200);
+        return response()->json(Command::all(), 200);
     }
 
 
     //get order by id
     public function getOrderById($id)
     {
-        $commande = Commande::find($id);
+        $commande = Command::find($id);
         if (is_null($commande)) {
             return response()->json(['message' => 'Commande introuvable'], 404);
         }
-        return response()->json(Commande::find($id), 200);
-    }
-
-    // add order
-    public function addOrder(Request $request)
-    {
-        $commande = Commande::create($request->all());
-        return response($commande, 201);
-    }
-
-    // update Order
-    public function updateOrder(Request $request, $id)
-    {
-        $commande = Commande::find($id);
-        if (is_null($commande)) {
-            return response()->json(['message' => 'Commande introuvable'], 404);
-        }
-        $commande->update($request->only('date_cmd', 'heure_cmd', 'total_prix', 'statut'));
-        return response($commande, 200);
+        return response()->json(Command::find($id), 200);
     }
 
     // delete Order
     public function deleteOrder(Request $request, $id)
     {
-        $commande = Commande::find($id);
-        if (is_null($commande)) {
-            return response()->json(['message' => 'Commande introuvable'], 404);
+        try {
+            // Supprimer les enregistrements associés dans la table "command_panier"
+            DB::table('command_panier')->where('command_id', $id)->delete();
+            // Supprimer la commande elle-même
+            DB::table('commands')->where('id', $id)->delete();
+            return response(null, 204);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Une erreur est survenue lors de la suppression de la commande'], 500);
         }
-        $commande->delete();
-        return response(null, 204);
     }
 }
