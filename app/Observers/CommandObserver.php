@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Panier;
+
 use App\Models\Command;
 
 
@@ -19,14 +19,6 @@ class CommandObserver
         // get paners from command
         // iterate paniers one by one and get qtn
         //substruct cart qtn from panier qtn
-        // $paniers = $commande->paniers;
-        // foreach ($paniers as $panier) {
-        //     $cmd_qtn = $panier->quantity;
-        //     Panier::get($panier->panier_id)->substruct($cmd_qtn, 'quantite_rest'); // TODO
-
-        // }
-
-
         $paniers = $command->paniers;
         foreach ($paniers as $panier) {
             $cmd_qtn = $panier->command_panier->sum('quantity');

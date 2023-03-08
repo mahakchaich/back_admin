@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Models\Command;
+use App\Models\CommandPanier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,5 +25,10 @@ class Panier extends Model
     {
         $this->$column -= $qtn;
         $this->save();
+    }
+
+    public function commandPaniers()
+    {
+        return $this->hasMany(CommandPanier::class);
     }
 }

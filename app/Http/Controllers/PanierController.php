@@ -80,7 +80,31 @@ class PanierController extends Controller
 
     public function destroy(Panier $panier)
     {
+        // Supprimer toutes les entrées correspondantes dans la table "command_panier"
+        $panier->commandPaniers()->delete();
+
+        // Supprimer le panier
         $panier->delete();
+
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    //Search Panier
+    public function searchPaniers(Request $request)
+    {
+        //récupération du paramètre de recherche:
+        $search = $request->input('search');
+
+        //vérification que le paramètre de recherche est présent:
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+        }
+
+        //recherche des utilisateurs en fonction du paramètre:
+        $paniers = Panier::where('title', 'LIKE', "%{$search}%")
+            ->get();
+
+        //retourne les résultats de recherche:
+        return response()->json($paniers);
     }
 }

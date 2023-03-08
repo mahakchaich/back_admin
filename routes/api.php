@@ -42,6 +42,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
         //Paniers Management
         Route::apiResource('paniers', PanierController::class);
+        Route::get('searchPaniers', [PanierController::class, 'searchPaniers']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);

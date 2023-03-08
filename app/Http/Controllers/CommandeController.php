@@ -20,17 +20,34 @@ class CommandeController extends Controller
         $userId = $request->input('user_id');
         $panierId = $request->input('panier_id');
         $quantity = $request->input('quantity');
+        $status = $request->input('status');
 
         // Récupérer les informations du panier
         $panier = Panier::find($panierId);
 
+        // Vérifier si le panier est disponible
+        if ($panier->remaining_quantity <= 0) {
+            return response()->json(['message' => 'Le panier n\'est plus disponible'], 400);
+        }
+
+        // Vérifier le statut du panier
+        if ($panier->status != 'ACCEPTED') {
+            return response()->json(['message' => 'Le panier doit avoir un statut "ACCEPTED" pour pouvoir être commandé'], 400);
+        }
+
         // Calculer le prix en fonction de la quantité et du nouveau prix
         $price = $quantity * $panier->nouveau_prix;
+
+        // Vérifier la quantité disponible dans le panier
+        if ($quantity > $panier->remaining_quantity) {
+            return response()->json(['message' => 'Quantité demandée supérieure à la quantité restante dans le panier'], 400);
+        }
 
         // Créer la commande
         $command = new Command;
         $command->user_id = $userId;
         $command->price = $price;
+        $command->status = $status;
         $command->save();
 
         // Ajouter le panier à la commande
@@ -46,6 +63,7 @@ class CommandeController extends Controller
 
         return response()->json(['message' => 'Commande créée avec succès'], 201);
     }
+
 
     public function updateOrder(Request $request, $id)
     {
