@@ -83,7 +83,6 @@ class AuthController extends Controller
             $token = $user->createToken('token', [$scope])->plainTextToken;
 
             return response([
-                // "user"=>$user ,
                 "status" => 200,
                 'message' => 'success',
                 'token' => $token
@@ -97,20 +96,12 @@ class AuthController extends Controller
         }
     }
 
-
-
     public function user(Request $request)
     {
         $user = $request->user();
         return new UserResource($user);
     }
-    public function logout()
-    {
-        return response([
-            'message' => 'success'
-        ]);
-    }
-
+    
     public function updateInfo(UpdateInfoRequest $request)
     {
         $user = $request->user();
