@@ -4,12 +4,11 @@
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BoxController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\PanierController;
-use App\Http\Controllers\CommandeController;
-use App\Http\Controllers\UtilisateurController;
-use App\Http\Controllers\CommandePanierController;
+use App\Http\Controllers\CommandController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,21 +40,21 @@ Route::prefix('admin')->group(function () {
     common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
         // role management
-        //Paniers Management
-        Route::apiResource('paniers', PanierController::class);
-        Route::get('searchPaniers', [PanierController::class, 'searchPaniers']);
+        //Boxs Management
+        Route::apiResource('boxs', BoxController::class);
+        Route::get('searchBoxs', [BoxController::class, 'searchBoxs']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
         Route::get('searchUsers', [UserController::class, 'searchUsers']);
         //Orders Management
-        Route::get('orders', [CommandeController::class, 'getOrder']);
-        Route::get('orders/getorder/{id}', [CommandeController::class, 'getOrderById']);
-        Route::post('orders/addorder', [CommandeController::class, 'addOrder']);
-        Route::put('orders/updateorder/{id}', [CommandeController::class, 'updateOrder']);
-        Route::delete('orders/deleteorder/{id}', [CommandeController::class, 'deleteOrder']);
-        Route::get('orders/orderdetails', [CommandeController::class, 'index']);
-        Route::get('orders/orderdetails/{id}', [CommandeController::class, 'show']);
+        Route::get('orders', [CommandController::class, 'getOrder']);
+        Route::get('orders/getorder/{id}', [CommandController::class, 'getOrderById']);
+        Route::post('orders/addorder', [CommandController::class, 'addOrder']);
+        Route::put('orders/updateorder/{id}', [CommandController::class, 'updateOrder']);
+        Route::delete('orders/deleteorder/{id}', [CommandController::class, 'deleteOrder']);
+        Route::get('orders/orderdetails', [CommandController::class, 'index']);
+        Route::get('orders/orderdetails/{id}', [CommandController::class, 'show']);
     });
 });
 
@@ -76,8 +75,8 @@ Route::prefix('user')->group(function () {
 
 
 //Commande
-Route::get('commandes', [CommandeController::class, 'index']);
-Route::get('commande/{id}', [CommandeController::class, 'commande']);
+Route::get('commandes', [CommandController::class, 'index']);
+Route::get('commande/{id}', [CommandController::class, 'commande']);
 
 
 
@@ -89,4 +88,4 @@ Route::get('commande/{id}', [CommandeController::class, 'commande']);
 //
 Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
 Route::put('forgetPassWord', [UserController::class, 'forgetPassWordReset']);
-Route::put('addRole', [UserController::class,"addRole"]);
+Route::put('addRole', [UserController::class, "addRole"]);

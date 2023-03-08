@@ -5,17 +5,17 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Models\Command;
-use App\Models\CommandPanier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Panier extends Model
+class Box extends Model
 {
     use HasFactory;
+    protected $table = 'boxs';
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantity', 'remaining_quantity', 'image', 'categorie', 'status'];
+    protected $fillable = ['title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'];
     public function commands()
     {
         return $this->belongsToMany(Command::class);
@@ -27,8 +27,8 @@ class Panier extends Model
         $this->save();
     }
 
-    public function commandPaniers()
+    public function boxsCommand()
     {
-        return $this->hasMany(CommandPanier::class);
+        return $this->hasMany(BoxCommand::class);
     }
 }

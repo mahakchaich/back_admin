@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CommandPanier extends Model
+class BoxCommand extends Model
 {
     use HasFactory;
 
-    protected $table = 'command_panier';
+    protected $table = 'box_command';
+    protected $fillable = ['box_id', 'command_id', 'quantity'];
 }

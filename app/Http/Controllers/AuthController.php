@@ -78,7 +78,7 @@ class AuthController extends Controller
             $token = $user->createToken('token', [$scope])->plainTextToken;
 
             return response([
-                "user"=>$user ,
+                "user" => $user,
                 // "role"=> $user_role,
                 'message' => 'success',
                 'token' => $token

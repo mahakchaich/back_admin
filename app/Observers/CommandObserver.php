@@ -19,10 +19,10 @@ class CommandObserver
         // get paners from command
         // iterate paniers one by one and get qtn
         //substruct cart qtn from panier qtn
-        $paniers = $command->paniers;
-        foreach ($paniers as $panier) {
-            $cmd_qtn = $panier->command_panier->sum('quantity');
-            $panier->substruct($cmd_qtn, 'remaining_quantity');
+        $boxs = $command->boxs;
+        foreach ($boxs as $box) {
+            $cmd_qtn = $box->box_command->sum('quantity');
+            $box->substruct($cmd_qtn, 'remaining_quantity');
         }
     }
 
