@@ -21,7 +21,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['name', 'email', 'phone', 'password','role_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'role_id'];
 
 
     public function commands()
@@ -41,12 +41,12 @@ class User extends Authenticatable
 
     public function scopeUtilisateurs($query)
     {
-        return $query->where('role_id', 0);
+        return $query->where('role_id', 1);
     }
 
     public function scopeAdmins($query)
     {
-        return $query->where('role_id', 1);
+        return $query->where('role_id', 2);
     }
 
 

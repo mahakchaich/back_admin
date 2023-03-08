@@ -6,10 +6,10 @@ use Exception;
 
 use App\Models\Box;
 use App\Models\Command;
+use App\Models\BoxCommand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\CommandeResource;
-use App\Models\BoxCommand;
+use App\Http\Resources\CommandResource;
 
 class CommandController extends Controller
 {
@@ -86,14 +86,14 @@ class CommandController extends Controller
 
     public function index()
     {
-        $commandes = Command::with('user', 'boxs')->get();
-        return CommandeResource::collection($commandes);
+        $commands = Command::with('user', 'boxs')->get();
+        return CommandResource::collection($commands);
     }
 
     public function show($id)
     {
         $commande = Command::with('user', 'boxs')->findOrFail($id);
-        return new CommandeResource($commande);
+        return new CommandResource($commande);
     }
 
 
