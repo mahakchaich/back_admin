@@ -41,12 +41,20 @@ class User extends Authenticatable
 
     public function scopeUtilisateurs($query)
     {
+
         return $query->where('role_id', 1);
+
+        $role = Roles::where("type", "user")->first();
+        return $query->where('role_id', $role->id);
     }
 
     public function scopeAdmins($query)
     {
+
         return $query->where('role_id', 2);
+
+        $role = Roles::where("type", "admin")->first();
+        return $query->where('role_id', $role->id);
     }
 
 
