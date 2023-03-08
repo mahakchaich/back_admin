@@ -40,6 +40,7 @@ function common(string $scope)
 Route::prefix('admin')->group(function () {
     common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
+        // role management
         //Paniers Management
         Route::apiResource('paniers', PanierController::class);
         Route::get('searchPaniers', [PanierController::class, 'searchPaniers']);
@@ -88,3 +89,4 @@ Route::get('commande/{id}', [CommandeController::class, 'commande']);
 //
 Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
 Route::put('forgetPassWord', [UserController::class, 'forgetPassWordReset']);
+Route::put('addRole', [UserController::class,"addRole"]);

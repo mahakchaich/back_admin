@@ -21,7 +21,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['name', 'email', 'phone', 'password'];
+    protected $fillable = ['name', 'email', 'phone', 'password','role_id'];
 
 
     public function commands()
@@ -41,12 +41,12 @@ class User extends Authenticatable
 
     public function scopeUtilisateurs($query)
     {
-        return $query->where('is_admin', 0);
+        return $query->where('role_id', 0);
     }
 
     public function scopeAdmins($query)
     {
-        return $query->where('is_admin', 1);
+        return $query->where('role_id', 1);
     }
 
 
@@ -62,5 +62,10 @@ class User extends Authenticatable
     public function verificationCode()
     {
         return $this->hasMany(verification_code::class);
+    }
+    public function Roles()
+    {
+        // return $this->hasMany(Roles::class);
+        return  $this->hasOne(Roles::class, 'id', 'role_id');
     }
 }

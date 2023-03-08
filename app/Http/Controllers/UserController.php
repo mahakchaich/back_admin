@@ -6,9 +6,13 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
+// use App\Models\Role;
+use App\Models\Roles;
 use App\Models\verification_code;
 
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -138,10 +142,29 @@ class UserController extends Controller
                 "message" => "invalide verification code"
             ]);
         }
+    }
 
-        // return response()->json([
-        //     "message" => $valide
-        // ]);
+    public function addRole (Request $request){
+        $validator = Validator::make($request->all(),[
+            "type" => "required|unique:roles"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => "this role already existe",
+            ]);
+        }else{
+            $role = Roles::create([
+                
+                "type"=>$request->type]);
+            return response()->json([
+                "message" => "role added successefully",
+                "status" => 200,
+
+            ]);
+        }
+
+
     }
 
     //Search User
