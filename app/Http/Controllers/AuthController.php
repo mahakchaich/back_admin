@@ -55,38 +55,46 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // validate inputs
-        $rules = [
-            'email' => 'required',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|exists:users,email',
             'password' => 'required|string'
-        ];
-        $request->validate($rules);
-
+        ]);
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    $validator->errors(),
+                    "status" => 400
+                ]
+            );
+        }
         // find user email in users table
         $user = User::where('email', $request->email)->first();
         $user_role = $user->Roles;
-
         $adminLogin = $request->path() === 'api/admin/login';
         if ((!$adminLogin) || ($user_role->type != "admin")) {
-            return response([
-                'error' => 'Access Denied!'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+            return response()->json([
+                "message" => "Access Denied",
+                "status" => 401
 
-        // if user email found and password is correct
-        if ($user && Hash::check($request->password, $user->password)) {
+            ]);
+        } else if ($user && Hash::check($request->password, $user->password)) {
+            // if user email found and password is correct
             $scope = $adminLogin ? 'admin' : 'user';
             $token = $user->createToken('token', [$scope])->plainTextToken;
 
             return response([
-                "user"=>$user ,
-                // "role"=> $user_role,
+                // "user"=>$user ,
+                "status" => 200,
                 'message' => 'success',
                 'token' => $token
             ]);
-        }
+        } else {
+            return response()->json([
+                "message" => 'Incorrect email or password',
+                "status" => 401
 
-        $response = ['message' => 'Incorrect email or password'];
-        return response()->json($response, 401);
+            ]);
+        }
     }
 
 
