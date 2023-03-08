@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PanierResource extends JsonResource
+class BoxResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,14 +19,14 @@ class PanierResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'ancien_prix' => $this->ancien_prix,
-            'nouveau_prix' => $this->nouveau_prix,
-            'date_debut' => $this->date_debut,
-            'date_fin' => $this->date_fin,
+            'oldprice' => $this->oldprice,
+            'newprice' => $this->newprice,
+            'startdate' => $this->startdate,
+            'enddate' => $this->enddate,
             'quantity' => $this->quantity,
             'remaining_quantity' => $this->remaining_quantity,
             'image' => $this->image,
-            'categorie' => $this->categorie,
+            'category' => $this->category,
             'status' => $this->status,
         ];
     }

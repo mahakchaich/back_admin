@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Box;
 use App\Models\User;
-use App\Models\Panier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -25,8 +25,8 @@ class Command extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function paniers()
+    public function boxs()
     {
-        return $this->belongsToMany(Panier::class)->withPivot('quantity');
+        return $this->belongsToMany(Box::class)->withPivot('quantity');
     }
 }

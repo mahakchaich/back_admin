@@ -4,42 +4,40 @@ namespace App\Http\Controllers;
 
 use Exception;
 
-use App\Models\Panier;
+use App\Models\Box;
 use App\Models\Command;
 use Illuminate\Http\Request;
-use App\Models\CommandPanier;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommandeResource;
+use App\Models\BoxCommand;
 
-
-
-class CommandeController extends Controller
+class CommandController extends Controller
 {
     public function addOrder(Request $request)
     {
         $userId = $request->input('user_id');
-        $panierId = $request->input('panier_id');
+        $boxId = $request->input('box_id');
         $quantity = $request->input('quantity');
         $status = $request->input('status');
 
-        // Récupérer les informations du panier
-        $panier = Panier::find($panierId);
+        // Récupérer les informations du box
+        $box = Box::find($boxId);
 
-        // Vérifier si le panier est disponible
-        if ($panier->remaining_quantity <= 0) {
+        // Vérifier si le box est disponible
+        if ($box->remaining_quantity <= 0) {
             return response()->json(['message' => 'Le panier n\'est plus disponible'], 400);
         }
 
         // Vérifier le statut du panier
-        if ($panier->status != 'ACCEPTED') {
+        if ($box->status != 'ACCEPTED') {
             return response()->json(['message' => 'Le panier doit avoir un statut "ACCEPTED" pour pouvoir être commandé'], 400);
         }
 
         // Calculer le prix en fonction de la quantité et du nouveau prix
-        $price = $quantity * $panier->nouveau_prix;
+        $price = $quantity * $box->newprice;
 
         // Vérifier la quantité disponible dans le panier
-        if ($quantity > $panier->remaining_quantity) {
+        if ($quantity > $box->remaining_quantity) {
             return response()->json(['message' => 'Quantité demandée supérieure à la quantité restante dans le panier'], 400);
         }
 
@@ -51,15 +49,15 @@ class CommandeController extends Controller
         $command->save();
 
         // Ajouter le panier à la commande
-        $commandPanier = new CommandPanier;
-        $commandPanier->command_id = $command->id;
-        $commandPanier->panier_id = $panierId;
-        $commandPanier->quantity = $quantity;
-        $commandPanier->save();
+        $boxCommand = new BoxCommand();
+        $boxCommand->box_id = $boxId;
+        $boxCommand->command_id = $command->id;
+        $boxCommand->quantity = $quantity;
+        $boxCommand->save();
 
         // Mettre à jour la quantité restante du panier
-        $panier->remaining_quantity -= $quantity;
-        $panier->save();
+        $box->remaining_quantity -= $quantity;
+        $box->save();
 
         return response()->json(['message' => 'Commande créée avec succès'], 201);
     }
@@ -88,13 +86,13 @@ class CommandeController extends Controller
 
     public function index()
     {
-        $commandes = Command::with('user', 'paniers')->get();
+        $commandes = Command::with('user', 'boxs')->get();
         return CommandeResource::collection($commandes);
     }
 
     public function show($id)
     {
-        $commande = Command::with('user', 'paniers')->findOrFail($id);
+        $commande = Command::with('user', 'boxs')->findOrFail($id);
         return new CommandeResource($commande);
     }
 
@@ -159,7 +157,7 @@ class CommandeController extends Controller
     {
         try {
             // Supprimer les enregistrements associés dans la table "command_panier"
-            DB::table('command_panier')->where('command_id', $id)->delete();
+            DB::table('box_command')->where('command_id', $id)->delete();
             // Supprimer la commande elle-même
             DB::table('commands')->where('id', $id)->delete();
             return response(null, 204);

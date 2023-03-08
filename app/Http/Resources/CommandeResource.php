@@ -19,7 +19,7 @@ class CommandeResource extends JsonResource
             'price' => $this->price,
             'status' => $this->status,
             'user' => new UserResource($this->user),
-            'paniers' => PanierResource::collection($this->whenLoaded('paniers')),
+            'boxs' => BoxResource::collection($this->whenLoaded('boxs')),
             'created_at' => $this->created_at,
         ];
     }

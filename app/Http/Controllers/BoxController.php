@@ -2,95 +2,94 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Panier;
+use App\Models\Box;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class PanierController extends Controller
+class   BoxController extends Controller
 {
 
     public function index()
     {
-        //get panier
-        return Panier::all();
+        //get box
+        return Box::all();
     }
 
 
     public function store(Request $request)
     {
-        $ancien_prix = $request->input('ancien_prix');
-        $nouveau_prix = $request->input('nouveau_prix');
-        $date_debut = $request->input('date_debut');
-        $date_fin = $request->input('date_fin');
+        $oldprice = $request->input('oldprice');
+        $newprice = $request->input('newprice');
+        $startdate = $request->input('startdate');
+        $enddate = $request->input('enddate');
 
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
-        if ($ancien_prix <= $nouveau_prix) {
+        if ($oldprice <= $newprice) {
             return response(['error' => 'L\'ancien prix de vente doit être supérieur au prix nouveau prix.'], Response::HTTP_BAD_REQUEST);
         }
 
         // Vérifie si la date de début est postérieure ou égale à la date actuelle
-        if (strtotime($date_debut) < time()) {
+        if (strtotime($startdate) < time()) {
             return response(['error' => 'La date de début doit être postérieure ou égale à la date actuelle.'], Response::HTTP_BAD_REQUEST);
         }
 
         // Vérifie si la date de début est antérieure à la date de fin
-        if (strtotime($date_debut) >= strtotime($date_fin)) {
+        if (strtotime($startdate) >= strtotime($enddate)) {
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $panier = Panier::create($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantity', 'remaining_quantity', 'image', 'categorie', 'status'));
-        return response($panier, Response::HTTP_CREATED);
+        $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'));
+        return response($box, Response::HTTP_CREATED);
     }
 
 
-    public function show(Panier $panier)
+    public function show(Box $box)
     {
 
-        return $panier;
+        return $box;
     }
 
 
-    public function update(Request $request, Panier $panier)
+    public function update(Request $request, Box $box)
     {
-        $ancien_prix = $request->input('ancien_prix');
-        $nouveau_prix = $request->input('nouveau_prix');
-        $date_debut = $request->input('date_debut');
-        $date_fin = $request->input('date_fin');
-
+        $oldprice = $request->input('oldprice');
+        $newprice = $request->input('newprice');
+        $startdate = $request->input('startdate');
+        $enddate = $request->input('enddate');
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
-        if ($ancien_prix <= $nouveau_prix) {
+        if ($oldprice <= $newprice) {
             return response(['error' => 'L\'ancien prix de vente doit être supérieur au prix nouveau prix.'], Response::HTTP_BAD_REQUEST);
         }
 
         // Vérifie si la date de début est postérieure ou égale à la date actuelle
-        if (strtotime($date_debut) < time()) {
+        if (strtotime($startdate) < time()) {
             return response(['error' => 'La date de début doit être postérieure ou égale à la date actuelle.'], Response::HTTP_BAD_REQUEST);
         }
 
         // Vérifie si la date de début est antérieure à la date de fin
-        if (strtotime($date_debut) >= strtotime($date_fin)) {
+        if (strtotime($startdate) >= strtotime($enddate)) {
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $panier->update($request->only('title', 'description', 'ancien_prix', 'nouveau_prix', 'date_debut', 'date_fin', 'quantity', 'remaining_quantity', 'image', 'categorie', 'status'));
-        return response($panier, Response::HTTP_CREATED);
+        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'));
+        return response($box, Response::HTTP_CREATED);
     }
 
-    public function destroy(Panier $panier)
+    public function destroy(Box $box)
     {
         // Supprimer toutes les entrées correspondantes dans la table "command_panier"
-        $panier->commandPaniers()->delete();
+        $box->boxsCommand()->delete();
 
         // Supprimer le panier
-        $panier->delete();
+        $box->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
     //Search Panier
-    public function searchPaniers(Request $request)
+    public function searchBoxs(Request $request)
     {
         //récupération du paramètre de recherche:
         $search = $request->input('search');
@@ -101,10 +100,10 @@ class PanierController extends Controller
         }
 
         //recherche des utilisateurs en fonction du paramètre:
-        $paniers = Panier::where('title', 'LIKE', "%{$search}%")
+        $boxs = Box::where('title', 'LIKE', "%{$search}%")
             ->get();
 
         //retourne les résultats de recherche:
-        return response()->json($paniers);
+        return response()->json($boxs);
     }
 }

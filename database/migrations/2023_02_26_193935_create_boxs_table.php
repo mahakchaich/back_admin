@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaniersTable extends Migration
+class CreateBoxsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,18 +14,18 @@ class CreatePaniersTable extends Migration
      */
     public function up()
     {
-        Schema::create('paniers', function (Blueprint $table) {
+        Schema::create('boxs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->decimal('ancien_prix');
-            $table->decimal('nouveau_prix');
-            $table->dateTime('date_debut');
-            $table->dateTime('date_fin');
+            $table->decimal('oldprice');
+            $table->decimal('newprice');
+            $table->dateTime('startdate');
+            $table->dateTime('enddate');
             $table->integer('quantity');
             $table->integer('remaining_quantity')->default(DB::raw('`quantity`'));
             $table->string('image');
-            $table->enum('categorie', ['Fruits and vegetables', 'Meat', 'Pastry', 'Fish', 'Dairy products', 'Prepared dishes', 'Sweets', 'Drinks', 'Vegetarian']);
+            $table->enum('category', ['FRUITS AND VEGETABLES', 'MEAT', 'PASTRY', 'FISH', 'DAIRY PRODUCTS', 'PREPARED DISHES', 'SWEETS', 'DRINKS', 'VEGETARIAN']);
             $table->enum('status', ['PENDING', 'ACCEPTED', 'REJECTED'])->default('PENDING');
             $table->timestamps();
         });
@@ -38,6 +38,6 @@ class CreatePaniersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('paniers');
+        Schema::dropIfExists('boxs');
     }
 }

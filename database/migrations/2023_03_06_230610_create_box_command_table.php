@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCommandPanierTable extends Migration
+class CreateBoxCommandTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateCommandPanierTable extends Migration
      */
     public function up()
     {
-        Schema::create('command_panier', function (Blueprint $table) {
+        Schema::create('box_Command', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('box_id')->constrained('boxs');
             $table->foreignId('command_id')->constrained('commands');
-            $table->foreignId('panier_id')->constrained('paniers');
             $table->unsignedInteger('quantity')->default(1);
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateCommandPanierTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('command_panier');
+        Schema::dropIfExists('command_box');
     }
 }
