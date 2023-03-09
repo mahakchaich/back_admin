@@ -27,6 +27,7 @@ class CreateBoxsTable extends Migration
             $table->string('image');
             $table->enum('category', ['FRUITS AND VEGETABLES', 'MEAT', 'PASTRY', 'FISH', 'DAIRY PRODUCTS', 'PREPARED DISHES', 'SWEETS', 'DRINKS', 'VEGETARIAN']);
             $table->enum('status', ['PENDING', 'ACCEPTED', 'REJECTED'])->default('PENDING');
+            $table->foreignId('partner_id')->constrain('partners');
             $table->timestamps();
         });
     }

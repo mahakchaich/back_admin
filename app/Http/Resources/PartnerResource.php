@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BoxResource extends JsonResource
+class PartnerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,21 +14,18 @@ class BoxResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'name' => $this->name,
             'description' => $this->description,
-            'oldprice' => $this->oldprice,
-            'newprice' => $this->newprice,
-            'startdate' => $this->startdate,
-            'enddate' => $this->enddate,
-            'quantity' => $this->quantity,
-            'remaining_quantity' => $this->remaining_quantity,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'password' => $this->password,
             'image' => $this->image,
             'category' => $this->category,
-            'status' => $this->status,
-            'partner' => new PartnerResource($this->whenLoaded('partner')),
+            'openingtime' => $this->openingtime,
+            'closingtime' => $this->closingtime,
+            'boxs' => BoxResource::collection($this->whenLoaded('boxs')),
         ];
     }
 }

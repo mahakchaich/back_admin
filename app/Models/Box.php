@@ -16,7 +16,7 @@ class Box extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'];
+    protected $fillable = ['title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'];
     public function commands()
     {
         return $this->belongsToMany(Command::class);

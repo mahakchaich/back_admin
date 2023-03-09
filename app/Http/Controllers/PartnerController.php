@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Partner;
 use Illuminate\Http\Request;
+use App\Http\Resources\PartnerResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class PartnerController extends Controller
@@ -22,9 +24,17 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
-        $partner = Partner::partners()->create($request->only('name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime'));
+        $data = $request->only('name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime');
+
+        // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
+        if (strtotime($data['openingtime']) >= strtotime($data['closingtime'])) {
+            return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
+        }
+
+        $partner = Partner::partners()->create($data);
         return response($partner, Response::HTTP_CREATED);
     }
+
 
 
     public function show($id)
@@ -41,11 +51,20 @@ class PartnerController extends Controller
     {
         $partner = Partner::partners()->find($id);
         if (is_null($partner)) {
-            return response()->json(['message' => 'paetner introuvable'], 404);
+            return response()->json(['message' => 'partenaire introuvable'], 404);
         }
-        $partner->update($request->only('name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime'));
+
+        $data = $request->only('name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime');
+
+        // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
+        if (strtotime($data['openingtime']) >= strtotime($data['closingtime'])) {
+            return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
+        }
+
+        $partner->update($data);
         return response($partner, 200);
     }
+
 
 
     public function destroy($id)
@@ -62,5 +81,11 @@ class PartnerController extends Controller
         $partner->delete();
 
         return response(null, 204);
+    }
+
+    public function showdetails($id)
+    {
+        $partners = Partner::with('boxs')->findOrFail($id);
+        return new PartnerResource($partners);
     }
 }

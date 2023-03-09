@@ -9,7 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommandController;
 use App\Http\Controllers\PartnerController;
-
+use App\Models\Partner;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +58,7 @@ Route::prefix('admin')->group(function () {
         Route::get('orders/orderdetails/{id}', [CommandController::class, 'show']);
         //Partners Management
         Route::apiResource('partners', PartnerController::class);
+        Route::get('partners/partnerdetails/{id}', [PartnerController::class, 'showdetails']);
     });
 });
 
