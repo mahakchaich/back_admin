@@ -30,6 +30,7 @@ class   BoxController extends Controller
             "enddate" => "required",
             "category" => "required",
             "status" => "required",
+            "partner_id" => "required",
         ]);
         if ($valid->fails()) {
             return response()->json([
@@ -68,11 +69,11 @@ class   BoxController extends Controller
                 ]);
         }
 
-        $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'));
-        // return response($box, Response::HTTP_CREATED);
+
+        $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'));
         return response()->json([
             'message' => 'created successfully',
-            "box_info" => $box, 
+            "box_info" => $box,
             'status' => Response::HTTP_CREATED
         ]);
     }
@@ -107,7 +108,7 @@ class   BoxController extends Controller
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'));
+        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'));
         return response($box, Response::HTTP_CREATED);
     }
 

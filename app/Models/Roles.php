@@ -24,4 +24,10 @@ class Roles extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public static function findOrCreate(array $attributes)
+    {
+        $model = self::where($attributes)->first();
+        return $model ?: self::create($attributes);
+    }
 }

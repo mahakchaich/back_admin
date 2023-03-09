@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
-// use App\Models\Role;
 use App\Models\Roles;
 use App\Models\verification_code;
 
@@ -22,20 +21,20 @@ class UserController extends Controller
     public function index()
     {
 
-        return User::utilisateurs()->get();
+        return User::users()->get();
     }
 
 
     public function store(Request $request)
     {
-        $user = User::utilisateurs()->create($request->only('name', 'email', 'phone', 'password'));
+        $user = User::users()->create($request->only('name', 'email', 'phone', 'password'));
         return response($user, Response::HTTP_CREATED);
     }
 
 
     public function show($id)
     {
-        $user = User::utilisateurs()->find($id);
+        $user = User::users()->find($id);
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
@@ -45,7 +44,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::utilisateurs()->find($id);
+        $user = User::users()->find($id);
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
@@ -56,13 +55,13 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::utilisateurs()->find($id);
+        $user = User::users()->find($id);
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
 
         // Supprimer toutes les commandes liées à l'utilisateur
-        $user->commandes()->delete();
+        $user->commands()->delete();
 
         // Supprimer l'utilisateur
         $user->delete();
@@ -144,8 +143,9 @@ class UserController extends Controller
         }
     }
 
-    public function addRole (Request $request){
-        $validator = Validator::make($request->all(),[
+    public function addRole(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             "type" => "required|unique:roles"
         ]);
 
@@ -153,18 +153,17 @@ class UserController extends Controller
             return response()->json([
                 'message' => "this role already existe",
             ]);
-        }else{
+        } else {
             $role = Roles::create([
-                
-                "type"=>$request->type]);
+
+                "type" => $request->type
+            ]);
             return response()->json([
                 "message" => "role added successefully",
                 "status" => 200,
 
             ]);
         }
-
-
     }
 
     //Search User

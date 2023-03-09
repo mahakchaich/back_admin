@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'scope.admin' => ScopeAdminMiddleware::class,
         'scope.user' => ScopeUserMiddleware::class,
+        'scope.partner' => ScopePartnerMiddleware::class,
     ];
 }

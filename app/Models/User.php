@@ -21,7 +21,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['name', 'email', 'phone', 'password','role_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'role_id'];
 
 
     public function commands()
@@ -39,19 +39,19 @@ class User extends Authenticatable
     ];
 
 
-    public function scopeUtilisateurs($query)
+    public function scopeUsers($query)
     {
-        $role = Roles::where("type","user")->first();
+        $role = Roles::where("type", "user")->first();
         return $query->where('role_id', $role->id);
-     
-
     }
 
     public function scopeAdmins($query)
     {
-        $role = Roles::where("type","admin")->first();
+        $role = Roles::where("type", "admin")->first();
         return $query->where('role_id', $role->id);
     }
+
+
 
 
     /**
