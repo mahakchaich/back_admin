@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Models\Command;
+use App\Models\Partner;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -30,5 +31,10 @@ class Box extends Model
     public function boxsCommand()
     {
         return $this->hasMany(BoxCommand::class);
+    }
+
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class);
     }
 }

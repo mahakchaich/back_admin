@@ -8,6 +8,7 @@ use App\Http\Controllers\BoxController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommandController;
+use App\Http\Controllers\PartnerController;
 
 
 /*
@@ -55,6 +56,8 @@ Route::prefix('admin')->group(function () {
         Route::delete('orders/deleteorder/{id}', [CommandController::class, 'deleteOrder']);
         Route::get('orders/orderdetails', [CommandController::class, 'index']);
         Route::get('orders/orderdetails/{id}', [CommandController::class, 'show']);
+        //Partners Management
+        Route::apiResource('partners', PartnerController::class);
     });
 });
 
