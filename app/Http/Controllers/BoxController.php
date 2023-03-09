@@ -19,21 +19,21 @@ class   BoxController extends Controller
 
     public function store(Request $request)
     {
-        $valid = Validator::make($request->all(),[
-            "title"=> "required",
-            "description"=> "required",
-            "quantity"=> "required",
-            "image"=> "required",
-            "oldprice"=> "required",
-            "newprice"=> "required",
-            "startdate"=> "required",
-            "enddate"=> "required",
-            "category"=> "required",
-            "status"=> "required",
+        $valid = Validator::make($request->all(), [
+            "title" => "required",
+            "description" => "required",
+            "quantity" => "required",
+            "image" => "required",
+            "oldprice" => "required",
+            "newprice" => "required",
+            "startdate" => "required",
+            "enddate" => "required",
+            "category" => "required",
+            "status" => "required",
         ]);
         if ($valid->fails()) {
-            return response()->json( [
-               "message"=> $valid->errors(),
+            return response()->json([
+                "message" => $valid->errors(),
                 "status" => 400
             ]);
         }
@@ -45,9 +45,8 @@ class   BoxController extends Controller
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
         if ($oldprice <= $newprice) {
-            return response(
-            )->json([
-                'error' => 'L\'ancien prix de vente doit être supérieur au prix nouveau prix.',
+            return response()->json([
+                'error' => 'The old price must be higher than the new price.',
                 "status" => Response::HTTP_BAD_REQUEST
             ]);
         }
@@ -55,22 +54,27 @@ class   BoxController extends Controller
         // Vérifie si la date de début est postérieure ou égale à la date actuelle
         if (strtotime($startdate) < time()) {
             response()->json([
-                'error' => 'La date de début doit être postérieure ou égale à la date actuelle.',
+                'error' => 'The start date must be greater than or equal to the current date.',
                 'status' => Response::HTTP_BAD_REQUEST
             ]);
         }
 
         // Vérifie si la date de début est antérieure à la date de fin
         if (strtotime($startdate) >= strtotime($enddate)) {
-            return 
-            response()->json([
-                'error' => 'La date de début doit être antérieure à la date de fin.',
-                'status' => Response::HTTP_BAD_REQUEST
-            ]);
+            return
+                response()->json([
+                    'error' => 'The start date must be before the end date.',
+                    'status' => Response::HTTP_BAD_REQUEST
+                ]);
         }
 
         $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status'));
-        return response($box, Response::HTTP_CREATED);
+        // return response($box, Response::HTTP_CREATED);
+        return response()->json([
+            'message' => 'created successfully',
+            "box_info" => $box, 
+            'status' => Response::HTTP_CREATED
+        ]);
     }
 
 
