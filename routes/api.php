@@ -44,6 +44,7 @@ Route::prefix('admin')->group(function () {
         //Boxs Management
         Route::apiResource('boxs', BoxController::class);
         Route::get('searchBoxs', [BoxController::class, 'searchBoxs']);
+        Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);

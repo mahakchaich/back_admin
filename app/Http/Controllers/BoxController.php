@@ -6,6 +6,7 @@ use App\Models\Box;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -155,5 +156,22 @@ class   BoxController extends Controller
 
         //retourne les résultats de recherche:
         return response()->json($boxs);
+    }
+
+
+
+    public function boxdetails($id)
+    {
+        $box = Box::find($id);
+        if (!$box) {
+            return response()->json(['message' => 'Box not found'], 404);
+        }
+
+        $partner = $box->partner;
+        if (!$partner) {
+            return response()->json(['message' => 'Partner not found'], 404);
+        }
+
+        return new PartnerResource($partner);
     }
 }
