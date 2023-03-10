@@ -20,8 +20,9 @@ class   BoxController extends Controller
     }
 
 
-    public function store(Request $request)
+public function store(Request $request)
     {
+        
         $valid = Validator::make($request->all(), [
             "title" => "required",
             "description" => "required",
@@ -33,7 +34,7 @@ class   BoxController extends Controller
             "enddate" => "required",
             "category" => "required",
             "status" => "required",
-            "partner_id" => "required",
+            "partner_id" => "required|exists:partners,id",
         ]);
         if ($valid->fails()) {
             return response()->json([
@@ -72,15 +73,35 @@ class   BoxController extends Controller
                     'status' => Response::HTTP_BAD_REQUEST
                 ]);
         }
+        $box = new Box;
+        // upload image section 
+        if($request->hasFile('image')){ // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName(); 
+            $fileNameOnly = pathinfo($completeFileName,PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $compPic = str_replace(' ','_',$fileNameOnly).'-'. rand() . '_' . time() . '.' . $extention ; // create new file name 
+            $path = $request->file('image')->storeAs('public/boxs_imgs',$compPic);
+            $box->image = $compPic;
+            // dd($box);
+        }
+
+        $box->title = $request->title;
+        $box->description = $request->description;
+        $box->oldprice = $request->oldprice;
+        $box->newprice = $request->newprice;
+        $box->startdate = $request->startdate;
+        $box->enddate = $request->enddate;
+        $box->quantity = $request->quantity;
+        $box->remaining_quantity = $request->remaining_quantity;
+        $box->category = $request->category;
+        $box->status = $request->status;
+        $box->partner_id = $request->partner_id;
+        $box->save();
 
         // Vérifie si le partenaire associé à l'id existe
         if (!DB::table('partners')->where('id', $partnerId)->exists()) {
             return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
         }
-
-        $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id') + ['partner_id' => $partnerId]);
-
-
         return response()->json([
             'message' => 'created successfully',
             "box_info" => $box,
