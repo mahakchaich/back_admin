@@ -32,6 +32,7 @@ class CreateBoxsTable extends Migration
         });
     }
 
+
     /**
      * Reverse the migrations.
      *

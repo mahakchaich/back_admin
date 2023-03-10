@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,7 +34,7 @@ public function store(Request $request)
             "enddate" => "required",
             "category" => "required",
             "status" => "required",
-            "partner_id" => "required",
+            "partner_id" => "required|exists:partners,id",
         ]);
         if ($valid->fails()) {
             return response()->json([
@@ -43,6 +46,7 @@ public function store(Request $request)
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
+        $partnerId = $request->input('partner_id');
 
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
@@ -93,7 +97,11 @@ public function store(Request $request)
         $box->status = $request->status;
         $box->partner_id = $request->partner_id;
         $box->save();
-        //  Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'));
+
+        // Vérifie si le partenaire associé à l'id existe
+        if (!DB::table('partners')->where('id', $partnerId)->exists()) {
+            return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
+        }
         return response()->json([
             'message' => 'created successfully',
             "box_info" => $box,
@@ -115,6 +123,7 @@ public function store(Request $request)
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
+        $partnerId = $request->input('partner_id');
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
         if ($oldprice <= $newprice) {
@@ -131,7 +140,12 @@ public function store(Request $request)
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'));
+        // Vérifie si le partenaire associé à l'id existe
+        if (!DB::table('partners')->where('id', $partnerId)->exists()) {
+            return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status') + ['partner_id' => $partnerId]);
         return response($box, Response::HTTP_CREATED);
     }
 
@@ -163,5 +177,22 @@ public function store(Request $request)
 
         //retourne les résultats de recherche:
         return response()->json($boxs);
+    }
+
+
+
+    public function boxdetails($id)
+    {
+        $box = Box::find($id);
+        if (!$box) {
+            return response()->json(['message' => 'Box not found'], 404);
+        }
+
+        $partner = $box->partner;
+        if (!$partner) {
+            return response()->json(['message' => 'Partner not found'], 404);
+        }
+
+        return new PartnerResource($partner);
     }
 }
