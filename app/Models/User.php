@@ -67,6 +67,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(verification_code::class);
     }
+    
     public function Roles()
     {
         // return $this->hasMany(Roles::class);

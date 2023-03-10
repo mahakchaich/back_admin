@@ -35,7 +35,10 @@ class AuthController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json( [
+                $validator->errors(),
+                "status" => 400
+            ]);
         }
         //create new user in users table
         $user = User::create([
