@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class   BoxController extends Controller
@@ -22,6 +23,7 @@ class   BoxController extends Controller
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
+        $partnerId = $request->input('partner_id');
 
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
@@ -39,7 +41,12 @@ class   BoxController extends Controller
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'));
+        // Vérifie si le partenaire associé à l'id existe
+        if (!DB::table('partners')->where('id', $partnerId)->exists()) {
+            return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $box = Box::create($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id') + ['partner_id' => $partnerId]);
         return response($box, Response::HTTP_CREATED);
     }
 
@@ -57,6 +64,7 @@ class   BoxController extends Controller
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
+        $partnerId = $request->input('partner_id');
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
         if ($oldprice <= $newprice) {
@@ -73,7 +81,12 @@ class   BoxController extends Controller
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'));
+        // Vérifie si le partenaire associé à l'id existe
+        if (!DB::table('partners')->where('id', $partnerId)->exists()) {
+            return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status') + ['partner_id' => $partnerId]);
         return response($box, Response::HTTP_CREATED);
     }
 
