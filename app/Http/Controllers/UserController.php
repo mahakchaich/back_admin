@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $user = User::users()->create($request->only('name', 'email', 'phone', 'password'));
+        $user = User::users()->create($request->only('name', 'email', 'phone', 'password', 'status'));
         return response($user, Response::HTTP_CREATED);
     }
 
@@ -48,7 +48,7 @@ class UserController extends Controller
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
-        $user->update($request->only('name', 'email', 'phone'));
+        $user->update($request->only('name', 'email', 'phone', 'status'));
         return response($user, 200);
     }
 
@@ -185,5 +185,28 @@ class UserController extends Controller
 
         //retourne les résultats de recherche:
         return response()->json($users);
+    }
+
+    //Update Status
+    public function updateUserStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->status = $request->input('status');
+        $user->save();
+
+        return response()->json(['message' => 'User status updated successfully'], 200);
     }
 }
