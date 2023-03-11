@@ -20,9 +20,9 @@ class   BoxController extends Controller
     }
 
 
-public function store(Request $request)
+    public function store(Request $request)
     {
-        
+
         $valid = Validator::make($request->all(), [
             "title" => "required",
             "description" => "required",
@@ -75,13 +75,15 @@ public function store(Request $request)
         }
         $box = new Box;
         // upload image section 
-        if($request->hasFile('image')){ // if file existe in the url with image type
-            $completeFileName = $request->file('image')->getClientOriginalName(); 
-            $fileNameOnly = pathinfo($completeFileName,PATHINFO_FILENAME);
+
+        if ($request->hasFile('image')) { // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName();
+            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
             $extention = $request->file('image')->getClientOriginalExtension();
-            $compPic = str_replace(' ','_',$fileNameOnly).'-'. rand() . '_' . time() . '.' . $extention ; // create new file name 
-            $path = $request->file('image')->storeAs('public/boxs_imgs',$compPic);
+            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+            $path = $request->file('image')->storeAs('public/boxs_imgs', $compPic);
             $box->image = $compPic;
+
             // dd($box);
         }
 

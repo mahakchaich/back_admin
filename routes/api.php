@@ -50,7 +50,8 @@ Route::prefix('admin')->group(function () {
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
         Route::get('searchUsers', [UserController::class, 'searchUsers']);
         Route::put('users/status/{id}', [UserController::class, 'updateUserStatus']);
-        // Route::put('/users/{id}/status', 'UserController@updateUserStatus');
+        Route::get('/users/userdetails/{id}', [UserController::class, 'showuser']);
+
 
         //Orders Management
         Route::get('orders', [CommandController::class, 'getOrder']);

@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Roles;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
-use App\Models\Roles;
 use App\Models\verification_code;
 
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\CommandResource;
 
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -208,5 +209,13 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'User status updated successfully'], 200);
+    }
+
+    //afficher la liste des commands de chaque user
+    public function showuser($userId)
+    {
+        $user = User::findOrFail($userId);
+        $commands = $user->commands;
+        return CommandResource::collection($commands);
     }
 }
