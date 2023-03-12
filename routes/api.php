@@ -51,7 +51,8 @@ Route::prefix('admin')->group(function () {
         Route::get('searchUsers', [UserController::class, 'searchUsers']);
         Route::put('users/status/{id}', [UserController::class, 'updateUserStatus']);
         Route::get('/users/userdetails/{id}', [UserController::class, 'showuser']);
-
+        Route::get('searchUser', [UserController::class, 'searchUser']);
+        Route::get('filterusers', [UserController::class, 'filterUsers']);
 
         //Orders Management
         Route::get('orders', [CommandController::class, 'getOrder']);

@@ -218,4 +218,41 @@ class UserController extends Controller
         $commands = $user->commands;
         return CommandResource::collection($commands);
     }
+
+    //Search User
+    public function searchUser(Request $request)
+    {
+
+        $search = $request->input('search');
+
+
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+        }
+
+        //recherche des patners en fonction du paramètre:
+        $users = User::users()->Where('email', 'LIKE', "%{$search}%")
+            ->orWhere('phone', 'LIKE', "%{$search}%")
+            ->get();
+
+
+        return response()->json($users);
+    }
+
+    //Filtrer users selon leurs status
+    public function filterUsers(Request $request)
+    {
+        // Récupération du paramètre de catégorie
+        $status = $request->input('status');
+
+
+        if (!$status) {
+            return response()->json(['error' => 'Le paramètre de status est obligatoire.'], 400);
+        }
+
+        // Recherche des partenaires en fonction de la catégorie
+        $users = User::users()->where('status', $status)->get();
+
+        return response()->json($users);
+    }
 }
