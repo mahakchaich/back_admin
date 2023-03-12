@@ -83,9 +83,48 @@ class PartnerController extends Controller
         return response(null, 204);
     }
 
+
     public function showdetails($id)
     {
         $partners = Partner::with('boxs')->findOrFail($id);
         return new PartnerResource($partners);
+    }
+
+    //Search Partner 
+    public function searchPartner(Request $request)
+    {
+
+        $search = $request->input('search');
+
+
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+        }
+
+        //recherche des patners en fonction du paramètre:
+        $partners = Partner::Where('email', 'LIKE', "%{$search}%")
+            ->orWhere('phone', 'LIKE', "%{$search}%")
+            ->get();
+
+
+        return response()->json($partners);
+    }
+
+
+    //Filtrer partners selon leurs catgory
+    public function filterPartners(Request $request)
+    {
+        // Récupération du paramètre de catégorie
+        $category = $request->input('category');
+
+
+        if (!$category) {
+            return response()->json(['error' => 'Le paramètre de catégorie est obligatoire.'], 400);
+        }
+
+        // Recherche des partenaires en fonction de la catégorie
+        $partners = Partner::partners()->where('category', $category)->get();
+
+        return response()->json($partners);
     }
 }

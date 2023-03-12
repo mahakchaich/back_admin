@@ -64,6 +64,8 @@ Route::prefix('admin')->group(function () {
         //Partners Management
         Route::apiResource('partners', PartnerController::class);
         Route::get('partners/partnerdetails/{id}', [PartnerController::class, 'showdetails']);
+        Route::get('searchPartner', [PartnerController::class, 'searchPartner']);
+        Route::get('filter', [PartnerController::class, 'filterPartners']);
     });
 });
 
