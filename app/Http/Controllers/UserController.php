@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Roles;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
-use App\Models\Roles;
 use App\Models\verification_code;
 
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\CommandResource;
 
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -27,7 +28,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $user = User::users()->create($request->only('name', 'email', 'phone', 'password'));
+        $user = User::users()->create($request->only('name', 'email', 'phone', 'password', 'status'));
         return response($user, Response::HTTP_CREATED);
     }
 
@@ -48,7 +49,7 @@ class UserController extends Controller
         if (is_null($user)) {
             return response()->json(['message' => 'utilisateur introuvable'], 404);
         }
-        $user->update($request->only('name', 'email', 'phone'));
+        $user->update($request->only('name', 'email', 'phone', 'status'));
         return response($user, 200);
     }
 
@@ -184,6 +185,74 @@ class UserController extends Controller
             ->get();
 
         //retourne les résultats de recherche:
+        return response()->json($users);
+    }
+
+    //Update Status
+    public function updateUserStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->status = $request->input('status');
+        $user->save();
+
+        return response()->json(['message' => 'User status updated successfully'], 200);
+    }
+
+    //afficher la liste des commands de chaque user
+    public function showuser($userId)
+    {
+        $user = User::findOrFail($userId);
+        $commands = $user->commands;
+        return CommandResource::collection($commands);
+    }
+
+    //Search User
+    public function searchUser(Request $request)
+    {
+
+        $search = $request->input('search');
+
+
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+        }
+
+        //recherche des patners en fonction du paramètre:
+        $users = User::users()->Where('email', 'LIKE', "%{$search}%")
+            ->orWhere('phone', 'LIKE', "%{$search}%")
+            ->get();
+
+
+        return response()->json($users);
+    }
+
+    //Filtrer users selon leurs status
+    public function filterUsers(Request $request)
+    {
+        // Récupération du paramètre de catégorie
+        $status = $request->input('status');
+
+
+        if (!$status) {
+            return response()->json(['error' => 'Le paramètre de status est obligatoire.'], 400);
+        }
+
+        // Recherche des partenaires en fonction de la catégorie
+        $users = User::users()->where('status', $status)->get();
+
         return response()->json($users);
     }
 }

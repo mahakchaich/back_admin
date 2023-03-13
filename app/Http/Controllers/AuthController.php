@@ -35,7 +35,7 @@ class AuthController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return response()->json( [
+            return response()->json([
                 $validator->errors(),
                 "status" => 400
             ]);
@@ -62,23 +62,31 @@ class AuthController extends Controller
             'email' => 'required|exists:users,email',
             'password' => 'required|string'
         ]);
+
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    $validator->errors(),
-                    "status" => 400
-                ]
-            );
+            return response()->json([
+                $validator->errors(),
+                "status" => 400
+            ]);
         }
+
         // find user email in users table
         $user = User::where('email', $request->email)->first();
+
+        if ($user && $user->status == 'INACTIVE') {
+            return response()->json([
+                "message" => 'Your account is inactive, please contact an administrator',
+                "status" => 401
+            ]);
+        }
+
         $user_role = $user->Roles;
         $adminLogin = $request->path() === 'api/admin/login';
+
         if ((!$adminLogin) || ($user_role->type != "admin")) {
             return response()->json([
                 "message" => "Access Denied",
                 "status" => 401
-
             ]);
         } else if ($user && Hash::check($request->password, $user->password)) {
             // if user email found and password is correct
@@ -94,17 +102,17 @@ class AuthController extends Controller
             return response()->json([
                 "message" => 'Incorrect email or password',
                 "status" => 401
-
             ]);
         }
     }
+
 
     public function user(Request $request)
     {
         $user = $request->user();
         return new UserResource($user);
     }
-    
+
     public function updateInfo(UpdateInfoRequest $request)
     {
         $user = $request->user();

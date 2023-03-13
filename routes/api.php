@@ -49,6 +49,11 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
         Route::get('searchUsers', [UserController::class, 'searchUsers']);
+        Route::put('users/status/{id}', [UserController::class, 'updateUserStatus']);
+        Route::get('/users/userdetails/{id}', [UserController::class, 'showuser']);
+        Route::get('searchUser', [UserController::class, 'searchUser']);
+        Route::get('filterusers', [UserController::class, 'filterUsers']);
+
         //Orders Management
         Route::get('orders', [CommandController::class, 'getOrder']);
         Route::get('orders/getorder/{id}', [CommandController::class, 'getOrderById']);
@@ -57,9 +62,14 @@ Route::prefix('admin')->group(function () {
         Route::delete('orders/deleteorder/{id}', [CommandController::class, 'deleteOrder']);
         Route::get('orders/orderdetails', [CommandController::class, 'index']);
         Route::get('orders/orderdetails/{id}', [CommandController::class, 'show']);
+        Route::get('searchOrder', [CommandController::class, 'searchOrder']);
+        Route::get('filterorders', [CommandController::class, 'filterOrders']);
+
         //Partners Management
         Route::apiResource('partners', PartnerController::class);
         Route::get('partners/partnerdetails/{id}', [PartnerController::class, 'showdetails']);
+        Route::get('searchPartner', [PartnerController::class, 'searchPartner']);
+        Route::get('filter', [PartnerController::class, 'filterPartners']);
     });
 });
 

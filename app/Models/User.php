@@ -21,7 +21,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = false;
-    protected $fillable = ['name', 'email', 'phone', 'password', 'role_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'status', 'role_id'];
 
 
     public function commands()
@@ -53,7 +53,6 @@ class User extends Authenticatable
 
 
 
-
     /**
      * The attributes that should be cast.
      *
@@ -67,7 +66,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(verification_code::class);
     }
-    
+
     public function Roles()
     {
         // return $this->hasMany(Roles::class);

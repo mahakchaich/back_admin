@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\BoxResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommandResource extends JsonResource
