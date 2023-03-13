@@ -62,6 +62,9 @@ Route::prefix('admin')->group(function () {
         Route::delete('orders/deleteorder/{id}', [CommandController::class, 'deleteOrder']);
         Route::get('orders/orderdetails', [CommandController::class, 'index']);
         Route::get('orders/orderdetails/{id}', [CommandController::class, 'show']);
+        Route::get('searchOrder', [CommandController::class, 'searchOrder']);
+        Route::get('filterorders', [CommandController::class, 'filterOrders']);
+
         //Partners Management
         Route::apiResource('partners', PartnerController::class);
         Route::get('partners/partnerdetails/{id}', [PartnerController::class, 'showdetails']);

@@ -96,44 +96,6 @@ class CommandController extends Controller
         return new CommandResource($commande);
     }
 
-
-
-
-
-
-
-    // public function index()
-    // {
-    //     return CommandeResource::collection(Commande::with('commandePaniers')->get());
-    // }
-
-    // public function commande($commande_id)
-
-    // {
-    //     // Récupérer une commande et ses détails de panier correspondants
-    //     $commande = Commande::with('commandePaniers')->find($commande_id);
-    //     return response()->json($commande);
-    // }
-
-    // public function commandedetails($commande_id)
-
-    // {
-    //     // Récupérer une commande et ses détails de panier correspondants
-    //     $commande = Commande::with('commandePaniers')->find($commande_id);
-
-    //     if (!$commande) {
-    //         return response()->json(['error' => 'Commande introuvable'], 404);
-    //     }
-    //     // Calculer le total des prix pour chaque panier et mettre à jour le total_prix de la commande
-    //     $total_prix = 0;
-    //     foreach ($commande->commandePaniers as $panier) {
-    //         $total_prix += $panier->prix * $panier->quantite;
-    //     }
-    //     $commande->total_prix = $total_prix;
-    //     $commande->save();
-    //     return response()->json($commande);
-    // }
-
     //Crud
     //get order
     public function getOrder()
@@ -164,5 +126,43 @@ class CommandController extends Controller
         } catch (Exception $e) {
             return response()->json(['message' => 'Une erreur est survenue lors de la suppression de la commande'], 500);
         }
+    }
+
+
+    //Search User
+    public function searchOrder(Request $request)
+    {
+
+        $search = $request->input('search');
+
+
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+        }
+
+        //recherche des patners en fonction du paramètre:
+        $commands = Command::Where('id', 'LIKE', "%{$search}%")
+            ->orWhere('user_id', 'LIKE', "%{$search}%")
+            ->get();
+
+
+        return response()->json($commands);
+    }
+
+
+    //Filtrer commands selon leurs status
+    public function filterOrders(Request $request)
+    {
+        // Récupération du paramètre de catégorie
+        $status = $request->input('status');
+
+
+        if (!$status) {
+            return response()->json(['error' => 'Le paramètre de status est obligatoire.'], 400);
+        }
+
+        $orders = Command::where('status', $status)->get();
+
+        return response()->json($orders);
     }
 }
