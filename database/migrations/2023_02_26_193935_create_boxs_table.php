@@ -26,7 +26,7 @@ class CreateBoxsTable extends Migration
             $table->integer('remaining_quantity')->default(DB::raw('`quantity`'));
             $table->string('image');
             $table->enum('category', ['FRUITS AND VEGETABLES', 'MEAT', 'PASTRY', 'FISH', 'DAIRY PRODUCTS', 'PREPARED DISHES', 'SWEETS', 'DRINKS', 'VEGETARIAN']);
-            $table->enum('status', ['PENDING', 'ACCEPTED', 'REJECTED'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'ACCEPTED', 'REJECTED', 'FINISHED', 'EXPIRED'])->default('PENDING');
             $table->foreignId('partner_id')->constrain('partners');
             $table->timestamps();
         });

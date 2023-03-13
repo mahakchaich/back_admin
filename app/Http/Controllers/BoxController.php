@@ -82,7 +82,6 @@ class   BoxController extends Controller
             $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
             $path = $request->file('image')->storeAs('public/boxs_imgs', $compPic);
             $box->image = $compPic;
-
         }
 
         $box->title = $request->title;
@@ -92,7 +91,7 @@ class   BoxController extends Controller
         $box->startdate = $request->startdate;
         $box->enddate = $request->enddate;
         $box->quantity = $request->quantity;
-        $box->remaining_quantity = $request->remaining_quantity;
+        $box->remaining_quantity = $request->quantity;
         $box->category = $request->category;
         $box->status = $request->status;
         $box->partner_id = $request->partner_id;
@@ -116,6 +115,7 @@ class   BoxController extends Controller
 
     public function update(Request $request, Box $box)
     {
+
         $oldprice = $request->input('oldprice');
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
@@ -142,6 +142,9 @@ class   BoxController extends Controller
             return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
         }
 
+        // Mise à jour de la boîte
+        $box->update($request->all());
+
         $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status') + ['partner_id' => $partnerId]);
         return response($box, Response::HTTP_CREATED);
     }
@@ -157,26 +160,6 @@ class   BoxController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    //Search Panier
-    public function searchBoxs(Request $request)
-    {
-        //récupération du paramètre de recherche:
-        $search = $request->input('search');
-
-        //vérification que le paramètre de recherche est présent:
-        if (!$search) {
-            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
-        }
-
-        //recherche des utilisateurs en fonction du paramètre:
-        $boxs = Box::where('title', 'LIKE', "%{$search}%")
-            ->get();
-
-        //retourne les résultats de recherche:
-        return response()->json($boxs);
-    }
-
-
 
     public function boxdetails($id)
     {
@@ -191,5 +174,27 @@ class   BoxController extends Controller
         }
 
         return new PartnerResource($partner);
+    }
+
+
+    //Search Box
+    public function searchBox(Request $request)
+    {
+
+        $search = $request->input('search');
+
+
+        if (!$search) {
+            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+        }
+
+        //recherche des boxs en fonction du paramètre:
+        $boxs = Box::Where('id', 'LIKE', "%{$search}%")
+            ->orWhere('partner_id', 'LIKE', "%{$search}%")
+            ->orWhere('title', 'LIKE', "%{$search}%")
+            ->get();
+
+
+        return response()->json($boxs);
     }
 }
