@@ -22,7 +22,7 @@ class   BoxController extends Controller
 
 public function store(Request $request)
     {
-        
+            
         $valid = Validator::make($request->all(), [
             "title" => "required",
             "description" => "required",
@@ -46,7 +46,7 @@ public function store(Request $request)
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
-        $partnerId = $request->input('partner_id');
+        // $partnerId = $request->input('partner_id');
 
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
@@ -82,7 +82,6 @@ public function store(Request $request)
             $compPic = str_replace(' ','_',$fileNameOnly).'-'. rand() . '_' . time() . '.' . $extention ; // create new file name 
             $path = $request->file('image')->storeAs('public/boxs_imgs',$compPic);
             $box->image = $compPic;
-            // dd($box);
         }
 
         $box->title = $request->title;
@@ -99,9 +98,6 @@ public function store(Request $request)
         $box->save();
 
         // Vérifie si le partenaire associé à l'id existe
-        if (!DB::table('partners')->where('id', $partnerId)->exists()) {
-            return response(['error' => 'Le partenaire spécifié n\'existe pas.'], Response::HTTP_BAD_REQUEST);
-        }
         return response()->json([
             'message' => 'created successfully',
             "box_info" => $box,
