@@ -222,37 +222,16 @@ class UserController extends Controller
     //Search User
     public function searchUser(Request $request)
     {
-        //return response()->json($request);
-
         $search = $request->has('search') ? $request->input('search') : "";
         $status = $request->has('status') ? $request->input('status') : "";
         //recherche des patners en fonction du paramètre:
-        $users = User::users()->where('status', 'like', '%' . $status . '%')
+        $users = User::users()->where('status', 'like', $status ."%")
             ->where(function ($q) use ($search) {
 
                 $q->Where('email', 'LIKE', "%{$search}%")
                     ->orWhere('phone', 'LIKE', "%{$search}%");
             })
             ->get();
-
-
-        return response()->json($users);
-    }
-
-    //Filtrer users selon leurs status
-    public function filterUsers(Request $request)
-    {
-        // Récupération du paramètre de catégorie
-        $status = $request->input('status');
-
-
-        if (!$status) {
-            return response()->json(['error' => 'Le paramètre de status est obligatoire.'], 400);
-        }
-
-        // Recherche des partenaires en fonction de la catégorie
-        $users = User::users()->where('status', $status)->get();
-
         return response()->json($users);
     }
 }
