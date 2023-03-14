@@ -178,25 +178,22 @@ class   BoxController extends Controller
 
 
     //Search Box
-    public function searchBox(Request $request)
-    {
-
-        $search = $request->input('search');
-
-
-        if (!$search) {
-            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
+ 
+        public function searchBox(Request $request)
+        {
+            $search = $request->has('search') ? $request->input('search') : "";
+            $status = $request->has('status') ? $request->input('status') : "";
+            //recherche des patners en fonction du paramètre:
+            $boxs = Box::where('status', 'like', "%" .$status ."%")
+                ->where(function ($q) use ($search) {
+    
+                    $q->Where('partner_id', 'LIKE', "%{$search}%")
+                    ->orWhere('title', 'LIKE', "%{$search}%")
+                    ->orWhere('id', 'LIKE', "%{$search}%");
+                })
+                ->get();
+            return response()->json($boxs);
         }
-
-        //recherche des boxs en fonction du paramètre:
-        $boxs = Box::Where('id', 'LIKE', "%{$search}%")
-            ->orWhere('partner_id', 'LIKE', "%{$search}%")
-            ->orWhere('title', 'LIKE', "%{$search}%")
-            ->get();
-
-
-        return response()->json($boxs);
-    }
 
     //Filtrer boxs selon leurs status
     public function filterBoxs(Request $request)
