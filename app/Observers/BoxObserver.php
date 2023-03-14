@@ -22,11 +22,24 @@ class BoxObserver
      * @param  \App\Models\Box  $box
      * @return void
      */
+    // public function updated(Box $box)
+    // {
+    //     $box->remaining_quantity <= 0 ? $box->status = 'FINISHED' : $box->status = 'PENDING';
+    //     $box->save();
+    // }
+
     public function updated(Box $box)
     {
-        $box->remaining_quantity <= 0 ? $box->status = 'FINISHED' : $box->status = 'PENDING';
+        if ($box->remaining_quantity <= 0) {
+            $box->status = 'FINISHED';
+        } elseif ($box->enddate <= now()) {
+            $box->status = 'EXPIRED';
+        } else {
+            $box->status = 'PENDING';
+        }
         $box->save();
     }
+
 
     /**
      * Handle the Box "deleted" event.

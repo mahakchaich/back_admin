@@ -94,16 +94,16 @@ class PartnerController extends Controller
     public function searchPartner(Request $request)
     {
 
-        $search = $request->input('search');
-
-
-        if (!$search) {
-            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
-        }
+        $search = $request->has('search') ? $request->input('search') : "";
+        $category = $request->has('category') ? $request->input('category') : "";
 
         //recherche des patners en fonction du paramètre:
-        $partners = Partner::Where('email', 'LIKE', "%{$search}%")
-            ->orWhere('phone', 'LIKE', "%{$search}%")
+        $partners = Partner::where('category', 'like', '%' . $category . '%')
+            ->where(function ($q) use ($search) {
+
+                $q->Where('email', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%");
+            })
             ->get();
 
 
