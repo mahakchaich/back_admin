@@ -6,10 +6,16 @@ use Carbon\Carbon;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use App\Http\Resources\PartnerResource;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+
+use function PHPUnit\Framework\isEmpty;
 
 class PartnerController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -24,6 +30,25 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
+        //valdiate
+        $rules = [
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users|unique:partners',
+            'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+            'password' => 'required|string|min:6',
+            'image' => 'required',
+            'category' => 'required',
+            'openingtime' => 'required',
+            'closingtime' => 'required',
+            'roleId' => 'exists:roles,id'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                $validator->errors(),
+                "status" => 400
+            ]);
+        }
         $data = $request->only('name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime');
 
         // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
@@ -31,8 +56,12 @@ class PartnerController extends Controller
             return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
         }
 
-        $partner = Partner::partners()->create($data);
-        return response($partner, Response::HTTP_CREATED);
+
+        Partner::partners()->create($data);
+        return response()->json([
+            'message' => "successfully registered",
+            "status" => Response::HTTP_CREATED
+        ]);
     }
 
 
