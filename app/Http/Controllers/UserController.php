@@ -222,17 +222,17 @@ class UserController extends Controller
     //Search User
     public function searchUser(Request $request)
     {
+        //return response()->json($request);
 
-        $search = $request->input('search');
-
-
-        if (!$search) {
-            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
-        }
-
+        $search = $request->has('search') ? $request->input('search') : "";
+        $status = $request->has('status') ? $request->input('status') : "";
         //recherche des patners en fonction du paramètre:
-        $users = User::users()->Where('email', 'LIKE', "%{$search}%")
-            ->orWhere('phone', 'LIKE', "%{$search}%")
+        $users = User::users()->where('status', 'like', '%' . $status . '%')
+            ->where(function ($q) use ($search) {
+
+                $q->Where('email', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%");
+            })
             ->get();
 
 

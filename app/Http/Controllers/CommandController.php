@@ -20,7 +20,7 @@ class CommandController extends Controller
         $quantity = $request->input('quantity');
         $status = $request->input('status');
 
-        // Récupérer les informations du box
+        // Récupérer les informations du boxS
         $box = Box::find($boxId);
 
         // Vérifier si le box est disponible

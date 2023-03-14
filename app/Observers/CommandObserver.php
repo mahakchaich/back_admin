@@ -23,6 +23,7 @@ class CommandObserver
         foreach ($boxs as $box) {
             $cmd_qtn = $box->box_command->sum('quantity');
             $box->substruct($cmd_qtn, 'remaining_quantity');
+            $box->save();
         }
     }
 

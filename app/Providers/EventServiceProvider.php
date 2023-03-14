@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Box;
 use App\Models\Command;
-use App\Observers\CommandObserver;
 
+use App\Observers\BoxObserver;
+use App\Observers\CommandObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -31,5 +33,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Command::observe(CommandObserver::class);
+        Box::observe(BoxObserver::class);
     }
 }
