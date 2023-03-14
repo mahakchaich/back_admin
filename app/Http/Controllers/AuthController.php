@@ -28,7 +28,7 @@ class AuthController extends Controller
         //valdiate
         $rules = [
             'name' => 'required|string',
-            'email' => 'required|string|unique:users',
+            'email' => 'required|string|unique:users|unique:partners',
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
             'roleId' => 'exists:roles,id'
