@@ -239,6 +239,8 @@ class UserController extends Controller
         return response()->json($users);
     }
 
+
+
     //Filtrer users selon leurs status
     public function filterUsers(Request $request)
     {
