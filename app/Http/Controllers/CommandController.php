@@ -133,21 +133,25 @@ class CommandController extends Controller
     public function searchOrder(Request $request)
     {
 
-        $search = $request->input('search');
-
+        $search = $request->has('search') ? $request->input('search') : "";
+        $status = $request->has('status') ? $request->input('status') : "";
 
         if (!$search) {
             return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
         }
 
         //recherche des patners en fonction du paramètre:
-        $commands = Command::Where('id', 'LIKE', "%{$search}%")
-            ->orWhere('user_id', 'LIKE', "%{$search}%")
+        $commands = Command::Where('status', 'like', '%' . $status . '%')
+            ->where(function ($q) use ($search) {
+                $q->Where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('user_id', 'LIKE', "%{$search}%");
+            })
             ->get();
 
 
         return response()->json($commands);
     }
+
 
 
     //Filtrer commands selon leurs status

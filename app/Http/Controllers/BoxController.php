@@ -197,4 +197,20 @@ class   BoxController extends Controller
 
         return response()->json($boxs);
     }
+
+    //Filtrer boxs selon leurs status
+    public function filterBoxs(Request $request)
+    {
+        // Récupération du paramètre de catégorie
+        $status = $request->input('status');
+
+
+        if (!$status) {
+            return response()->json(['error' => 'Le paramètre de status est obligatoire.'], 400);
+        }
+
+        $boxs = Box::where('status', $status)->get();
+
+        return response()->json($boxs);
+    }
 }

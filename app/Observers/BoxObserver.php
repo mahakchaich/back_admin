@@ -32,7 +32,7 @@ class BoxObserver
     {
         if ($box->remaining_quantity <= 0) {
             $box->status = 'FINISHED';
-        } elseif ($box->enddate <= now()) {
+        } elseif ($box->enddate >= now()) {
             $box->status = 'EXPIRED';
         } else {
             $box->status = 'PENDING';
