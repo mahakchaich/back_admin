@@ -73,6 +73,7 @@ class   BoxController extends Controller
                 ]);
         }
         $box = new Box;
+        
         // upload image section 
 
         if ($request->hasFile('image')) { // if file existe in the url with image type

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\PartnerResource;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,6 +39,7 @@ class PartnerController extends Controller
             'password' => 'required|string|min:6',
             'image' => 'required',
             'category' => 'required',
+            'description' => 'required',
             'openingtime' => 'required',
             'closingtime' => 'required',
             'roleId' => 'exists:roles,id'
@@ -56,8 +58,29 @@ class PartnerController extends Controller
             return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
         }
 
+        $partner = new Partner;
+        // upload image section 
 
-        Partner::partners()->create($data);
+        if ($request->hasFile('image')) { // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName();
+            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+            $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
+            $partner->image = $compPic;
+        }
+        $partner->name = $request->name;
+        $partner->description = $request->description;
+        $partner->email = $request->email;
+        $partner->phone = $request->phone;
+        $partner->password = Hash::make($request->password);
+        $partner->category = $request->category;
+        $partner->openingtime = $request->openingtime;
+        $partner->closingtime = $request->closingtime;
+        $partner->role_id = $request->roleId;
+        $partner->save();
+
+        // Partner::partners()->create($data);
         return response()->json([
             'message' => "successfully registered",
             "status" => Response::HTTP_CREATED
