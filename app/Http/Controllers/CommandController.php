@@ -10,36 +10,33 @@ use App\Models\BoxCommand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommandResource;
+use Illuminate\Support\Facades\Validator;
 
 class CommandController extends Controller
 {
     public function addOrder(Request $request)
     {
+        $valid = Validator::make($request->all(), [
+            "user_id" => "required|exists:users,id",
+            "box_id" => "required|exists:boxs,id",
+            "quantity" => "required|integer|lt:{remaining_quantity}",
+            "status" => "required",
+        ]);
+        if ($valid->fails()) {
+            return response()->json([
+                "message" => $valid->errors(),
+                "status" => 400
+            ]);
+        }
         $userId = $request->input('user_id');
         $boxId = $request->input('box_id');
         $quantity = $request->input('quantity');
         $status = $request->input('status');
 
-        // Récupérer les informations du boxS
         $box = Box::find($boxId);
-
-        // Vérifier si le box est disponible
-        if ($box->remaining_quantity <= 0) {
-            return response()->json(['message' => 'Le panier n\'est plus disponible'], 400);
-        }
-
-        // Vérifier le statut du panier
-        if ($box->status != 'ACCEPTED') {
-            return response()->json(['message' => 'Le panier doit avoir un statut "ACCEPTED" pour pouvoir être commandé'], 400);
-        }
 
         // Calculer le prix en fonction de la quantité et du nouveau prix
         $price = $quantity * $box->newprice;
-
-        // Vérifier la quantité disponible dans le panier
-        if ($quantity > $box->remaining_quantity) {
-            return response()->json(['message' => 'Quantité demandée supérieure à la quantité restante dans le panier'], 400);
-        }
 
         // Créer la commande
         $command = new Command;
@@ -135,10 +132,6 @@ class CommandController extends Controller
 
         $search = $request->has('search') ? $request->input('search') : "";
         $status = $request->has('status') ? $request->input('status') : "";
-
-        if (!$search) {
-            return response()->json(['error' => 'Le paramètre de recherche est obligatoire.'], 400);
-        }
 
         //recherche des patners en fonction du paramètre:
         $commands = Command::Where('status', 'like', '%' . $status . '%')
