@@ -225,13 +225,14 @@ class UserController extends Controller
         $search = $request->has('search') ? $request->input('search') : "";
         $status = $request->has('status') ? $request->input('status') : "";
         //recherche des patners en fonction du paramètre:
-        $users = User::users()->where('status', 'like', $status ."%")
+        $users = User::users()->where('status', 'like', $status . "%")
             ->where(function ($q) use ($search) {
 
                 $q->Where('email', 'LIKE', "%{$search}%")
                     ->orWhere('phone', 'LIKE', "%{$search}%");
             })
             ->get();
+
         return response()->json($users);
     }
 }
