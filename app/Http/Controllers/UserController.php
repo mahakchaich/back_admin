@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
 use App\Models\verification_code;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Resources\CommandResource;
 
+use App\Http\Resources\CommandResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,10 +26,21 @@ class UserController extends Controller
         return User::users()->get();
     }
 
-
     public function store(Request $request)
     {
-        $user = User::users()->create($request->only('name', 'email', 'phone', 'password', 'status'));
+        // récupérer ou créer le rôle "User"
+        $userRole = Roles::firstOrCreate(['type' => 'User']);
+
+        // créer un nouvel utilisateur avec le rôle "User"
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->phone = $request->input('phone');
+        $user->password = Hash::make($request->input('password'));
+        $user->status = $request->input('status');
+        $user->role_id = $userRole->id; // remplir le champ role_id avec l'ID du rôle "User"
+        $user->save(); // sauvegarder le nouvel utilisateur dans la base de données
+
         return response($user, Response::HTTP_CREATED);
     }
 

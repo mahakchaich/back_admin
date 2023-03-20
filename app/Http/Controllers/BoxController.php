@@ -73,7 +73,7 @@ class   BoxController extends Controller
                 ]);
         }
         $box = new Box;
-        
+
         // upload image section 
 
         if ($request->hasFile('image')) { // if file existe in the url with image type
@@ -146,6 +146,19 @@ class   BoxController extends Controller
         // Mise à jour de la boîte
         $box->update($request->all());
 
+        // Mettre à jour la quantité restante
+        $quantity = $request->input('quantity');
+        $remainingQuantity = $request->input('remaining_quantity');
+        if ($quantity !== null && $remainingQuantity === null) {
+            $box->remaining_quantity = $quantity;
+        } elseif ($quantity !== null && $remainingQuantity !== null && $remainingQuantity <= $quantity) {
+            $box->remaining_quantity = $remainingQuantity;
+        } else {
+            return response(['error' => 'La quantité restante doit être inférieure ou égale à la quantité.'], Response::HTTP_BAD_REQUEST);
+        }
+        $box->save();
+
+
         $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status') + ['partner_id' => $partnerId]);
         return response($box, Response::HTTP_CREATED);
     }
@@ -179,22 +192,22 @@ class   BoxController extends Controller
 
 
     //Search Box
- 
-        public function searchBox(Request $request)
-        {
-            $search = $request->has('search') ? $request->input('search') : "";
-            $status = $request->has('status') ? $request->input('status') : "";
-            //recherche des patners en fonction du paramètre:
-            $boxs = Box::where('status', 'like', "%" .$status ."%")
-                ->where(function ($q) use ($search) {
-    
-                    $q->Where('partner_id', 'LIKE', "%{$search}%")
+
+    public function searchBox(Request $request)
+    {
+        $search = $request->has('search') ? $request->input('search') : "";
+        $status = $request->has('status') ? $request->input('status') : "";
+        //recherche des patners en fonction du paramètre:
+        $boxs = Box::where('status', 'like', "%" . $status . "%")
+            ->where(function ($q) use ($search) {
+
+                $q->Where('partner_id', 'LIKE', "%{$search}%")
                     ->orWhere('title', 'LIKE', "%{$search}%")
                     ->orWhere('id', 'LIKE', "%{$search}%");
-                })
-                ->get();
-            return response()->json($boxs);
-        }
+            })
+            ->get();
+        return response()->json($boxs);
+    }
 
     //Filtrer boxs selon leurs status
     public function filterBoxs(Request $request)

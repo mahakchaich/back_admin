@@ -16,6 +16,10 @@ class CommandController extends Controller
 {
     public function addOrder(Request $request)
     {
+        $boxId = $request->input('box_id');
+        $box = Box::find($boxId);
+        $remainingQuantity = $box->remaining_quantity;
+
         $valid = Validator::make($request->all(), [
             "user_id" => "required|exists:users,id",
             "box_id" => "required|exists:boxs,id",
@@ -33,18 +37,17 @@ class CommandController extends Controller
             ],
             "status" => "required",
         ]);
+
         if ($valid->fails()) {
             return response()->json([
                 "message" => $valid->errors(),
                 "status" => 400
             ]);
         }
+
         $userId = $request->input('user_id');
-        $boxId = $request->input('box_id');
         $quantity = $request->input('quantity');
         $status = $request->input('status');
-
-        $box = Box::find($boxId);
 
         // Calculer le prix en fonction de la quantité et du nouveau prix
         $price = $quantity * $box->newprice;
@@ -71,6 +74,7 @@ class CommandController extends Controller
             'message' => 'Commande créée avec succès',
             'status'=>'200'
     ]);
+
     }
 
 
