@@ -19,7 +19,18 @@ class CommandController extends Controller
         $valid = Validator::make($request->all(), [
             "user_id" => "required|exists:users,id",
             "box_id" => "required|exists:boxs,id",
-            "quantity" => "required|integer|lt:{remaining_quantity}",
+            'quantity' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+                    $remainingQuantity = Box::where('id', $request->input('box_id'))
+                        ->value('remaining_quantity');
+        
+                    if ($value > $remainingQuantity) {
+                        $fail($attribute.' must be less than '.$remainingQuantity);
+                    }
+                },
+            ],
             "status" => "required",
         ]);
         if ($valid->fails()) {
@@ -56,7 +67,10 @@ class CommandController extends Controller
         $box->remaining_quantity -= $quantity;
         $box->save();
 
-        return response()->json(['message' => 'Commande créée avec succès'], 201);
+        return response()->json([
+            'message' => 'Commande créée avec succès',
+            'status'=>'200'
+    ]);
     }
 
 
