@@ -172,13 +172,13 @@ class PartnerController extends Controller
     }
 
 
-    public function updatePartner(Request $request, $id)
+    public function updatePartner($id,Request $request)
     {
         try {
 
-            $user = User::findOrFail($id);
-            // OR
-            $partner = Partner::findOrFail($id);
+            // $user = User::findOrFail($id);
+            // // OR
+            // $partner = Partner::findOrFail($id);
 
             // Validate the request data
             $validator = Validator::make($request->all(), [
@@ -186,8 +186,8 @@ class PartnerController extends Controller
                 'email' => [
                     'required',
                     'string',
-                    Rule::unique('users')->ignore($user->id),
-                    Rule::unique('partners')->ignore($partner->id),
+                    // Rule::unique('users')->ignore($user->id),
+                    // Rule::unique('partners')->ignore($partner->id),
                 ],
                 'phone' => ['required', 'regex:/^[0-9]{8}$/'],
                 'password' => 'required|string|min:6',
@@ -218,11 +218,10 @@ class PartnerController extends Controller
             return response()->json(['message' => 'partenaire introuvable'], 404);
         }
 
-
         // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
-        // if (strtotime($request->input('openingtime')) >= strtotime($request->input('closingtime'))) {
-        //     return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
-        // }
+        if (strtotime($request->input('openingtime')) >= strtotime($request->input('closingtime'))) {
+            return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
+        }
 
         // Update the resource with the new values from the request
 
@@ -244,19 +243,6 @@ class PartnerController extends Controller
         $partner->closingtime = $request->closingtime;
         $partner->save();
 
-        // $resource->name = $request->input('name');
-        // $resource->email = $request->input('email');
-        // $resource->phone = $request->input('phone');
-        // $resource->password = Hash::make($request->input('password'));
-        // $resource->image = $request->input('image');
-        // $resource->category = $request->input('category');
-        // $resource->description = $request->input('description');
-        // $resource->save();
-
-        // $partner->update($data);
-        // return response($partner, 200);
-        // return response($request->all());
-        // Return a success response with the updated resource
         return response()->json([
             'message' => 'Resource updated successfully',
             'resource' => $partner,
