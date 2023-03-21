@@ -17,8 +17,6 @@ class CommandController extends Controller
     public function addOrder(Request $request)
     {
         $boxId = $request->input('box_id');
-        $box = Box::find($boxId);
-        $remainingQuantity = $box->remaining_quantity;
 
         $valid = Validator::make($request->all(), [
             "user_id" => "required|exists:users,id",
@@ -29,9 +27,8 @@ class CommandController extends Controller
                 function ($attribute, $value, $fail) use ($request) {
                     $remainingQuantity = Box::where('id', $request->input('box_id'))
                         ->value('remaining_quantity');
-        
                     if ($value > $remainingQuantity) {
-                        $fail($attribute.' must be less than '.$remainingQuantity);
+                        $fail($attribute . ' must be less than ' . $remainingQuantity);
                     }
                 },
             ],
@@ -49,32 +46,33 @@ class CommandController extends Controller
         $quantity = $request->input('quantity');
         $status = $request->input('status');
 
+        // create new instances
+        $box = Box::find($boxId);
+        $command = new Command;
+        $boxCommand = new BoxCommand();
         // Calculer le prix en fonction de la quantité et du nouveau prix
         $price = $quantity * $box->newprice;
-
         // Créer la commande
-        $command = new Command;
         $command->user_id = $userId;
         $command->price = $price;
         $command->status = $status;
         $command->save();
-
+        
+        
         // Ajouter le panier à la commande
-        $boxCommand = new BoxCommand();
         $boxCommand->box_id = $boxId;
         $boxCommand->command_id = $command->id;
         $boxCommand->quantity = $quantity;
         $boxCommand->save();
-
+        
         // Mettre à jour la quantité restante du panier
-        $box->remaining_quantity -= $quantity;
-        $box->save();
+        $qt = $box->remaining_quantity - $quantity;
+        box::where('id', $boxId)->update(['remaining_quantity' => $qt]);
 
         return response()->json([
             'message' => 'Commande créée avec succès',
-            'status'=>'200'
-    ]);
-
+            'status' => '200'
+        ]);
     }
 
 
