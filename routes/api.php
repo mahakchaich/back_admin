@@ -72,6 +72,7 @@ Route::prefix('admin')->group(function () {
         Route::get('partners/partnerdetails/{id}', [PartnerController::class, 'showdetails']);
         Route::get('searchPartner', [PartnerController::class, 'searchPartner']);
         Route::get('filter', [PartnerController::class, 'filterPartners']);
+        Route::post('update/{id}', [PartnerController::class, 'updatePartner']);
     });
 });
 

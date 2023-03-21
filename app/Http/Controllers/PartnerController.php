@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
-use function PHPUnit\Framework\isEmpty;
+// use function PHPUnit\Framework\isEmpty;
 
 class PartnerController extends Controller
 {
@@ -101,20 +101,51 @@ class PartnerController extends Controller
 
     public function update(Request $request, $id)
     {
-        $partner = Partner::partners()->find($id);
-        if (is_null($partner)) {
-            return response()->json(['message' => 'partenaire introuvable'], 404);
-        }
 
-        $data = $request->only('name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime');
+        // Find the resource to be updated
+        $resource = Partner::findOrFail($id);
+
+        // Update the resource with the new values from the request
+        $resource->name = $request->input('name');
+        $resource->email = $request->input('email');
+        $resource->phone = $request->input('phone');
+        // // $resource->password = $request->input('password');
+        // $resource->image = $request->input('image');
+        // $resource->category = $request->input('category');
+        // $resource->description = $request->input('description');
+        // $resource->save();
+
+        // $partner = Partner::partners()->find($id);
+        // if (is_null($partner)) {
+        //     return response()->json(['message' => 'partenaire introuvable'], 404);
+        // }
+
+        // $data = $request->only(
+        //     'name',
+        //     'description',
+        //     'email',
+        //     'phone',
+        //     'password',
+        //     'image',
+        //     'category',
+        //     'openingtime',
+        //     'closingtime'
+        // );
 
         // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
-        if (strtotime($data['openingtime']) >= strtotime($data['closingtime'])) {
-            return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
-        }
+        // if (strtotime($data['openingtime']) >= strtotime($data['closingtime'])) {
+        //     return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
+        // }
 
-        $partner->update($data);
-        return response($partner, 200);
+        // $partner->update($data);
+        // return response($partner, 200);
+        // return response($request->all());
+        // Return a success response with the updated resource
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'resource' => $resource,
+            'status' => 200
+        ]);
     }
 
 
@@ -178,5 +209,87 @@ class PartnerController extends Controller
         $partners = Partner::partners()->where('category', $category)->get();
 
         return response()->json($partners);
+    }
+    public function updatePartner(Request $request, $id)
+    {
+        try {
+
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string',
+                'email' => 'required|string|unique:users|unique:partners',
+                'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+                'password' => 'required|string|min:6',
+                'image' => 'required',
+                'category' => 'required',
+                'description' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                // If validation fails, return an error response
+                return response()->json([
+                    'errors' => $validator->errors(),
+                    'status' => 400
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => 'false',
+                "message" => $e->getMessage(),
+                "data" => [],
+                500
+            ]);
+        }
+        // Find the resource to be updated
+        $partner = Partner::findOrFail($id);
+
+        if (is_null($partner)) {
+            return response()->json(['message' => 'partenaire introuvable'], 404);
+        }
+
+        
+        // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
+        // if (strtotime($request->input('openingtime')) >= strtotime($request->input('closingtime'))) {
+        //     return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
+        // }
+        
+        // Update the resource with the new values from the request
+
+        if ($request->hasFile('image')) { // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName();
+            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+            $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
+            $partner->image = $compPic;
+        }
+        $partner->name = $request->name;
+        $partner->description = $request->description;
+        $partner->email = $request->email;
+        $partner->phone = $request->phone;
+        $partner->password = Hash::make($request->password);
+        $partner->category = $request->category;
+        $partner->openingtime = $request->openingtime;
+        $partner->closingtime = $request->closingtime;
+        $partner->save();
+
+        // $resource->name = $request->input('name');
+        // $resource->email = $request->input('email');
+        // $resource->phone = $request->input('phone');
+        // $resource->password = Hash::make($request->input('password'));
+        // $resource->image = $request->input('image');
+        // $resource->category = $request->input('category');
+        // $resource->description = $request->input('description');
+        // $resource->save();
+
+        // $partner->update($data);
+        // return response($partner, 200);
+        // return response($request->all());
+        // Return a success response with the updated resource
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'resource' => $partner,
+            'status' => 200
+        ]);
     }
 }
