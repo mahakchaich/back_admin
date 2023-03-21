@@ -117,9 +117,6 @@ class PartnerController extends Controller
             return response()->json(['message' => 'partner introuvable'], 404);
         }
 
-        // Supprimer toutes les boxs liées à le partner
-        // $partner->boxs()->delete();
-
         // Supprimer l'utilisateur
         $partner->delete();
 
@@ -176,18 +173,12 @@ class PartnerController extends Controller
     {
         try {
 
-            // $user = User::findOrFail($id);
-            // // OR
-            // $partner = Partner::findOrFail($id);
-
             // Validate the request data
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
                 'email' => [
                     'required',
                     'string',
-                    // Rule::unique('users')->ignore($user->id),
-                    // Rule::unique('partners')->ignore($partner->id),
                 ],
                 'phone' => ['required', 'regex:/^[0-9]{8}$/'],
                 'password' => 'required|string|min:6',
