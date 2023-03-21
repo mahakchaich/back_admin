@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 
 use App\Models\Box;
+use App\Models\User;
 use App\Models\Command;
 use App\Models\BoxCommand;
 use Illuminate\Http\Request;
@@ -46,6 +47,25 @@ class CommandController extends Controller
         $quantity = $request->input('quantity');
         $status = $request->input('status');
 
+
+        // check if user status is active and box status is accepted
+        $user = User::where('id', $userId)->where('status', 'ACTIVE')->first();
+        $box = Box::where('id', $boxId)->where('status', 'ACCEPTED')->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found or inactive',
+                'status' => '400'
+            ]);
+        }
+
+        if (!$box) {
+            return response()->json([
+                'message' => 'Box not found or not accepted',
+                'status' => '400'
+            ]);
+        }
+
         // create new instances
         $box = Box::find($boxId);
         $command = new Command;
@@ -57,14 +77,14 @@ class CommandController extends Controller
         $command->price = $price;
         $command->status = $status;
         $command->save();
-        
-        
+
+
         // Ajouter le panier à la commande
         $boxCommand->box_id = $boxId;
         $boxCommand->command_id = $command->id;
         $boxCommand->quantity = $quantity;
         $boxCommand->save();
-        
+
         // Mettre à jour la quantité restante du panier
         $qt = $box->remaining_quantity - $quantity;
         box::where('id', $boxId)->update(['remaining_quantity' => $qt]);
