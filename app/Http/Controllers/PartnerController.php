@@ -59,8 +59,8 @@ class PartnerController extends Controller
         }
 
         $partner = new Partner;
+        
         // upload image section 
-
         if ($request->hasFile('image')) { // if file existe in the url with image type
             $completeFileName = $request->file('image')->getClientOriginalName();
             $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
@@ -80,7 +80,6 @@ class PartnerController extends Controller
         $partner->role_id = $request->roleId;
         $partner->save();
 
-        // Partner::partners()->create($data);
         return response()->json([
             'message' => "successfully registered",
             "status" => Response::HTTP_CREATED
@@ -99,54 +98,7 @@ class PartnerController extends Controller
     }
 
 
-    public function update(Request $request, $id)
-    {
-
-        // Find the resource to be updated
-        $resource = Partner::findOrFail($id);
-
-        // Update the resource with the new values from the request
-        $resource->name = $request->input('name');
-        $resource->email = $request->input('email');
-        $resource->phone = $request->input('phone');
-        // // $resource->password = $request->input('password');
-        // $resource->image = $request->input('image');
-        // $resource->category = $request->input('category');
-        // $resource->description = $request->input('description');
-        // $resource->save();
-
-        // $partner = Partner::partners()->find($id);
-        // if (is_null($partner)) {
-        //     return response()->json(['message' => 'partenaire introuvable'], 404);
-        // }
-
-        // $data = $request->only(
-        //     'name',
-        //     'description',
-        //     'email',
-        //     'phone',
-        //     'password',
-        //     'image',
-        //     'category',
-        //     'openingtime',
-        //     'closingtime'
-        // );
-
-        // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
-        // if (strtotime($data['openingtime']) >= strtotime($data['closingtime'])) {
-        //     return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
-        // }
-
-        // $partner->update($data);
-        // return response($partner, 200);
-        // return response($request->all());
-        // Return a success response with the updated resource
-        return response()->json([
-            'message' => 'Resource updated successfully',
-            'resource' => $resource,
-            'status' => 200
-        ]);
-    }
+    public function update(Request $request, $id){}
 
 
 
