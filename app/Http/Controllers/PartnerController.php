@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Partner;
 use Illuminate\Http\Request;
-use App\Http\Resources\PartnerResource;
-use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,12 +23,19 @@ class PartnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index()
+    // {
+
+    //     return Partner::partners()->get();
+    // }
+
     //trouver tout les partnaires
     public function index()
     {
-
-        return Partner::partners()->get();
+        $partners = Partner::all();
+        return response()->json($partners, 200);
     }
+
 
     public function store(Request $request)
     {
@@ -162,14 +170,25 @@ class PartnerController extends Controller
 
         return response()->json($partners);
     }
+
+
     public function updatePartner(Request $request, $id)
     {
         try {
 
+            $user = User::findOrFail($id);
+            // OR
+            $partner = Partner::findOrFail($id);
+
             // Validate the request data
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
-                'email' => 'required|string|unique:users|unique:partners',
+                'email' => [
+                    'required',
+                    'string',
+                    Rule::unique('users')->ignore($user->id),
+                    Rule::unique('partners')->ignore($partner->id),
+                ],
                 'phone' => ['required', 'regex:/^[0-9]{8}$/'],
                 'password' => 'required|string|min:6',
                 'image' => 'required',
@@ -199,12 +218,12 @@ class PartnerController extends Controller
             return response()->json(['message' => 'partenaire introuvable'], 404);
         }
 
-        
+
         // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
         // if (strtotime($request->input('openingtime')) >= strtotime($request->input('closingtime'))) {
         //     return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
         // }
-        
+
         // Update the resource with the new values from the request
 
         if ($request->hasFile('image')) { // if file existe in the url with image type
