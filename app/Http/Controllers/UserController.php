@@ -19,36 +19,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
-    //trouver tout les utilisateurs
-    // public function index()
-    // {
-
-    //     return User::users()->get();
-    // }
-
     public function index()
     {
         $users = User::all();
         return response()->json($users, 200);
     }
-
-    // public function store(Request $request)
-    // {
-    //     // récupérer ou créer le rôle "User"
-    //     $userRole = Roles::firstOrCreate(['type' => 'User']);
-
-    //     // créer un nouvel utilisateur avec le rôle "User"
-    //     $user = new User();
-    //     $user->name = $request->input('name');
-    //     $user->email = $request->input('email');
-    //     $user->phone = $request->input('phone');
-    //     $user->password = Hash::make($request->input('password'));
-    //     $user->status = $request->input('status');
-    //     $user->role_id = $userRole->id; // remplir le champ role_id avec l'ID du rôle "User"
-    //     $user->save(); // sauvegarder le nouvel utilisateur dans la base de données
-
-    //     return response($user, Response::HTTP_CREATED);
-    // }
 
     public function store(Request $request)
     {
