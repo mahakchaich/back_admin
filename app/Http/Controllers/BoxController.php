@@ -224,4 +224,98 @@ class   BoxController extends Controller
 
         return response()->json($boxs);
     }
+
+    public function updateBox($id,Request $request)
+    {
+        try {
+
+            // Validate the request data
+            $valid = Validator::make($request->all(), [
+                "title" => "required",
+                "description" => "required",
+                "quantity" => "required",
+                "image" => "required",
+                "oldprice" => "required",
+                "newprice" => "required",
+                "startdate" => "required",
+                "enddate" => "required",
+                "category" => "required",
+                "status" => "required",
+                "partner_id" => "required|exists:partners,id",
+            ]);
+
+            if ($valid->fails()) {
+                // If validation fails, return an error response
+                return response()->json([
+                    'errors' => $valid->errors(),
+                    'status' => 400
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => 'false',
+                "message" => $e->getMessage(),
+                "data" => [],
+                500
+            ]);
+        }
+        // Find the resource to be updated
+        $box = Box::findOrFail($id);
+
+        if (is_null($box)) {
+            return response()->json(['message' => 'partenaire introuvable'], 404);
+        }
+
+        $oldprice = $request->input('oldprice');
+        $newprice = $request->input('newprice');
+        $startdate = $request->input('startdate');
+        $enddate = $request->input('enddate');
+        $partnerId = $request->input('partner_id');
+
+           // Vérifie si l'ancien prix est superieur au nouveau prix
+           if ($oldprice <= $newprice) {
+            return response(['error' => 'L\'ancien prix de vente doit être supérieur au prix nouveau prix.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérifie si la date de début est postérieure ou égale à la date actuelle
+        if (strtotime($startdate) < time()) {
+            return response(['error' => 'La date de début doit être postérieure ou égale à la date actuelle.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérifie si la date de début est antérieure à la date de fin
+        if (strtotime($startdate) >= strtotime($enddate)) {
+            return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
+        }
+        // Update the resource with the new values from the request
+// Update the resource with the new values from the request
+$boxData = [
+    'title' => $request->title,
+    'description' => $request->description,
+    'quantity' => $request->quantity,
+    'oldprice' => $request->oldprice,
+    'newprice' => $request->newprice,
+    'startdate' => $request->startdate,
+    'enddate' => $request->enddate,
+    'category' => $request->category,
+    'status' => $request->status,
+    'partner_id' => $request->partner_id,
+];
+        if ($request->hasFile('image')) { // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName();
+            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+            $path = $request->file('image')->storeAs('public/boxs_imgs', $compPic);
+            // $box->image = $compPic;
+            $boxData['image'] = $compPic;
+        }
+  
+        Box::where('id', $id)->update($boxData);
+        $box = Box::find($id);
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'resource' => $boxData,
+            'status' => 200
+        ]);
+    }
 }

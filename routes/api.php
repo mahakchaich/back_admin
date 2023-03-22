@@ -47,6 +47,7 @@ Route::prefix('admin')->group(function () {
         Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']);
         Route::get('searchBox', [BoxController::class, 'searchBox']);
         Route::get('filterboxs', [BoxController::class, 'filterBoxs']);
+        Route::post('updateBox/{id}', [BoxController::class, 'updateBox']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
