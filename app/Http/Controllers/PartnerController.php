@@ -23,11 +23,6 @@ class PartnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index()
-    // {
-
-    //     return Partner::partners()->get();
-    // }
 
     //trouver tout les partnaires
     public function index()
@@ -67,7 +62,7 @@ class PartnerController extends Controller
         }
 
         $partner = new Partner;
-        
+
         // upload image section 
         if ($request->hasFile('image')) { // if file existe in the url with image type
             $completeFileName = $request->file('image')->getClientOriginalName();
@@ -106,7 +101,9 @@ class PartnerController extends Controller
     }
 
 
-    public function update(Request $request, $id){}
+    public function update(Request $request, $id)
+    {
+    }
 
 
 
@@ -169,7 +166,7 @@ class PartnerController extends Controller
     }
 
 
-    public function updatePartner($id,Request $request)
+    public function updatePartner($id, Request $request)
     {
         try {
 

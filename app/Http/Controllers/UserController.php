@@ -20,29 +20,74 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     //trouver tout les utilisateurs
+    // public function index()
+    // {
+
+    //     return User::users()->get();
+    // }
+
     public function index()
     {
-
-        return User::users()->get();
+        $users = User::all();
+        return response()->json($users, 200);
     }
+
+    // public function store(Request $request)
+    // {
+    //     // récupérer ou créer le rôle "User"
+    //     $userRole = Roles::firstOrCreate(['type' => 'User']);
+
+    //     // créer un nouvel utilisateur avec le rôle "User"
+    //     $user = new User();
+    //     $user->name = $request->input('name');
+    //     $user->email = $request->input('email');
+    //     $user->phone = $request->input('phone');
+    //     $user->password = Hash::make($request->input('password'));
+    //     $user->status = $request->input('status');
+    //     $user->role_id = $userRole->id; // remplir le champ role_id avec l'ID du rôle "User"
+    //     $user->save(); // sauvegarder le nouvel utilisateur dans la base de données
+
+    //     return response($user, Response::HTTP_CREATED);
+    // }
 
     public function store(Request $request)
     {
-        // récupérer ou créer le rôle "User"
-        $userRole = Roles::firstOrCreate(['type' => 'User']);
+        //valdiate
+        $rules = [
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users|unique:partners',
+            'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+            'password' => 'required|string|min:6',
+            'status' => 'required',
+            'roleId' => 'exists:roles,id'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                $validator->errors(),
+                "status" => 400
+            ]);
+        }
+        $data = $request->only('name', 'email', 'phone', 'password', 'status');
 
-        // créer un nouvel utilisateur avec le rôle "User"
+
         $user = new User();
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->phone = $request->input('phone');
-        $user->password = Hash::make($request->input('password'));
-        $user->status = $request->input('status');
-        $user->role_id = $userRole->id; // remplir le champ role_id avec l'ID du rôle "User"
-        $user->save(); // sauvegarder le nouvel utilisateur dans la base de données
 
-        return response($user, Response::HTTP_CREATED);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->password = Hash::make($request->password);
+        $user->status = $request->status;
+        $user->role_id = $request->roleId;
+        $user->save();
+
+        return response()->json([
+            'message' => "successfully registered",
+            "status" => Response::HTTP_CREATED
+        ]);
     }
+
 
 
     public function show($id)
