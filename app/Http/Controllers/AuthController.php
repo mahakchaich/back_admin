@@ -59,24 +59,28 @@ class AuthController extends Controller
     {
         // validate inputs
         $validator = Validator::make($request->all(), [
-            'email' => 'required|exists:users,email',
+            'email' => 'required|email',
             'password' => 'required|string'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                $validator->errors(),
-                "status" => 400
+                'message' => 'Invalid input',
+                'errors' => $validator->errors(),
+                'status' => 400
             ]);
         }
 
-        // find user email in users table
+        // find user by email in users or partners table
         $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            $user = Partner::where('email', $request->email)->first();
+        }
 
-        if ($user && $user->status == 'INACTIVE') {
+        if (!$user || $user->status == 'INACTIVE') {
             return response()->json([
-                "message" => 'Your account is inactive, please contact an administrator',
-                "status" => 401
+                'message' => 'Incorrect email or password',
+                'status' => 401
             ]);
         }
 
@@ -91,7 +95,7 @@ class AuthController extends Controller
                 ]);
             }
 
-            if ($user && Hash::check($request->password, $user->password)) {
+            if (Hash::check($request->password, $user->password)) {
                 // if user email found and password is correct
                 $scope = 'admin';
                 $token = $user->createToken('token', [$scope])->plainTextToken;
@@ -116,9 +120,9 @@ class AuthController extends Controller
                 ]);
             }
 
-            if ($user && Hash::check($request->password, $user->password)) {
+            if (Hash::check($request->password, $user->password)) {
                 // if user email found and password is correct
-                $scope =  'user';
+                $scope = 'user';
                 $token = $user->createToken('token', [$scope])->plainTextToken;
 
                 return response([
@@ -132,56 +136,38 @@ class AuthController extends Controller
                     "status" => 401
                 ]);
             }
+        } elseif ($request->path() === 'api/partner/login') {
+            // partner login
+            if ($user_role->type != "partner") {
+                return response()->json([
+                    "message" => "Access Denied",
+                    "status" => 401
+                ]);
+            }
+
+            if (Hash::check($request->password, $user->password)) {
+                // if user email found and password is correct
+                $scope = 'partner';
+                $token = $user->createToken('token', [$scope])->plainTextToken;
+
+                return response([
+                    "status" => 200,
+                    'message' => 'success',
+                    'token' => $token
+                ]);
+            } else {
+                return response()->json([
+                    "message" => 'Incorrect email or password',
+                    "status" => 401
+                ]);
+            }
+        } else {
+            return response()->json([
+                "message" => "Invalid request path",
+                "status" => 400
+            ]);
         }
     }
-
-
-
-    // public function login(Request $request)
-    // {
-    //     // validate inputs
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|exists:partners,email',
-    //         'password' => 'required|string'
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             $validator->errors(),
-    //             "status" => 400
-    //         ]);
-    //     }
-
-    //     // find user email in users table
-    //     $user = Partner::where('email', $request->email)->first();
-
-
-    //     $user_role = $user->Roles;
-    //     $partnerLogin = $request->path() === 'api/partner/login';
-
-    //     if ((!$partnerLogin) || ($user_role->type != "partner")) {
-    //         return response()->json([
-    //             "message" => "Access Denied",
-    //             "status" => 401
-    //         ]);
-    //     } else if ($user && Hash::check($request->password, $user->password)) {
-    //         // if user email found and password is correct
-    //         $scope =  'partner';
-    //         $token = $user->createToken('token', [$scope])->plainTextToken;
-
-    //         return response([
-    //             "status" => 200,
-    //             'message' => 'success',
-    //             'token' => $token
-    //         ]);
-    //     } else {
-    //         return response()->json([
-    //             "message" => 'Incorrect email or password',
-    //             "status" => 401
-    //         ]);
-    //     }
-    // }
-
 
     public function user(Request $request)
     {

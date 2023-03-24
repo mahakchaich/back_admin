@@ -27,6 +27,7 @@ function common(string $scope)
     Route::post('register', [AuthController::class, 'register']);
     Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
+
     Route::middleware(['auth:sanctum', $scope])->group(
         function () {
             Route::get('user', [AuthController::class, 'user']);
@@ -91,7 +92,11 @@ Route::prefix('user')->group(function () {
 
 
 //Partenaire
-
+Route::prefix('partner')->group(function () {
+    common('scope.partner');
+    Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
+    });
+});
 
 
 

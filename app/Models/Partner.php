@@ -30,6 +30,12 @@ class Partner extends Model
         return $query->where('role_id', $partner_role->id);
     }
 
+    public function Roles()
+    {
+        // return $this->hasMany(Roles::class);
+        return  $this->hasOne(Roles::class, 'id', 'role_id');
+    }
+
 
     public function boxs()
     {
