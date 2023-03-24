@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
@@ -172,14 +169,15 @@ class PartnerController extends Controller
 
     public function updatePartner($id, Request $request)
     {
-        try {
-
+     
             // Validate the request data
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
                 'email' => [
                     'required',
                     'string',
+                    Rule::unique('users')->ignore($id),
+                    Rule::unique('partners')->ignore($id)
                 ],
                 'phone' => ['required', 'regex:/^[0-9]{8}$/'],
                 'password' => 'required|string|min:6',
@@ -195,14 +193,7 @@ class PartnerController extends Controller
                     'status' => 400
                 ]);
             }
-        } catch (\Exception $e) {
-            return response()->json([
-                "status" => 'false',
-                "message" => $e->getMessage(),
-                "data" => [],
-                500
-            ]);
-        }
+      
         // Find the resource to be updated
         $partner = Partner::findOrFail($id);
 
