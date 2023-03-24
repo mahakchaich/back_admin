@@ -83,9 +83,13 @@ class PartnerController extends Controller
         $partner->role_id = $request->roleId;
         $partner->save();
 
+        // create token for partner
+        $token = $partner->createToken('Personal Access Token')->plainTextToken;
+
         return response()->json([
-            'message' => "successfully registered",
-            "status" => Response::HTTP_CREATED
+            'message' => 'Successfully registered',
+            'status' => Response::HTTP_CREATED,
+            'token' => $token,
         ]);
     }
 

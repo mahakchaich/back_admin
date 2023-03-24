@@ -25,6 +25,7 @@ use App\Models\Partner;
 function common(string $scope)
 {
     Route::post('register', [AuthController::class, 'register']);
+    Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware(['auth:sanctum', $scope])->group(
         function () {
@@ -84,6 +85,8 @@ Route::prefix('admin')->group(function () {
 //User
 Route::prefix('user')->group(function () {
     common('scope.user');
+    Route::middleware(['auth:sanctum', 'scope.user'])->group(function () {
+    });
 });
 
 
