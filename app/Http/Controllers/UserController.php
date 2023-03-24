@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 use App\Http\Resources\CommandResource;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,7 +31,7 @@ class UserController extends Controller
         //valdiate
         $rules = [
             'name' => 'required|string',
-            'email' => 'required|string|unique:users|unique:partners',
+            'email' => 'required|string|unique:users|unique:partners|regex:/^[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}$/',
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
             'status' => 'required',
@@ -77,12 +78,40 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        //valdiate
+        $rules = [];
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => [
+                'required',
+                'string',
+                Rule::unique('users')->ignore($id),
+                Rule::unique('partners')->ignore($id),
+
+                'regex:/^[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}$/'
+            ],
+            'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                $validator->errors(),
+                "status" => 400
+            ]);
+        }
         $user = User::users()->find($id);
         if (is_null($user)) {
-            return response()->json(['message' => 'utilisateur introuvable'], 404);
+            return response()->json(
+                [
+                    'message' => 'utilisateur introuvable',
+                    "status" => "404"
+                ]
+            );
         }
         $user->update($request->only('name', 'email', 'phone', 'status'));
-        return response($user, 200);
+        return response()->json([
+            "message" => "Updated Successefully",
+            "status" => 200,
+        ]);
     }
 
 
