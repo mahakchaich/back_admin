@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Partner;
 
-class   BoxController extends Controller
+class BoxController extends Controller
 {
 
     public function index()
@@ -19,9 +20,30 @@ class   BoxController extends Controller
         return Box::all();
     }
 
+    // get all boxs
+    public function index2()
+    {
+        return response([
+            'boxs' => Box::orderBy('created_at', 'desc')->with('partner:id,name,image')->withCount('likes')
+                ->with('likes', function ($like) {
+                    return $like->where('user_id', auth()->user()->id)
+                        ->select('id', 'user_id', 'box_id')->get();
+                })
+                ->get()
+        ], 200);
+    }
+
 
     public function store(Request $request)
-    {
+    { // Vérifie si l'utilisateur connecté est un partenaire ou un administrateur
+        $user = auth()->user();
+        if ($user->role_id !== 3 && $user->role_id !== 1) {
+            return response()->json([
+                'error' => 'Only connected partners or admins can create a box.',
+                'status' => Response::HTTP_UNAUTHORIZED
+            ]);
+        }
+
         $valid = Validator::make($request->all(), [
             "title" => "required",
             "description" => "required",
@@ -33,8 +55,14 @@ class   BoxController extends Controller
             "enddate" => "required",
             "category" => "required",
             "status" => "required",
-            "partner_id" => "required|exists:partners,id",
         ]);
+
+        if ($user->role_id === 1) { // if user is admin
+            $valid->addRules([
+                "partner_id" => "required|exists:partners,id",
+            ]);
+        }
+
         if ($valid->fails()) {
             return response()->json([
                 "message" => $valid->errors(),
@@ -85,6 +113,8 @@ class   BoxController extends Controller
             $box->image = $compPic;
         }
 
+
+
         $box->title = $request->title;
         $box->description = $request->description;
         $box->oldprice = $request->oldprice;
@@ -95,7 +125,24 @@ class   BoxController extends Controller
         $box->remaining_quantity = $request->quantity;
         $box->category = $request->category;
         $box->status = $request->status;
-        $box->partner_id = $request->partner_id;
+        $user = auth()->user();
+
+        // Vérifie si l'utilisateur connecté a le rôle d'administrateur
+        if ($user->role_id == 1) {
+            // Si oui, vérifie si le partenaire associé à l'id existe
+            if (Partner::where('id', $request->partner_id)->exists()) {
+                $box->partner_id = $request->partner_id;
+            } else {
+                return response()->json([
+                    'message' => 'Partner not found',
+                    'status' => Response::HTTP_NOT_FOUND
+                ]);
+            }
+        } else {
+            // Si l'utilisateur connecté a le rôle de partenaire, utilise son propre ID
+            $box->partner_id = auth()->user()->id;
+        }
+
         $box->save();
 
         // Vérifie si le partenaire associé à l'id existe
@@ -107,16 +154,17 @@ class   BoxController extends Controller
     }
 
 
-    public function show(Box $box)
+    // get single box
+    public function show($id)
     {
-
-        return $box;
+        return response([
+            'box' => Box::where('id', $id)->withCount('likes')->get()
+        ], 200);
     }
 
 
     public function update(Request $request, Box $box)
     {
-
         $oldprice = $request->input('oldprice');
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
@@ -225,7 +273,7 @@ class   BoxController extends Controller
         return response()->json($boxs);
     }
 
-    public function updateBox($id,Request $request)
+    public function updateBox($id, Request $request)
     {
         try {
 
@@ -272,8 +320,8 @@ class   BoxController extends Controller
         $enddate = $request->input('enddate');
         $partnerId = $request->input('partner_id');
 
-           // Vérifie si l'ancien prix est superieur au nouveau prix
-           if ($oldprice <= $newprice) {
+        // Vérifie si l'ancien prix est superieur au nouveau prix
+        if ($oldprice <= $newprice) {
             return response(['error' => 'L\'ancien prix de vente doit être supérieur au prix nouveau prix.'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -287,19 +335,19 @@ class   BoxController extends Controller
             return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
         }
         // Update the resource with the new values from the request
-// Update the resource with the new values from the request
-$boxData = [
-    'title' => $request->title,
-    'description' => $request->description,
-    'quantity' => $request->quantity,
-    'oldprice' => $request->oldprice,
-    'newprice' => $request->newprice,
-    'startdate' => $request->startdate,
-    'enddate' => $request->enddate,
-    'category' => $request->category,
-    'status' => $request->status,
-    'partner_id' => $request->partner_id,
-];
+        // Update the resource with the new values from the request
+        $boxData = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'quantity' => $request->quantity,
+            'oldprice' => $request->oldprice,
+            'newprice' => $request->newprice,
+            'startdate' => $request->startdate,
+            'enddate' => $request->enddate,
+            'category' => $request->category,
+            'status' => $request->status,
+            'partner_id' => $request->partner_id,
+        ];
         if ($request->hasFile('image')) { // if file existe in the url with image type
             $completeFileName = $request->file('image')->getClientOriginalName();
             $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
@@ -309,7 +357,7 @@ $boxData = [
             // $box->image = $compPic;
             $boxData['image'] = $compPic;
         }
-  
+
         Box::where('id', $id)->update($boxData);
         $box = Box::find($id);
         return response()->json([

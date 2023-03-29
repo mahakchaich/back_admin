@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Carbon\Carbon;
+use App\Models\Like;
 use App\Models\Command;
 use App\Models\Partner;
 use Illuminate\Database\Eloquent\Model;
@@ -36,5 +37,15 @@ class Box extends Model
     public function partner()
     {
         return $this->belongsTo(Partner::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

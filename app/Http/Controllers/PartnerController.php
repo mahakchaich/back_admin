@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 // use function PHPUnit\Framework\isEmpty;
 
@@ -102,9 +103,23 @@ class PartnerController extends Controller
     }
 
 
-    public function update(Request $request, $id)
-    {
-    }
+    // public function update(Request $request, $id)
+    // {
+    //     $user = $request->user();
+    //     $attrs = $request->validate([
+    //         'name' => 'required|string'
+    //     ]);
+
+    //     $image = $this->saveImage($request->image, 'profiles');
+
+    //     $user->update($request->only('name', 'image'));
+
+    //     return response([
+    //         'message' => 'User updated.',
+    //         'user' => auth()->user()
+    //     ], 200);
+
+    // }
 
 
 
@@ -169,31 +184,31 @@ class PartnerController extends Controller
 
     public function updatePartner($id, Request $request)
     {
-     
-            // Validate the request data
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string',
-                'email' => [
-                    'required',
-                    'string',
-                    Rule::unique('users')->ignore($id),
-                    Rule::unique('partners')->ignore($id)
-                ],
-                'phone' => ['required', 'regex:/^[0-9]{8}$/'],
-                'password' => 'required|string|min:6',
-                'image' => 'required',
-                'category' => 'required',
-                'description' => 'required'
-            ]);
 
-            if ($validator->fails()) {
-                // If validation fails, return an error response
-                return response()->json([
-                    'errors' => $validator->errors(),
-                    'status' => 400
-                ]);
-            }
-      
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => [
+                'required',
+                'string',
+                Rule::unique('users')->ignore($id),
+                Rule::unique('partners')->ignore($id)
+            ],
+            'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+            'password' => 'required|string|min:6',
+            'image' => 'required',
+            'category' => 'required',
+            'description' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            // If validation fails, return an error response
+            return response()->json([
+                'errors' => $validator->errors(),
+                'status' => 400
+            ]);
+        }
+
         // Find the resource to be updated
         $partner = Partner::findOrFail($id);
 

@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\ScopeUserMiddleware;
 use App\Http\Middleware\ScopeAdminMiddleware;
+use App\Http\Middleware\ScopePartnerMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

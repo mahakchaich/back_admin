@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Cookie;
 use App\Models\User;
+use App\Models\Partner;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UpdateInfoRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UpdatePasswordRequest;
-use App\Models\Partner;
-use App\Models\Roles;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -168,6 +167,22 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    // logout user
+    public function logout()
+    {
+        if (Auth::check()) {
+            Auth::user()->tokens()->delete();
+            return response([
+                'message' => 'Logout success.'
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not authenticated.'
+            ], 401);
+        }
+    }
+
 
     public function user(Request $request)
     {

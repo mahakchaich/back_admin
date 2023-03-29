@@ -21,7 +21,7 @@ class CreatePartnersTable extends Migration
             $table->string('email')->unique();
             $table->integer('phone');
             $table->string('password');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->enum('category', ['SUPERMARKET', 'BAKERY', 'PASTRIES', 'RESTAURANT', 'COFFEE SHOP', 'HOTEL', 'CATERER', 'LOCAL PRODUCERS']);
             $table->time('openingtime')->default('00:00:00');
             $table->time('closingtime')->default('00:00:00');

@@ -1,15 +1,15 @@
 <?php
 
 
-use App\Models\Utilisateur;
-use Illuminate\Http\Request;
+
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BoxController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommandController;
 use App\Http\Controllers\PartnerController;
-use App\Models\Partner;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,7 +87,21 @@ Route::prefix('admin')->group(function () {
 Route::prefix('user')->group(function () {
     common('scope.user');
     Route::middleware(['auth:sanctum', 'scope.user'])->group(function () {
+        // Box
+        Route::get('/boxs', [BoxController::class, 'index']); // all boxs
+        Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
+        Route::get('/showboxs', [BoxController::class, 'index2']);
+
+        // Like
+        Route::post('/boxs/{id}/likes', [LikeController::class, 'likeOrUnlike']);
     });
+
+    // order
+    Route::get('/orders', [CommandController::class, 'index']);
+    Route::post('/orders', [CommandController::class, 'store']);
+    Route::get('/orders/{id}', [CommandController::class, 'show']);
+    Route::put('/orders/{id}', [CommandController::class, 'update']);
+    Route::delete('/orders/{id}', [CommandController::class, 'destroy']);
 });
 
 
@@ -95,6 +109,10 @@ Route::prefix('user')->group(function () {
 Route::prefix('partner')->group(function () {
     common('scope.partner');
     Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
+        //Box
+        Route::apiResource('boxs', BoxController::class);
+
+        Route::put('partners/info', [AuthController::class, 'update']);
     });
 });
 
@@ -107,9 +125,6 @@ Route::get('commande/{id}', [CommandController::class, 'commande']);
 
 
 
-// //Les Paniers Commandés
-// Route::get('commandepanier', [CommandePanierController::class, 'index']);
-// Route::get('test', [AuthController::class, 'test']);
 
 
 //
