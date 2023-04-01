@@ -91,17 +91,12 @@ Route::prefix('user')->group(function () {
         Route::get('/boxs', [BoxController::class, 'index']); // all boxs
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
         Route::get('/showboxs', [BoxController::class, 'index2']);
+        // order
+        Route::post('orders/addorder', [CommandController::class, 'addOrder']);
 
         // Like
         Route::post('/boxs/{id}/likes', [LikeController::class, 'likeOrUnlike']);
     });
-
-    // order
-    Route::get('/orders', [CommandController::class, 'index']);
-    Route::post('/orders', [CommandController::class, 'store']);
-    Route::get('/orders/{id}', [CommandController::class, 'show']);
-    Route::put('/orders/{id}', [CommandController::class, 'update']);
-    Route::delete('/orders/{id}', [CommandController::class, 'destroy']);
 });
 
 
