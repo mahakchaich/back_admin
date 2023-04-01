@@ -113,6 +113,8 @@ Route::prefix('partner')->group(function () {
         Route::apiResource('boxs', BoxController::class);
 
         Route::put('partners/info', [AuthController::class, 'update']);
+        Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
+        Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
     });
 });
 

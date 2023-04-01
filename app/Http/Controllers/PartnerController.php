@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\PartnerResource;
+use App\Models\Box;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
@@ -247,4 +248,26 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
+
+
+    public function getPartnerBoxs()
+    {
+        $boxs = Box::where("partner_id","=",auth()->user()->id)->get();
+        return response()->json([
+            "message" => "all Partner boxs ",
+            "Boxs" => $boxs,
+            "satus" => 200,
+        ]);
+    }
+    public function showPartnerDetails()
+    {
+        $partner = Partner::find(auth()->user()->id);
+        return response()->json([
+            "message" => "Partner details",
+            "Boxs" => $partner,
+            "satus" => 200,
+        ]);
+    }
+
+
 }
