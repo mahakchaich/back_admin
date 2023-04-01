@@ -27,11 +27,11 @@ function common(string $scope)
     Route::post('register', [AuthController::class, 'register']);
     Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
 
     Route::middleware(['auth:sanctum', $scope])->group(
         function () {
             Route::get('user', [AuthController::class, 'user']);
-            Route::post('logout', [AuthController::class, 'logout']);
             Route::put('users/info', [AuthController::class, 'updateInfo']);
             Route::put('users/password', [AuthController::class, 'updatePassword']);
         }
@@ -109,6 +109,7 @@ Route::prefix('user')->group(function () {
 Route::prefix('partner')->group(function () {
     common('scope.partner');
     Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
+        Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
 

@@ -104,26 +104,6 @@ class PartnerController extends Controller
     }
 
 
-    // public function update(Request $request, $id)
-    // {
-    //     $user = $request->user();
-    //     $attrs = $request->validate([
-    //         'name' => 'required|string'
-    //     ]);
-
-    //     $image = $this->saveImage($request->image, 'profiles');
-
-    //     $user->update($request->only('name', 'image'));
-
-    //     return response([
-    //         'message' => 'User updated.',
-    //         'user' => auth()->user()
-    //     ], 200);
-
-    // }
-
-
-
     public function destroy($id)
     {
         $partner = Partner::partners()->find($id);
@@ -252,7 +232,7 @@ class PartnerController extends Controller
 
     public function getPartnerBoxs()
     {
-        $boxs = Box::where("partner_id","=",auth()->user()->id)->get();
+        $boxs = Box::where("partner_id", "=", auth()->user()->id)->get();
         return response()->json([
             "message" => "all Partner boxs ",
             "Boxs" => $boxs,
@@ -269,5 +249,17 @@ class PartnerController extends Controller
         ]);
     }
 
-
+    public function logout()
+    {
+        if (Auth::check()) {
+            Auth::user()->tokens()->delete();
+            return response([
+                'message' => 'Logout success.'
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not authenticated.'
+            ], 401);
+        }
+    }
 }
