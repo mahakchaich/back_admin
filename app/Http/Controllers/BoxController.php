@@ -54,7 +54,7 @@ class BoxController extends Controller
             "startdate" => "required",
             "enddate" => "required",
             "category" => "required",
-            "status" => "required",
+            // "status" => "required",
         ]);
 
         if ($user->role_id === 1) { // if user is admin
@@ -124,7 +124,7 @@ class BoxController extends Controller
         $box->quantity = $request->quantity;
         $box->remaining_quantity = $request->quantity;
         $box->category = $request->category;
-        $box->status = $request->status;
+        $box->status = ($user->role_id === 3) ? 'PENDING' : $request->status;
         $user = auth()->user();
 
         // Vérifie si l'utilisateur connecté a le rôle d'administrateur
