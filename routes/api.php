@@ -27,10 +27,12 @@ function common(string $scope)
     Route::post('register', [AuthController::class, 'register']);
     Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout']);
+
+
 
     Route::middleware(['auth:sanctum', $scope])->group(
         function () {
+            Route::post('logout', [AuthController::class, 'logout']);
             Route::get('user', [AuthController::class, 'user']);
             Route::put('users/info', [AuthController::class, 'updateInfo']);
             Route::put('users/password', [AuthController::class, 'updatePassword']);

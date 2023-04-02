@@ -168,32 +168,17 @@ class AuthController extends Controller
         }
     }
 
-    // logout user
-    public function logout(Request $request)
+    public function logout()
     {
-        $user = $request->user();
-
-        if ($user->tokenCan('admin')) {
-            // admin logout
-            $user->tokens()->where('name', 'token')->delete();
-
-            return response()->json([
-                'message' => 'Admin logout successful',
-                'status' => 200
-            ]);
-        } elseif ($user->tokenCan('user')) {
-            // user logout
-            $user->tokens()->where('name', 'token')->delete();
-
-            return response()->json([
-                'message' => 'User logout successful',
-                'status' => 200
-            ]);
+        if (Auth::check()) {
+            Auth::user()->tokens()->delete();
+            return response([
+                'message' => 'Logout success.'
+            ], 200);
         } else {
-            return response()->json([
-                'message' => 'Not authenticated.',
-                'status' => 401
-            ]);
+            return response([
+                'message' => 'Not authenticated.'
+            ], 401);
         }
     }
 
