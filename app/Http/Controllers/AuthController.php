@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UpdateInfoRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Models\Roles;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -127,7 +128,8 @@ class AuthController extends Controller
                 return response([
                     "status" => 200,
                     'message' => 'success',
-                    'token' => $token
+                    'token' => $token,
+                    "role" =>$scope
                 ]);
             } else {
                 return response()->json([
@@ -152,7 +154,9 @@ class AuthController extends Controller
                 return response([
                     "status" => 200,
                     'message' => 'success',
-                    'token' => $token
+                    'token' => $token,
+                    // "role" =>Roles::findOrFail($user->role_id)->type
+                    "role" =>$scope
                 ]);
             } else {
                 return response()->json([
