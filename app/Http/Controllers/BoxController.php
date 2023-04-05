@@ -19,6 +19,11 @@ class BoxController extends Controller
         //get box
         return Box::all();
     }
+    public function availableBoxs()
+    {
+        //get box
+        return Box::where("status" ,"=","ACCEPTED")->get();
+    }
 
     // get all boxs
     public function index2()

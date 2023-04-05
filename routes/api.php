@@ -90,7 +90,8 @@ Route::prefix('user')->group(function () {
     common('scope.user');
     Route::middleware(['auth:sanctum', 'scope.user'])->group(function () {
         // Box
-        Route::get('/boxs', [BoxController::class, 'index']); // all boxs
+        Route::get('boxs', [BoxController::class, 'index']); // all boxs
+        Route::get('availableBoxs', [BoxController::class, 'availableBoxs']); // all boxs
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order
