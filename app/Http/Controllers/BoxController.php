@@ -37,6 +37,12 @@ class BoxController extends Controller
                 ->get()
         ], 200);
     }
+    public function indexByCategory($category)
+    {
+        return response([
+            'boxs' => Box::where("category","=",$category)->get()
+        ], 200);
+    }
 
 
     public function store(Request $request)
