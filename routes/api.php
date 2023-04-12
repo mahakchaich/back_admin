@@ -89,10 +89,13 @@ Route::prefix('admin')->group(function () {
 Route::prefix('user')->group(function () {
     common('scope.user');
     Route::middleware(['auth:sanctum', 'scope.user'])->group(function () {
+        Route::get('user', [AuthController::class, 'user']);
         // Box
         Route::get('boxs', [BoxController::class, 'index']); // all boxs
         Route::get('availableBoxs', [BoxController::class, 'availableBoxs']);
+
         Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']); 
+
         Route::get('indexByCategory/{category}', [BoxController::class, 'indexByCategory']);
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
         Route::get('/showboxs', [BoxController::class, 'index2']);
