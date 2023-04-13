@@ -44,7 +44,11 @@ class BoxController extends Controller
     public function indexByCategory($category)
     {
         return response([
-            'boxs' => Box::where("category","=",$category)->get()
+            'boxs' => Box::where("category","=",$category)->with('likes', function ($like) {
+                return $like->where('user_id', auth()->user()->id)
+                ->select('user_id', 'box_id')->get();
+    
+            })->get()
         ], 200);
     }
 
