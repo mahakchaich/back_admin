@@ -22,7 +22,11 @@ class BoxController extends Controller
     public function availableBoxs()
     {
         //get box
-        return Box::where("status" ,"=","ACCEPTED")->get();
+        return Box::where("status" ,"=","ACCEPTED")->with('likes', function ($like) {
+            return $like->where('user_id', auth()->user()->id)
+            ->select('user_id', 'box_id');
+
+        })->get();
     }
 
     // get all boxs

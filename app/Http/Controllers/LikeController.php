@@ -42,4 +42,34 @@ class LikeController extends Controller
             'message' => 'Disliked'
         ], 200);
     }
+      // like or unlike
+      public function verifLike($id)
+      {
+          $box = Box::find($id);
+  
+          if (!$box) {
+              return response([
+                  'message' => 'Box not found.'
+              ], 403);
+          }
+  
+  
+          $like = $box->likes()->where('user_id', auth()->user()->id)->first();
+  
+          // if not liked then like
+          if (!$like) {
+          
+              return response([
+                  'status' => true
+              ], 200);
+          }
+      
+          return response([
+              'status' => false
+          ], 200);
+      }
+
+
+
+
 }

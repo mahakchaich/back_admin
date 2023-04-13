@@ -104,6 +104,7 @@ Route::prefix('user')->group(function () {
 
         // Like
         Route::post('/boxs/{id}/likes', [LikeController::class, 'likeOrUnlike']);
+        Route::get('/boxs/{id}/checklikes', [LikeController::class, 'verifLike']);
     });
 });
 
