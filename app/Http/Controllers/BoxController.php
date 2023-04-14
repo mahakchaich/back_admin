@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PartnerResource;
+use App\Models\Like;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Partner;
+
+use function PHPSTORM_META\map;
 
 class BoxController extends Controller
 {
@@ -49,6 +52,16 @@ class BoxController extends Controller
                 ->select('user_id', 'box_id')->get();
     
             })->get()
+        ], 200);
+    }
+    public function getfavorsBoxs()
+    {
+        $result = DB::table("boxs as b")
+        ->join("likes as l","b.id","=","l.box_id")
+        ->where('l.user_id',auth()->user()->id)
+        ->get();
+        return response([
+         "boxs" => $result,
         ], 200);
     }
 

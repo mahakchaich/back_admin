@@ -96,6 +96,7 @@ Route::prefix('user')->group(function () {
         Route::get('availableBoxs', [BoxController::class, 'availableBoxs']);
 
         Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']);
+        Route::get('boxs/favorites', [BoxController::class, 'getfavorsBoxs']);
 
         Route::get('indexByCategory/{category}', [BoxController::class, 'indexByCategory']);
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
