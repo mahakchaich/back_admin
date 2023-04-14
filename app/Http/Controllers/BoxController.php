@@ -31,6 +31,31 @@ class BoxController extends Controller
 
         })->get();
     }
+    public function getfavorsBoxs()
+    {
+        $result = DB::table("boxs as b")
+        ->join("likes as l","b.id","=","l.box_id")
+        ->where('l.user_id',auth()->user()->id)->select(
+            "b.id",
+            "title",
+            "description",
+            "oldprice",
+            "newprice",
+            "startdate",
+            "enddate",
+            "quantity",
+            "remaining_quantity",
+            "image",
+            "category",
+            "partner_id",
+            )
+            //'title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'
+        ->get();
+        return response([
+          $result,
+
+        ], 200);
+    }
 
     // get all boxs
     public function index2()
@@ -54,16 +79,7 @@ class BoxController extends Controller
             })->get()
         ], 200);
     }
-    public function getfavorsBoxs()
-    {
-        $result = DB::table("boxs as b")
-        ->join("likes as l","b.id","=","l.box_id")
-        ->where('l.user_id',auth()->user()->id)
-        ->get();
-        return response([
-         "boxs" => $result,
-        ], 200);
-    }
+ 
 
 
     public function store(Request $request)
