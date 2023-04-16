@@ -49,7 +49,6 @@ class BoxController extends Controller
             "category",
             "partner_id",
             )
-            //'title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'
         ->get();
         return response([
           $result,
