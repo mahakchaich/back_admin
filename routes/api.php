@@ -141,5 +141,5 @@ Route::get('commande/{id}', [CommandController::class, 'commande']);
 
 //
 Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
-Route::put('forgetPassWord', [UserController::class, 'forgetPassWordReset']);
+Route::post('verifCode', [UserController::class, 'verifCode']);
 Route::put('addRole', [UserController::class, "addRole"]);
