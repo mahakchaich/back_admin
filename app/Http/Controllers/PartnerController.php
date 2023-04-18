@@ -124,6 +124,13 @@ class PartnerController extends Controller
         return new PartnerResource($partners);
     }
 
+    public function showpartnerboxes()
+    {
+        $partner = auth()->user()->id;
+        $partners = Partner::with('boxs')->findOrFail($partner);
+        return new PartnerResource($partners);
+    }
+
     //Search Partner 
     public function searchPartner(Request $request)
     {

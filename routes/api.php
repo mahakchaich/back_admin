@@ -119,6 +119,8 @@ Route::prefix('partner')->group(function () {
         Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
+        //
+        Route::get('partnerboxes', [PartnerController::class, 'showpartnerboxes']);
 
         Route::put('partners/info', [AuthController::class, 'update']);
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
