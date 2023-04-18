@@ -180,7 +180,7 @@ class UserController extends Controller
         }
     }
 
-    public function forgetPassWordReset(Request $request)
+    public function verifCode(Request $request)
     {
         $this->validate($request, [
             'email' => 'required|exists:users,email',
@@ -192,15 +192,17 @@ class UserController extends Controller
         $valide = $dataBaseCode["code"] === $code && $dataBaseCode["status"] === "pending";
 
         if ($valide) {
-            $token = $user->createToken('Personal Access Token', ["user"])->plainTextToken;
+            // $token = $user->createToken('Personal Access Token', ["user"])->plainTextToken;
             verification_code::where(["email" => $request->email, "status" => "pending"])->first()->update(["status" => "used"]);
             return response()->json([
                 'message' => "verification success",
-                'token' => $token,
+                // 'token' => $token,
+                "status" => 200
             ]);
         } else {
             return response()->json([
-                "message" => "invalide verification code"
+                "message" => "invalide verification code",
+                "status" =>  406 // not acceptable == 406
             ]);
         }
     }
