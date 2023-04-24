@@ -246,6 +246,31 @@ class PartnerController extends Controller
             "satus" => 200,
         ]);
     }
+
+    public function getPartnerBoxsAccepted()
+    {
+        $boxs = Box::where("partner_id", "=", auth()->user()->id)
+            ->where("status", "=", "ACCEPTED")
+            ->get();
+        return response()->json([
+            "message" => "all Partner boxs with status accepted",
+            "Boxs" => $boxs,
+            "status" => 200,
+        ]);
+    }
+
+    public function getPartnerBoxsPending()
+    {
+        $boxs = Box::where("partner_id", "=", auth()->user()->id)
+            ->where("status", "=", "PENDING")
+            ->get();
+        return response()->json([
+            "message" => "all Partner boxs with status pending",
+            "Boxs" => $boxs,
+            "status" => 200,
+        ]);
+    }
+
     public function showPartnerDetails()
     {
         $partner = Partner::find(auth()->user()->id);

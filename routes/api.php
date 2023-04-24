@@ -124,6 +124,8 @@ Route::prefix('partner')->group(function () {
 
         Route::put('partners/info', [AuthController::class, 'update']);
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
+        Route::get('getPartnerBoxsAccepted', [PartnerController::class, 'getPartnerBoxsAccepted']);
+        Route::get('getPartnerBoxsPending', [PartnerController::class, 'getPartnerBoxsPending']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
     });
 });
