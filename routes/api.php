@@ -116,6 +116,7 @@ Route::prefix('user')->group(function () {
 Route::prefix('partner')->group(function () {
     common('scope.partner');
     Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
+        Route::get('user', [PartnerController::class, 'currentPartner']);
         Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
@@ -126,6 +127,9 @@ Route::prefix('partner')->group(function () {
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
         Route::get('getPartnerBoxsAccepted', [PartnerController::class, 'getPartnerBoxsAccepted']);
         Route::get('getPartnerBoxsPending', [PartnerController::class, 'getPartnerBoxsPending']);
+        Route::get('getPartnerBoxsRejected', [PartnerController::class, 'getPartnerBoxsRejected']);
+        Route::get('getPartnerBoxsFinished', [PartnerController::class, 'getPartnerBoxsFinished']);
+        Route::get('getPartnerBoxsExpired', [PartnerController::class, 'getPartnerBoxsExpired']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
     });
 });

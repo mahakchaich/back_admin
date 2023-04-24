@@ -259,6 +259,31 @@ class PartnerController extends Controller
         ]);
     }
 
+    public function getPartnerBoxsRejected()
+    {
+        $boxs = Box::where("partner_id", "=", auth()->user()->id)
+            ->where("status", "=", "REJECTED")
+            ->get();
+        return response()->json([
+            "message" => "all Partner boxs with status rejected",
+            "Boxs" => $boxs,
+            "status" => 200,
+        ]);
+    }
+
+    public function getPartnerBoxsFinished()
+    {
+        $boxs = Box::where("partner_id", "=", auth()->user()->id)
+            ->where("status", "=", "FINISHED")
+            ->get();
+        return response()->json([
+            "message" => "all Partner boxs with status finished",
+            "Boxs" => $boxs,
+            "status" => 200,
+        ]);
+    }
+
+
     public function getPartnerBoxsPending()
     {
         $boxs = Box::where("partner_id", "=", auth()->user()->id)
@@ -271,6 +296,20 @@ class PartnerController extends Controller
         ]);
     }
 
+    public function getPartnerBoxsExpired()
+    {
+        $boxs = Box::where("partner_id", "=", auth()->user()->id)
+            ->where("status", "=", "EXPIRED")
+            ->get();
+        return response()->json([
+            "message" => "all Partner boxs with status expired",
+            "Boxs" => $boxs,
+            "status" => 200,
+        ]);
+    }
+
+
+
     public function showPartnerDetails()
     {
         $partner = Partner::find(auth()->user()->id);
@@ -280,6 +319,27 @@ class PartnerController extends Controller
             "satus" => 200,
         ]);
     }
+
+
+    public function currentPartner(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized', 'status' => 401]);
+        }
+
+        if ($user->Roles->type != 'partner') {
+            return response()->json(['message' => 'Access Denied', 'status' => 401]);
+        }
+
+        $partner = Partner::find($user->id);
+
+        return response()->json(['partner' => $partner, 'status' => 200]);
+    }
+
+
+
 
     public function logout()
     {
