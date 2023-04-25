@@ -92,8 +92,6 @@ class PartnerController extends Controller
         ]);
     }
 
-
-
     public function show($id)
     {
         $partner = Partner::partners()->find($id);

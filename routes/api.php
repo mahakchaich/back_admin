@@ -117,6 +117,7 @@ Route::prefix('partner')->group(function () {
     common('scope.partner');
     Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
         Route::get('user', [PartnerController::class, 'currentPartner']);
+        Route::put('updatepassword', [AuthController::class, 'updatePassword']);
         Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
