@@ -343,7 +343,7 @@ class PartnerController extends Controller
         $partner = Partner::find(auth()->user()->id);
 
         $validator = Validator::make($request->all(), [
-            'new_password' => 'required|string|min:6',
+            'password' => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -352,17 +352,14 @@ class PartnerController extends Controller
 
 
         // Chiffrer le nouveau mot de passe
-        $new_password_hashed = Hash::make($request->new_password);
+        $password_hashed = Hash::make($request->password);
 
         // Mettre à jour le mot de passe dans la base de données
-        $partner->password = $new_password_hashed;
+        $partner->password = $password_hashed;
         $partner->save();
 
         return response()->json(['message' => 'Mot de passe mis à jour avec succès']);
     }
-
-
-
 
 
     public function logout()
