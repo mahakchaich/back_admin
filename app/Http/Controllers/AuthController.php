@@ -129,7 +129,7 @@ class AuthController extends Controller
                     "status" => 200,
                     'message' => 'success',
                     'token' => $token,
-                    "role" =>$scope
+                    "role" => $scope
                 ]);
             } else {
                 return response()->json([
@@ -156,7 +156,7 @@ class AuthController extends Controller
                     'message' => 'success',
                     'token' => $token,
                     // "role" =>Roles::findOrFail($user->role_id)->type
-                    "role" =>$scope
+                    "role" => $scope
                 ]);
             } else {
                 return response()->json([

@@ -337,6 +337,32 @@ class PartnerController extends Controller
     }
 
 
+    //udate partner password
+    public function changePassword(Request $request)
+    {
+        $partner = Partner::find(auth()->user()->id);
+
+        $validator = Validator::make($request->all(), [
+            'new_password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+
+        // Chiffrer le nouveau mot de passe
+        $new_password_hashed = Hash::make($request->new_password);
+
+        // Mettre à jour le mot de passe dans la base de données
+        $partner->password = $new_password_hashed;
+        $partner->save();
+
+        return response()->json(['message' => 'Mot de passe mis à jour avec succès']);
+    }
+
+
+
 
 
     public function logout()
