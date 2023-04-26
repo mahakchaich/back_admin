@@ -228,7 +228,6 @@ class AuthController extends Controller
                 'status' => 400
             ]);
         }
-
         // Find the user with the specified email
         $user = User::where('email', $request->email)->first();
 
@@ -236,7 +235,6 @@ class AuthController extends Controller
             // If no user is found, return an error response
             return response()->json(['message' => 'User not found'], 404);
         }
-
         // Update the user's password with the new value from the request
         $user->password = bcrypt($request->password);
         $user->save();
