@@ -92,6 +92,7 @@ Route::prefix('user')->group(function () {
         Route::get('user', [AuthController::class, 'user']);
         Route::apiResource('users', UserController::class);
         Route::put('user/password', [AuthController::class, 'updatePassword']);
+        Route::put('passwordeux', [AuthController::class, 'updatePasswordeux']);
         // Box
         Route::get('boxs', [BoxController::class, 'index']); // all boxs
         Route::get('availableBoxs', [BoxController::class, 'availableBoxs']);

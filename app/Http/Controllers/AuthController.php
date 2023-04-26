@@ -20,7 +20,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'updatePasswordeux']]);
     }
 
     //
@@ -210,5 +210,40 @@ class AuthController extends Controller
             'password' => Hash::make($request->input('password'))
         ]);
         return response($user, Response::HTTP_ACCEPTED);
+    }
+
+    //password
+    public function updatePasswordeux(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            // If validation fails, return an error response
+            return response()->json([
+                'errors' => $validator->errors(),
+                'status' => 400
+            ]);
+        }
+
+        // Find the user with the specified email
+        $user = User::where('email', $request->email)->first();
+
+        if (is_null($user)) {
+            // If no user is found, return an error response
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Update the user's password with the new value from the request
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password updated successfully',
+            'status' => 200
+        ]);
     }
 }
