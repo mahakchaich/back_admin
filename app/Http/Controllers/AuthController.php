@@ -20,7 +20,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'updatePasswordeux']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'updatePasswordeux', 'updatePassworPartner']]);
     }
 
     //
@@ -212,7 +212,7 @@ class AuthController extends Controller
         return response($user, Response::HTTP_ACCEPTED);
     }
 
-    //password
+    // change password
     public function updatePasswordeux(Request $request)
     {
         // Validate the request data
@@ -238,6 +238,39 @@ class AuthController extends Controller
         // Update the user's password with the new value from the request
         $user->password = bcrypt($request->password);
         $user->save();
+
+        return response()->json([
+            'message' => 'Password updated successfully',
+            'status' => 200
+        ]);
+    }
+
+    // change password partner
+    public function updatePassworPartner(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            // If validation fails, return an error response
+            return response()->json([
+                'errors' => $validator->errors(),
+                'status' => 400
+            ]);
+        }
+        // Find the user with the specified email
+        $partner = Partner::where('email', $request->email)->first();
+
+        if (is_null($partner)) {
+            // If no user is found, return an error response
+            return response()->json(['message' => 'Partner not found'], 404);
+        }
+        // Update the user's password with the new value from the request
+        $partner->password = bcrypt($request->password);
+        $partner->save();
 
         return response()->json([
             'message' => 'Password updated successfully',

@@ -26,6 +26,7 @@ function common(string $scope)
 {
     Route::post('register', [AuthController::class, 'register']);
     Route::put('passwordeux', [AuthController::class, 'updatePasswordeux']);
+    Route::put('passwordpartner', [AuthController::class, 'updatePassworPartner']);
     Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
 
