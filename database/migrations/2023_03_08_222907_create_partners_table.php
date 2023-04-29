@@ -25,6 +25,7 @@ class CreatePartnersTable extends Migration
             $table->enum('category', ['SUPERMARKET', 'BAKERY', 'PASTRIES', 'RESTAURANT', 'COFFEE SHOP', 'HOTEL', 'CATERER', 'LOCAL PRODUCERS']);
             $table->time('openingtime')->default('00:00:00');
             $table->time('closingtime')->default('00:00:00');
+            $table->enum('status', ['PENDING', 'ACTIVE', 'INACTIVE'])->default('PENDING');
             $table->foreignId('role_id')->constrain("roles");
             $table->timestamps();
         });
