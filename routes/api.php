@@ -80,6 +80,7 @@ Route::prefix('admin')->group(function () {
         Route::get('searchPartner', [PartnerController::class, 'searchPartner']);
         Route::get('filter', [PartnerController::class, 'filterPartners']);
         Route::post('update/{id}', [PartnerController::class, 'updatePartner']);
+        Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
     });
 });
 
@@ -124,6 +125,7 @@ Route::prefix('partner')->group(function () {
         Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
+
         //
         Route::get('partnerboxes', [PartnerController::class, 'showpartnerboxes']);
 

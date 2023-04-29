@@ -361,6 +361,29 @@ class PartnerController extends Controller
         return response()->json(['message' => 'Mot de passe mis à jour avec succès']);
     }
 
+    //Update Status
+    public function updatePartnerStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:PENDING,ACTIVE,INACTIVE',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $partner = Partner::find($id);
+
+        if (!$partner) {
+            return response()->json(['message' => 'Partner not found'], 404);
+        }
+
+        $partner->status = $request->input('status');
+        $partner->save();
+
+        return response()->json(['message' => 'Partner status updated successfully'], 200);
+    }
+
 
     public function logout()
     {
