@@ -146,6 +146,13 @@ class AuthController extends Controller
                 ]);
             }
 
+            if ($user->status != 'Active') {
+                return response()->json([
+                    "message" => 'Your account is not active',
+                    "status" => 401
+                ]);
+            }
+
             if (Hash::check($request->password, $user->password)) {
                 // if user email found and password is correct
                 $scope = 'partner';
@@ -155,7 +162,6 @@ class AuthController extends Controller
                     "status" => 200,
                     'message' => 'success',
                     'token' => $token,
-                    // "role" =>Roles::findOrFail($user->role_id)->type
                     "role" => $scope
                 ]);
             } else {
