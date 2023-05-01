@@ -104,6 +104,7 @@ Route::prefix('user')->group(function () {
         Route::get('boxs/favorites', [BoxController::class, 'getfavorsBoxs']);
 
         Route::get('indexByCategory/{category}', [BoxController::class, 'indexByCategory']);
+        Route::get('indexByPartnerCategory/{category}', [BoxController::class, 'indexByPartnerCategory']);
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order

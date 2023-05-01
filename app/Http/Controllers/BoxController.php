@@ -25,33 +25,32 @@ class BoxController extends Controller
     public function availableBoxs()
     {
         //get box
-        return Box::where("status" ,"=","ACCEPTED")->with('likes', function ($like) {
+        return Box::where("status", "=", "ACCEPTED")->with('likes', function ($like) {
             return $like->where('user_id', auth()->user()->id)
-            ->select('user_id', 'box_id');
-
+                ->select('user_id', 'box_id');
         })->get();
     }
     public function getfavorsBoxs()
     {
         $result = DB::table("boxs as b")
-        ->join("likes as l","b.id","=","l.box_id")
-        ->where('l.user_id',auth()->user()->id)->select(
-            "b.id",
-            "title",
-            "description",
-            "oldprice",
-            "newprice",
-            "startdate",
-            "enddate",
-            "quantity",
-            "remaining_quantity",
-            "image",
-            "category",
-            "partner_id",
+            ->join("likes as l", "b.id", "=", "l.box_id")
+            ->where('l.user_id', auth()->user()->id)->select(
+                "b.id",
+                "title",
+                "description",
+                "oldprice",
+                "newprice",
+                "startdate",
+                "enddate",
+                "quantity",
+                "remaining_quantity",
+                "image",
+                "category",
+                "partner_id",
             )
-        ->get();
+            ->get();
         return response([
-          $result,
+            $result,
 
         ], 200);
     }
@@ -71,14 +70,27 @@ class BoxController extends Controller
     public function indexByCategory($category)
     {
         return response([
-            'boxs' => Box::where("category","=",$category)->with('likes', function ($like) {
+            'boxs' => Box::where("category", "=", $category)->with('likes', function ($like) {
                 return $like->where('user_id', auth()->user()->id)
-                ->select('user_id', 'box_id')->get();
-    
+                    ->select('user_id', 'box_id')->get();
             })->get()
         ], 200);
     }
- 
+
+    public function indexByPartnerCategory($category)
+    {
+        return response([
+            'boxs' => Box::join('partners', 'partners.id', '=', 'boxs.partner_id')
+                ->where('partners.category', $category)
+                ->with('likes', function ($like) {
+                    return $like->where('user_id', auth()->user()->id)
+                        ->select('user_id', 'box_id')->get();
+                })->get()
+        ], 200);
+    }
+
+
+
 
 
     public function store(Request $request)
