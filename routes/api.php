@@ -105,6 +105,7 @@ Route::prefix('user')->group(function () {
 
         Route::get('indexByCategory/{category}', [BoxController::class, 'indexByCategory']);
         Route::get('indexByPartnerCategory/{category}', [BoxController::class, 'indexByPartnerCategory']);
+        Route::get('filterprice', [BoxController::class, 'filterprice']);
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order

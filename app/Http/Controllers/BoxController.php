@@ -67,6 +67,8 @@ class BoxController extends Controller
                 ->get()
         ], 200);
     }
+
+    //filtre
     public function indexByCategory($category)
     {
         return response([
@@ -91,7 +93,38 @@ class BoxController extends Controller
     }
 
 
+    public function filterprice(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'min' => 'required|numeric',
+            'max' => 'required|numeric|gte:min',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first(),
+                'status' => Response::HTTP_BAD_REQUEST
+            ]);
+        }
+
+        $min = $request->input('min');
+        $max = $request->input('max');
+
+        $boxQuery = Box::where('newprice', '>=', $min)
+            ->where('newprice', '<=', $max)
+            ->where('status', '=', 'ACCEPTED')
+            ->with('partner:id,name,image')
+            ->with('likes', function ($like) {
+                return $like->where('user_id', auth()->user()->id)
+                    ->select('id', 'user_id', 'box_id');
+            });
+
+        $boxs = $boxQuery->get();
+
+        return response([
+            'boxs' => $boxs
+        ], 200);
+    }
 
 
     public function store(Request $request)
