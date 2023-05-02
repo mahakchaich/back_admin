@@ -70,7 +70,7 @@ class BoxController extends Controller
     public function indexByCategory($category)
     {
         return response([
-            'boxs' => Box::where("category", "=", $category)->with('likes', function ($like) {
+            'boxs' => Box::where("category", "=", $category)->where('boxs.status', 'ACCEPTED')->with('likes', function ($like) {
                 return $like->where('user_id', auth()->user()->id)
                     ->select('user_id', 'box_id')->get();
             })->get()
@@ -82,6 +82,7 @@ class BoxController extends Controller
         return response([
             'boxs' => Box::join('partners', 'partners.id', '=', 'boxs.partner_id')
                 ->where('partners.category', $category)
+                ->where('boxs.status', 'ACCEPTED')
                 ->with('likes', function ($like) {
                     return $like->where('user_id', auth()->user()->id)
                         ->select('user_id', 'box_id')->get();
