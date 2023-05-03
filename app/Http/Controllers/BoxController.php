@@ -255,6 +255,14 @@ class BoxController extends Controller
         ], 200);
     }
 
+    // get single box
+    public function showPartner($id)
+    {
+        return response([
+            'partner' => Partner::where('id', $id)->with('likes')->get()
+        ], 200);
+    }
+
 
     public function update(Request $request, Box $box)
     {

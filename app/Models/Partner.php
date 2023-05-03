@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
 use App\Models\Box;
 use App\Models\Roles;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -36,7 +36,10 @@ class Partner extends Model
         return  $this->hasOne(Roles::class, 'id', 'role_id');
     }
 
-
+    public function likes()
+    {
+        return $this->hasMany(LikePartner::class);
+    }
     public function boxs()
     {
         return $this->hasMany(Box::class);
