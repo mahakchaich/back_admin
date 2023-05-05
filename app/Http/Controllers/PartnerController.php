@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Box;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\PartnerResource;
-use App\Models\Box;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 
 // use function PHPUnit\Framework\isEmpty;
 
@@ -384,6 +385,28 @@ class PartnerController extends Controller
         return response()->json(['message' => 'Partner status updated successfully'], 200);
     }
 
+    //Get Partners liked
+    public function getfavorsPartners()
+    {
+        $result = DB::table("partners as b")
+            ->join("like_partners as l", "b.id", "=", "l.partner_id")
+            ->where('l.user_id', auth()->user()->id)->select(
+                "b.id",
+                "name",
+                "description",
+                "email",
+                "phone",
+                "image",
+                "category",
+                "openingtime",
+                "closingtime",
+            )
+            ->get();
+        return response([
+            $result,
+
+        ], 200);
+    }
 
     public function logout()
     {
