@@ -54,6 +54,7 @@ Route::prefix('admin')->group(function () {
         Route::get('searchBox', [BoxController::class, 'searchBox']);
         Route::get('filterboxs', [BoxController::class, 'filterBoxs']);
         Route::post('updateBox/{id}', [BoxController::class, 'updateBox']);
+        Route::put('boxs/status/{id}', [BoxController::class, 'updateBoxStatus']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
@@ -107,6 +108,7 @@ Route::prefix('user')->group(function () {
         Route::get('indexByPartnerCategory/{category}', [BoxController::class, 'indexByPartnerCategory']);
         Route::get('filterprice', [BoxController::class, 'filterprice']);
         Route::get('/boxs/{id}', [BoxController::class, 'show']); // get single box
+        Route::get('/partners/{id}', [BoxController::class, 'showPartner']); // get single partner
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order
         Route::post('orders/addorder', [CommandController::class, 'addOrder']);
@@ -114,6 +116,8 @@ Route::prefix('user')->group(function () {
         // Like
         Route::post('/boxs/{id}/likes', [LikeController::class, 'likeOrUnlike']);
         Route::get('/boxs/{id}/checklikes', [LikeController::class, 'verifLike']);
+        Route::post('/partners/{id}/likes', [LikeController::class, 'likeOrUnlikePartner']);
+        Route::get('/partners/{id}/checklikes', [LikeController::class, 'verifLikePartner']);
     });
 });
 
