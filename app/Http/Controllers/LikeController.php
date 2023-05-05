@@ -123,12 +123,12 @@ class LikeController extends Controller
         if (!$like) {
 
             return response([
-                'status' => true
+                'status' => false
             ], 200);
         }
 
         return response([
-            'status' => false
+            'status' => true
         ], 200);
     }
 }

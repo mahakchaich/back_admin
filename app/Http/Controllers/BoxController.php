@@ -27,7 +27,7 @@ class BoxController extends Controller
         //get box
         return Box::where("status", "=", "ACCEPTED")->with('likes', function ($like) {
             return $like->where('user_id', auth()->user()->id)
-                ->select('user_id', 'box_id');
+                ->select('user_id', 'box_id')->count();
         })->get();
     }
     public function getfavorsBoxs()
