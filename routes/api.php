@@ -8,6 +8,7 @@ use App\Http\Controllers\BoxController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CommandController;
 use App\Http\Controllers\PartnerController;
 
@@ -82,6 +83,9 @@ Route::prefix('admin')->group(function () {
         Route::get('filter', [PartnerController::class, 'filterPartners']);
         Route::post('update/{id}', [PartnerController::class, 'updatePartner']);
         Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
+
+        //Address Management
+        Route::post('addAddress', [AddressController::class, 'store']);
     });
 });
 
@@ -143,6 +147,9 @@ Route::prefix('partner')->group(function () {
         Route::get('getPartnerBoxsFinished', [PartnerController::class, 'getPartnerBoxsFinished']);
         Route::get('getPartnerBoxsExpired', [PartnerController::class, 'getPartnerBoxsExpired']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
+
+        //Address Management
+        Route::post('addAddress', [AddressController::class, 'store']);
     });
 });
 
