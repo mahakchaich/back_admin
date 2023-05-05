@@ -467,4 +467,27 @@ class BoxController extends Controller
             'status' => 200
         ]);
     }
+
+    //Update Status
+    public function updateBoxStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:PENDING,ACCEPTED,REJECTED,FINISHED,EXPIRED',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $box = Box::find($id);
+
+        if (!$box) {
+            return response()->json(['message' => 'Box not found'], 404);
+        }
+
+        $box->status = $request->input('status');
+        $box->save();
+
+        return response()->json(['message' => 'Box status updated successfully'], 200);
+    }
 }
