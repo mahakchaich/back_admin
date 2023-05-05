@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class PartnerResource extends JsonResource
 {
@@ -26,6 +27,16 @@ class PartnerResource extends JsonResource
             'openingtime' => $this->openingtime,
             'closingtime' => $this->closingtime,
             'boxs' => BoxResource::collection($this->whenLoaded('boxs')),
+            'is_liked' => $this->did_liked()
         ];
+    }
+
+    private function did_liked(){
+        
+        if(Auth::user()){
+            return $this->likes()->where('user_id', Auth::user()->id)->count() ? 1 : 0;
+        }
+
+        return 0;
     }
 }
