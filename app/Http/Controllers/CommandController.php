@@ -206,21 +206,18 @@ class CommandController extends Controller
     //Partner Orders
     public function getPartnerOrders()
     {
-        $partners = Partner::where('id', auth()->user()->id)
+        $partner = Partner::where('id', auth()->user()->id)
             ->with('partnerCommands.command.user', 'partnerCommands.box')->get();
-        $partnerOrders = [];
-
-        foreach ($partners as $partner) {
-            $partnerOrders[$partner->id] = $partner->partnerCommands->map(function ($partnerCommand) {
+        $partnerOrders = $partner->flatMap(function ($partner) {
+            return $partner->partnerCommands->map(function ($partnerCommand) {
                 return [
-                    'command_id' => $partnerCommand->command_id,
                     'user' => $partnerCommand->command->user->name,
                     'box_name' => $partnerCommand->box->title,
                     'quantity' => $partnerCommand->quantity,
                     'created_at' => $partnerCommand->command->created_at->format('Y-m-d H:i:s')
                 ];
-            })->toArray();
-        }
+            });
+        })->toArray();
 
         return $partnerOrders;
     }
