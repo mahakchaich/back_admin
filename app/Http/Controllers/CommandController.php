@@ -211,7 +211,13 @@ class CommandController extends Controller
         $partnerOrders = [];
 
         foreach ($partners as $partner) {
-            $partnerOrders[$partner->id] = $partner->partnerCommands->pluck('command_id')->toArray();
+            $partnerOrders[$partner->id] = $partner->partnerCommands->map(function ($partnerCommand) {
+                return [
+                    'command_id' => $partnerCommand->command_id,
+                    'box_id' => $partnerCommand->box_id,
+                    'quantity' => $partnerCommand->quantity,
+                ];
+            })->toArray();
         }
 
         return $partnerOrders;
