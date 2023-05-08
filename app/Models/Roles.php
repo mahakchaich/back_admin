@@ -12,7 +12,7 @@ class Roles extends Model
 
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = [
         'type',
         'id'

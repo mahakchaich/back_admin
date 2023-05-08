@@ -12,7 +12,7 @@ class verification_code extends Model
 
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = [
         'email',
         'code',

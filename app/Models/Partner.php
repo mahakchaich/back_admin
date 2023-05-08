@@ -14,7 +14,7 @@ class Partner extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = ['name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime'];
 
     public function __construct(array $attributes = [])
