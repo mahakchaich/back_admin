@@ -204,7 +204,7 @@ class CommandController extends Controller
     }
 
     //Partner Orders
-    public function getPartnerOrdersPending()
+    public function getPartnerOrders()
     {
         $partners = Partner::where('id', auth()->user()->id)
             ->with('partnerCommands.command.user', 'partnerCommands.box')->get();
