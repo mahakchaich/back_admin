@@ -212,10 +212,16 @@ class CommandController extends Controller
             return $partner->partnerCommands->map(function ($partnerCommand) {
                 return [
                     'command_id' => $partnerCommand->command->id,
+                    'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,
+                    'user_email' => $partnerCommand->command->user->email,
                     'user_phone' => $partnerCommand->command->user->phone,
                     'box_name' => $partnerCommand->box->title,
                     'box_image' => $partnerCommand->box->image,
+                    'box_description' => $partnerCommand->box->description,
+                    'box_category' => $partnerCommand->box->category,
+                    'box_startdate' => $partnerCommand->box->startdate,
+                    'box_enddate' => $partnerCommand->box->enddate,
                     'oldprice' => $partnerCommand->box->oldprice,
                     'newprice' => $partnerCommand->box->newprice,
                     'remaining_quantity' => $partnerCommand->box->remaining_quantity,
