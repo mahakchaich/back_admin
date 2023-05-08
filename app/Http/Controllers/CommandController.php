@@ -211,6 +211,7 @@ class CommandController extends Controller
         $partnerOrders = $partner->flatMap(function ($partner) {
             return $partner->partnerCommands->map(function ($partnerCommand) {
                 return [
+                    'command_id' => $partnerCommand->command->id,
                     'user' => $partnerCommand->command->user->name,
                     'box_name' => $partnerCommand->box->title,
                     'quantity' => $partnerCommand->quantity,
