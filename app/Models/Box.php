@@ -16,7 +16,7 @@ class Box extends Model
     protected $table = 'boxs';
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = ['title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'image', 'category', 'status', 'partner_id'];
     public function commands()
     {

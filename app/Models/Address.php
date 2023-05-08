@@ -11,7 +11,7 @@ class Address extends Model
 
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = ['lat', 'lng', 'position', 'partner_id'];
 
     public function partner()

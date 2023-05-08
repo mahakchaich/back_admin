@@ -18,10 +18,6 @@ class forgetPasswordCode extends Mailable
        $this->data = $user;
     }
 
-    // public function build(){
-    //     return $this->from("foodsaverapp9@gmail.com")->subject($this->data["subject"])->view("emails.forgetPassword")->with("data",$this->data);
-    // }
-
     public function build(){
         return $this->view("emails.forgetPassword");
     }

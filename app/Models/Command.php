@@ -12,7 +12,9 @@ class Command extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    
 
+    public $timestamps = true;
     protected $fillable = [
         'user_id',
         'price',

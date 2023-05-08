@@ -12,6 +12,9 @@ class BoxCommand extends Model
     use HasFactory;
 
     protected $table = 'box_command';
+    protected $guarded = [];
+
+    public $timestamps = true;
     protected $fillable = ['box_id', 'command_id', 'quantity'];
 
     public function box()
