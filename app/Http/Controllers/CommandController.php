@@ -7,6 +7,7 @@ use Exception;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Command;
+use App\Models\Partner;
 use App\Models\BoxCommand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -200,5 +201,18 @@ class CommandController extends Controller
         $orders = Command::where('status', $status)->get();
 
         return response()->json($orders);
+    }
+
+    //Partner Orders
+    public function getPartnerOrdersPending()
+    {
+        $partners = Partner::with('partnerCommands')->get();
+        $partnerOrders = [];
+
+        foreach ($partners as $partner) {
+            $partnerOrders[$partner->id] = $partner->partnerCommands->pluck('command_id')->toArray();
+        }
+
+        return $partnerOrders;
     }
 }

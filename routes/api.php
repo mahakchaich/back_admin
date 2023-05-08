@@ -149,6 +149,10 @@ Route::prefix('partner')->group(function () {
         Route::get('getPartnerBoxsExpired', [PartnerController::class, 'getPartnerBoxsExpired']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
 
+        //
+        Route::get('getPartnerOrdersPending', [CommandController::class, 'getPartnerOrdersPending']);
+
+
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);
     });
