@@ -107,6 +107,7 @@ Route::prefix('user')->group(function () {
 
         Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']);
         Route::get('boxs/favorites', [BoxController::class, 'getfavorsBoxs']);
+        Route::get('partners/favorites', [PartnerController::class, 'getfavorsPartners']);
 
         Route::get('indexByCategory/{category}', [BoxController::class, 'indexByCategory']);
         Route::get('indexByPartnerCategory/{category}', [BoxController::class, 'indexByPartnerCategory']);
@@ -147,6 +148,10 @@ Route::prefix('partner')->group(function () {
         Route::get('getPartnerBoxsFinished', [PartnerController::class, 'getPartnerBoxsFinished']);
         Route::get('getPartnerBoxsExpired', [PartnerController::class, 'getPartnerBoxsExpired']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
+
+        //
+        Route::get('getPartnerOrdersPending', [CommandController::class, 'getPartnerOrdersPending']);
+
 
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);

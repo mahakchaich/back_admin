@@ -49,4 +49,9 @@ class Partner extends Model
     {
         return $this->hasMany(Address::class);
     }
+
+    public function partnerCommands()
+    {
+        return $this->hasManyThrough(BoxCommand::class, Box::class);
+    }
 }
