@@ -17,7 +17,7 @@ class CreateCommandsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->float('price')->default(0);
-            $table->enum('status', ['PENDING', 'AUTHORIZED', 'REJECTED', 'SUCCESS'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'SUCCESS', 'CANCEL'])->default('PENDING');
             $table->timestamps();
         });
     }

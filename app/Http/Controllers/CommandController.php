@@ -39,7 +39,7 @@ class CommandController extends Controller
                     }
                 },
             ],
-            "status" => "required",
+            "status" => "sometimes|required",
         ]);
 
         if ($valid->fails()) {
@@ -49,13 +49,10 @@ class CommandController extends Controller
             ]);
         }
 
-
         $quantity = $request->input('quantity');
-        $status = $request->input('status');
-
+        $status = $request->input('status') ? $request->input('status') : 'PENDING';
 
         $box = Box::where('id', $boxId)->where('status', 'ACCEPTED')->first();
-
 
         if (!$box) {
             return response()->json([
@@ -68,6 +65,7 @@ class CommandController extends Controller
         $command = new Command;
         $boxCommand = new BoxCommand();
         $price = $quantity * $box->newprice;
+
         // Créer la commande
         $command->user_id = $user->role_id === 1 ? $request->input('user_id') : $user->id;
         $command->price = $price;
