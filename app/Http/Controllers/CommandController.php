@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 
+
+
+use auth;
+use Exception;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Command;
 use App\Models\Partner;
+
 use App\Models\BoxCommand;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CommandResource;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,11 +23,10 @@ class CommandController extends Controller
 {
     public function addOrder(Request $request)
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $boxId = $request->input('box_id');
 
         $valid = Validator::make($request->all(), [
-            // "user_id" => "required|exists:users,id",
             "box_id" => "required|exists:boxs,id",
             'quantity' => [
                 'required',
@@ -46,21 +49,13 @@ class CommandController extends Controller
             ]);
         }
 
-        // $userId = $request->input('user_id');
+
         $quantity = $request->input('quantity');
         $status = $request->input('status');
 
 
-        // check if user status is active and box status is accepted
-        // $user = User::where('id', $userId)->where('status', 'ACTIVE')->first();
         $box = Box::where('id', $boxId)->where('status', 'ACCEPTED')->first();
 
-        // if (!$user) {
-        //     return response()->json([
-        //         'message' => 'User not found or inactive',
-        //         'status' => '400'
-        //     ]);
-        // }
 
         if (!$box) {
             return response()->json([
@@ -69,19 +64,15 @@ class CommandController extends Controller
             ]);
         }
 
-        // create new instances
         $box = Box::find($boxId);
         $command = new Command;
         $boxCommand = new BoxCommand();
-        // Calculer le prix en fonction de la quantité et du nouveau prix
         $price = $quantity * $box->newprice;
         // Créer la commande
-        // $command->user_id = $userId;
         $command->user_id = $user->role_id === 1 ? $request->input('user_id') : $user->id;
         $command->price = $price;
         $command->status = $status;
         $command->save();
-
 
         // Ajouter le panier à la commande
         $boxCommand->box_id = $boxId;

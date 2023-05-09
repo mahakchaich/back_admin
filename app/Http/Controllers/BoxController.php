@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PartnerResource;
-use App\Models\Like;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Partner;
