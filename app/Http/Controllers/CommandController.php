@@ -222,4 +222,12 @@ class CommandController extends Controller
 
         return $partnerOrders;
     }
+
+
+    public function getOrdersByUser()
+    {
+        $user = auth()->user();
+        $commands = Command::where('user_id', $user->id)->with('user', 'boxs')->get();
+        return CommandResource::collection($commands);
+    }
 }

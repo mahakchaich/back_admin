@@ -117,6 +117,8 @@ Route::prefix('user')->group(function () {
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order
         Route::post('orders/addorder', [CommandController::class, 'addOrder']);
+        //
+        Route::get('getUserOrders', [CommandController::class, 'getOrdersByUser']);
 
         // Like
         Route::post('/boxs/{id}/likes', [LikeController::class, 'likeOrUnlike']);
