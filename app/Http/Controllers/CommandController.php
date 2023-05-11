@@ -15,9 +15,12 @@ use App\Models\Partner;
 use App\Models\BoxCommand;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommandResource;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class CommandController extends Controller
 {
@@ -82,9 +85,20 @@ class CommandController extends Controller
         $qt = $box->remaining_quantity - $quantity;
         box::where('id', $boxId)->update(['remaining_quantity' => $qt]);
 
+        // Générer le QR code
+        $qrCodePath = public_path('storage/qrCode/qr-codeeee.jpg');
+
+        // $qrcode =
+        $qrcode = QrCode::size(200)->generate($command->id, $qrCodePath);
+        $filename = 'qrcode.png';
+
+        $path = public_path('storage/qrCode/' . $filename);
+        file_put_contents($path, $qrcode);
+        // Retourner la réponse
         return response()->json([
             'message' => 'Commande créée avec succès',
-            'status' => '200'
+            'status' => '200',
+            // 'qrcode' => $qrcode
         ]);
     }
 
