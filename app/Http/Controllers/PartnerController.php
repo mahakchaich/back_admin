@@ -81,6 +81,9 @@ class PartnerController extends Controller
         $partner->openingtime = $request->openingtime;
         $partner->closingtime = $request->closingtime;
         $partner->role_id = $request->roleId;
+        $partner->long = $request->long;
+        $partner->lat = $request->lat;
+        $partner->adress = $request->adress;
         $partner->save();
 
         // create token for partner
