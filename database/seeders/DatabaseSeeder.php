@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call(boxs::class);
         $this->call(like_boxs::class);
         $this->call(like_partner::class);
+        $this->call(commands::class);
+        $this->call(box_command::class);
         // \App\Models\User::factory(10)->create();
     }
 }

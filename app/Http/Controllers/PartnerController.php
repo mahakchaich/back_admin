@@ -424,4 +424,44 @@ class PartnerController extends Controller
             ], 401);
         }
     }
+    function calculateDistance($lat1, $lon1, $lat2, $lon2, $unit='km') {
+        $radlat1 = pi() * $lat1 / 180;
+        $radlat2 = pi() * $lat2 / 180;
+        $theta = $lon1 - $lon2;
+        $radtheta = pi() * $theta / 180;
+        $dist = sin($radlat1) * sin($radlat2) + cos($radlat1) * cos($radlat2) * cos($radtheta);
+        $dist = acos($dist);
+        $dist = $dist * 180 / pi();
+        $dist = $dist * 60 * 1.1515;
+        if ($unit == 'km') {
+            $dist = $dist * 1.609344;
+        } elseif ($unit == 'm') {
+            $dist = $dist * 1609.344;
+        }
+        return $dist;
+    }
+    
+    public function getNearbyPartners( $lat,$long,$dist)
+    {
+
+    
+        $partners = Partner::select("long","lat","adress","name","created_at")->orderBy("created_at",'DESC')->get() ;
+        $data = [];
+            foreach($partners as $partner){
+                $d = round($this->calculateDistance($lat,$long,$partner->long,$partner->lat),2);
+                if ($d <= $dist ) {
+                    array_push($data,$partner);
+                };
+            };
+        return response([
+            "long" => $long,
+            "lat" => $lat,
+            "partsList" => $data,
+            "distan" => round($this->calculateDistance(9.01,10.33,9.01,10.33),2)
+            
+        ],200);
+    }
+
+
+
 }

@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 
 
 
-use auth;
 use Exception;
 use App\Models\Box;
-use App\Models\User;
 use App\Models\Command;
 use App\Models\Partner;
 
@@ -19,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommandResource;
 use Illuminate\Support\Facades\Validator;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class CommandController extends Controller
@@ -85,20 +82,10 @@ class CommandController extends Controller
         $qt = $box->remaining_quantity - $quantity;
         box::where('id', $boxId)->update(['remaining_quantity' => $qt]);
 
-        // Générer le QR code
-        $qrCodePath = public_path('storage/qrCode/qr-codeeee.jpg');
-
-        // $qrcode =
-        $qrcode = QrCode::size(200)->generate($command->id, $qrCodePath);
-        $filename = 'qrcode.png';
-
-        $path = public_path('storage/qrCode/' . $filename);
-        file_put_contents($path, $qrcode);
         // Retourner la réponse
         return response()->json([
             'message' => 'Commande créée avec succès',
-            'status' => '200',
-            // 'qrcode' => $qrcode
+            'status' => '200'
         ]);
     }
 
@@ -235,5 +222,36 @@ class CommandController extends Controller
         })->toArray();
 
         return $partnerOrders;
+    }
+
+    public function verifQr(Request $request){
+     
+        $valid = Validator::make($request->all(), [
+            "command_id" => "required|exists:commands,id",
+            "partner_id" => "required|exists:partners,id"
+        ]);
+
+        if ($valid->fails()) {
+            return response()->json([
+                "message" => $valid->errors(),
+                "status" => 400
+            ]);
+        }
+        $cmd = Command::findOrFail($request->command_id);
+         if($cmd->status == "PENDING"){
+             $cmd->status = "SUCCESS" ;
+             $cmd->save();
+             return response()->json([
+                 'message' => 'code Verificated with success',
+                 'status' => '200',
+                 "user" => auth()->user()->id,
+                 "cmd" => $cmd
+             ]);
+         }elseif($cmd->status == "SUCCESS"){
+            return response()->json([
+                'message' => 'this code already verified',
+                'status' => '200',
+            ]);
+         }
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CommandController;
 use App\Http\Controllers\PartnerController;
+use App\Models\Partner;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +101,8 @@ Route::prefix('user')->group(function () {
         Route::get('user', [AuthController::class, 'user']);
         Route::apiResource('users', UserController::class);
         Route::put('user/password', [AuthController::class, 'updatePassword']);
+        //partner
+        Route::get('getNearbyPartners/{lat}&{long}&{dist}', [PartnerController::class, 'getNearbyPartners']);
 
         // Box
         Route::get('boxs', [BoxController::class, 'index']); // all boxs
@@ -117,6 +120,7 @@ Route::prefix('user')->group(function () {
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order
         Route::post('orders/addorder', [CommandController::class, 'addOrder']);
+        Route::post('orders/verif', [CommandController::class, 'verifQr']);
 
         // Like
         Route::post('/boxs/{id}/likes', [LikeController::class, 'likeOrUnlike']);
