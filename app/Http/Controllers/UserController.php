@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 use App\Http\Resources\CommandResource;
+use App\Models\Partner;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,7 +81,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         //valdiate
-        $rules = [];
+        // $rules = [];
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => [
@@ -149,10 +151,29 @@ class UserController extends Controller
     // send random code to virif mail
     public function forgetPassWord(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|exists:users,email',
+    
+        $validator = Validator::make($request->all(), [
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    if (!User::where('email', $value)->exists() && !Partner::where('email', $value)->exists()) {
+                        $fail('The selected email is invalid.');
+                    }
+                },
+            ],
         ]);
+            
+       
+        if ($validator->fails()) {
+            return response()->json([
+                $validator->errors(),
+                "status" => 400
+            ]);
+        }
+
         $user = User::where('email', $request->email)->first();
+        $partner = Partner::where('email', $request->email)->first();
         $code = self::randomcode(4);
 
         if ($user) {
@@ -172,11 +193,29 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
             ]);
-        } else {
+        } else if($partner) {
+            $data = [
+                "email" => $request->email,
+                "name" => $partner->name,
+                "code" => $code,
+                "subject" => "forget password",
+            ];
+            Mail::to($data["email"])->send(new forgetPasswordCode($data));
+            $verifTable = new verification_code();
+            $verifTable->email = $request->email;
+            $verifTable->code = $code;
+            $verifTable->status = "pending";
+            $verifTable->save();
+
             return response()->json([
-                'status' => 'error',
-                'message' => "email does not existe",
+                'status' => 'success',
             ]);
+        }else{
+            return response()->json([
+                'status' => 'sucess',
+                'message' => "partner",
+            ]);
+
         }
     }
 
