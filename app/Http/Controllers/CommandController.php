@@ -224,16 +224,18 @@ class CommandController extends Controller
         return $partnerOrders;
     }
 
-<<<<<<< HEAD
+
 
     public function getOrdersByUser()
     {
         $user = auth()->user();
         $commands = Command::where('user_id', $user->id)->with('user', 'boxs')->get();
         return CommandResource::collection($commands);
-=======
-    public function verifQr(Request $request){
-     
+    }
+
+    public function verifQr(Request $request)
+    {
+
         $valid = Validator::make($request->all(), [
             "command_id" => "required|exists:commands,id",
             "partner_id" => "required|exists:partners,id"
@@ -246,21 +248,20 @@ class CommandController extends Controller
             ]);
         }
         $cmd = Command::findOrFail($request->command_id);
-         if($cmd->status == "PENDING"){
-             $cmd->status = "SUCCESS" ;
-             $cmd->save();
-             return response()->json([
-                 'message' => 'code Verificated with success',
-                 'status' => '200',
-                 "user" => auth()->user()->id,
-                 "cmd" => $cmd
-             ]);
-         }elseif($cmd->status == "SUCCESS"){
+        if ($cmd->status == "PENDING") {
+            $cmd->status = "SUCCESS";
+            $cmd->save();
+            return response()->json([
+                'message' => 'code Verificated with success',
+                'status' => '200',
+                "user" => auth()->user()->id,
+                "cmd" => $cmd
+            ]);
+        } elseif ($cmd->status == "SUCCESS") {
             return response()->json([
                 'message' => 'this code already verified',
                 'status' => '200',
             ]);
-         }
->>>>>>> 60875183c2a40d01058bb20e8ffa4f4227601d6e
+        }
     }
 }
