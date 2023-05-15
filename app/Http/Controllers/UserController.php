@@ -175,7 +175,11 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
         $partner = Partner::where('email', $request->email)->first();
         $code = self::randomcode(4);
-
+        // make old codes expired
+        $oldCodes = verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status"=>"expired"]) ;
+        // $oldCodes->update("status","expired");
+        // $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending","code"=>$code])->orderBy('created_at', 'desc')->first();
+// 
         if ($user) {
             $data = [
                 "email" => $request->email,
@@ -221,22 +225,42 @@ class UserController extends Controller
 
     public function verifCode(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|exists:users,email',
+        $validator = Validator::make($request->all(), [
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    if (!User::where('email', $value)->exists() && !Partner::where('email', $value)->exists()) {
+                        $fail('The selected email is invalid.');
+                    }
+                },
+            ],
+            'code' =>[
+                "required",
+                "string",
+                "min:4",
+                "max:4",
+                "exists:verification_codes,code"
+            ]
         ]);
-        $user = User::where('email', $request->email)->first();
+            
+       
+        if ($validator->fails()) {
+            return response()->json([
+                $validator->errors(),
+                "status" => 400
+            ]);
+        }
         $code = $request->code;
-        // $HashedCode = verification_code::where('email', $request->email)->first();
-        $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending"])->first();
-        $valide = $dataBaseCode["code"] === $code && $dataBaseCode["status"] === "pending";
+        $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending","code"=>$code])->orderBy('created_at', 'desc')->first();
 
-        if ($valide) {
-            // $token = $user->createToken('Personal Access Token', ["user"])->plainTextToken;
-            verification_code::where(["email" => $request->email, "status" => "pending"])->first()->update(["status" => "used"]);
+        if ($dataBaseCode) {
+            $dataBaseCode->status = "used";
+            $dataBaseCode->save();
             return response()->json([
                 'message' => "verification success",
-                // 'token' => $token,
-                "status" => 200
+                "status" => 200,
+                "code" => $dataBaseCode
             ]);
         } else {
             return response()->json([
