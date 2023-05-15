@@ -224,6 +224,29 @@ class CommandController extends Controller
         return $partnerOrders;
     }
 
+    //Update Status
+    public function updateOrderStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:PENDING,SUCCESS,CANCEL',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $command = Command::find($id);
+
+        if (!$command) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        $command->status = $request->input('status');
+        $command->save();
+
+        return response()->json(['message' => 'Order status updated successfully'], 200);
+    }
+
 
 
     public function getOrdersByUser()
