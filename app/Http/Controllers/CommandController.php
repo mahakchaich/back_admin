@@ -52,7 +52,7 @@ class CommandController extends Controller
         $quantity = $request->input('quantity');
         $status = $request->input('status') ? $request->input('status') : 'PENDING';
 
-        $box = Box::where('id', $boxId)->where('status', 'ACCEPTED')->first();
+        $box = Box::where('status', 'ACCEPTED')->findOrFail($boxId);
 
         if (!$box) {
             return response()->json([
@@ -61,7 +61,7 @@ class CommandController extends Controller
             ]);
         }
 
-        $box = Box::find($boxId);
+        $box = Box::findOrFail($boxId);
         $command = new Command;
         $boxCommand = new BoxCommand();
         $price = $quantity * $box->newprice;
@@ -93,7 +93,7 @@ class CommandController extends Controller
     public function updateOrder(Request $request, $id)
     {
         // Trouver la commande à mettre à jour
-        $command = Command::find($id);
+        $command = Command::findOrFail ($id);
 
         // Vérifier si la commande existe
         if (!$command) {
@@ -134,11 +134,11 @@ class CommandController extends Controller
     //get order by id
     public function getOrderById($id)
     {
-        $commande = Command::find($id);
+        $commande = Command::findOrFail ($id);
         if (is_null($commande)) {
             return response()->json(['message' => 'Commande introuvable'], 404);
         }
-        return response()->json(Command::find($id), 200);
+        return response()->json(Command::findOrFail ($id), 200);
     }
 
     // delete Order
@@ -201,6 +201,7 @@ class CommandController extends Controller
         $partnerOrders = $partner->flatMap(function ($partner) {
             return $partner->partnerCommands->map(function ($partnerCommand) {
                 return [
+                    "partner_id " => $partnerCommand->box->partner_id,
                     'command_id' => $partnerCommand->command->id,
                     'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,

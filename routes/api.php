@@ -153,7 +153,7 @@ Route::prefix('partner')->group(function () {
         Route::get('getPartnerBoxsExpired', [PartnerController::class, 'getPartnerBoxsExpired']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
 
-        //
+        // orders
         Route::get('getPartnerOrders', [CommandController::class, 'getPartnerOrders']);
 
 
