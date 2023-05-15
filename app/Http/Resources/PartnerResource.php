@@ -26,6 +26,9 @@ class PartnerResource extends JsonResource
             'category' => $this->category,
             'openingtime' => $this->openingtime,
             'closingtime' => $this->closingtime,
+            'long' => $this->long,
+            'lat' => $this->lat,
+            'adress' => $this->adress,
             'boxs' => BoxResource::collection($this->whenLoaded('boxs')),
             'is_liked' => $this->did_liked()
         ];

@@ -15,7 +15,18 @@ class Partner extends Model
     protected $guarded = [];
 
     public $timestamps = true;
-    protected $fillable = ['name', 'description', 'email', 'phone', 'password', 'image', 'category', 'openingtime', 'closingtime'];
+    protected $fillable = [
+        'name',
+        'description',
+        'email', 'phone',
+        'password',
+        'image',
+        'category',
+        'openingtime',
+        'lat',
+        'long',
+        'adress'
+    ];
 
     public function __construct(array $attributes = [])
     {
