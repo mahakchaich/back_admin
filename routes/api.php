@@ -76,6 +76,7 @@ Route::prefix('admin')->group(function () {
         Route::get('orders/orderdetails/{id}', [CommandController::class, 'show']);
         Route::get('searchOrder', [CommandController::class, 'searchOrder']);
         Route::get('filterorders', [CommandController::class, 'filterOrders']);
+        Route::put('orders/status/{id}', [CommandController::class, 'updateOrderStatus']);
 
         //Partners Management
         Route::apiResource('partners', PartnerController::class);
