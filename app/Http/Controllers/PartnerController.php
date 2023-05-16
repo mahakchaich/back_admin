@@ -424,7 +424,8 @@ class PartnerController extends Controller
             ], 401);
         }
     }
-    function calculateDistance($lat1, $lon1, $lat2, $lon2, $unit='km') {
+    function calculateDistance($lat1, $lon1, $lat2, $lon2, $unit = 'km')
+    {
         $radlat1 = pi() * $lat1 / 180;
         $radlat2 = pi() * $lat2 / 180;
         $theta = $lon1 - $lon2;
@@ -440,28 +441,25 @@ class PartnerController extends Controller
         }
         return $dist;
     }
-    
-    public function getNearbyPartners( $lat,$long,$dist)
+
+    public function getNearbyPartners($lat, $long, $dist)
     {
 
-    
-        $partners = Partner::select("long","lat","adress","name","created_at")->orderBy("created_at",'DESC')->get() ;
+
+        $partners = Partner::select("long", "lat", "adress", "name", "created_at")->orderBy("created_at", 'DESC')->get();
         $data = [];
-            foreach($partners as $partner){
-                $d = round($this->calculateDistance($lat,$long,$partner->long,$partner->lat),2);
-                if ($d <= $dist ) {
-                    array_push($data,$partner);
-                };
+        foreach ($partners as $partner) {
+            $d = round($this->calculateDistance($lat, $long, $partner->long, $partner->lat), 2);
+            if ($d <= $dist) {
+                array_push($data, $partner);
             };
+        };
         return response([
             "long" => $long,
             "lat" => $lat,
             "partsList" => $data,
-            "distan" => round($this->calculateDistance(9.01,10.33,9.01,10.33),2)
-            
-        ],200);
+            "distan" => round($this->calculateDistance(9.01, 10.33, 9.01, 10.33), 2)
+
+        ], 200);
     }
-
-
-
 }
