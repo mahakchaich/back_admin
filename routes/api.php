@@ -103,7 +103,7 @@ Route::prefix('user')->group(function () {
         Route::apiResource('users', UserController::class);
         Route::put('user/password', [AuthController::class, 'updatePassword']);
         //partner
-        Route::get('getNearbyPartners/{lat}&{long}&{dist}', [PartnerController::class, 'getNearbyPartners']);
+        Route::get('getNearbyPartners/{lat}&{long}&{dist}&{unity?}', [PartnerController::class, 'getNearbyPartners']);
 
         // Box
         Route::get('boxs', [BoxController::class, 'index']); // all boxs

@@ -441,23 +441,23 @@ class PartnerController extends Controller
         return $dist;
     }
     
-    public function getNearbyPartners( $lat,$long,$dist)
+    public function getNearbyPartners( $lat,$long,$dist,$unity = "km")
     {
 
     
         $partners = Partner::select("long","lat","adress","name","created_at")->orderBy("created_at",'DESC')->get() ;
         $data = [];
             foreach($partners as $partner){
-                $d = round($this->calculateDistance($lat,$long,$partner->long,$partner->lat),2);
+                $d = round($this->calculateDistance($lat,$long,$partner->lat,$partner->long,$unity),2);
                 if ($d <= $dist ) {
                     array_push($data,$partner);
                 };
             };
         return response([
-            "long" => $long,
-            "lat" => $lat,
-            "partsList" => $data,
-            "distan" => round($this->calculateDistance(9.01,10.33,9.01,10.33),2)
+            // "long" => $long,
+            // "lat" => $lat,
+            "partnerList" => $data,
+            "distan" =>"$d : $unity",
             
         ],200);
     }
