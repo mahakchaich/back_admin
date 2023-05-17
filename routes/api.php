@@ -123,7 +123,7 @@ Route::prefix('user')->group(function () {
         Route::post('orders/addorder', [CommandController::class, 'addOrder']);
 
         //
-        Route::get('getUserOrders', [CommandController::class, 'getOrdersByUser']);
+        Route::get('getUserOrders/{status}', [CommandController::class, 'getOrdersByUser']);
 
         Route::post('orders/verif', [CommandController::class, 'verifQr']);
 

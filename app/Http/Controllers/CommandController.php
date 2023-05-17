@@ -93,7 +93,7 @@ class CommandController extends Controller
     public function updateOrder(Request $request, $id)
     {
         // Trouver la commande à mettre à jour
-        $command = Command::findOrFail ($id);
+        $command = Command::findOrFail($id);
 
         // Vérifier si la commande existe
         if (!$command) {
@@ -134,11 +134,11 @@ class CommandController extends Controller
     //get order by id
     public function getOrderById($id)
     {
-        $commande = Command::findOrFail ($id);
+        $commande = Command::findOrFail($id);
         if (is_null($commande)) {
             return response()->json(['message' => 'Commande introuvable'], 404);
         }
-        return response()->json(Command::findOrFail ($id), 200);
+        return response()->json(Command::findOrFail($id), 200);
     }
 
     // delete Order
@@ -250,12 +250,27 @@ class CommandController extends Controller
 
 
 
-    public function getOrdersByUser()
+    // public function getOrdersByUser()
+    // {
+    //     $user = auth()->user();
+    //     $commands = Command::where('user_id', $user->id)->with('user', 'boxs')->get();
+    //     return CommandResource::collection($commands);
+    // }
+
+    public function getOrdersByUser($status = null)
     {
         $user = auth()->user();
-        $commands = Command::where('user_id', $user->id)->with('user', 'boxs')->get();
+        $query = Command::where('user_id', $user->id)->with('user', 'boxs');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $commands = $query->get();
+
         return CommandResource::collection($commands);
     }
+
 
     public function verifQr(Request $request)
     {
