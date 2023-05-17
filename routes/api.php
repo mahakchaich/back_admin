@@ -152,11 +152,7 @@ Route::prefix('partner')->group(function () {
 
         Route::put('partners/info', [AuthController::class, 'update']);
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
-        Route::get('getPartnerBoxsAccepted', [PartnerController::class, 'getPartnerBoxsAccepted']);
-        Route::get('getPartnerBoxsPending', [PartnerController::class, 'getPartnerBoxsPending']);
-        Route::get('getPartnerBoxsRejected', [PartnerController::class, 'getPartnerBoxsRejected']);
-        Route::get('getPartnerBoxsFinished', [PartnerController::class, 'getPartnerBoxsFinished']);
-        Route::get('getPartnerBoxsExpired', [PartnerController::class, 'getPartnerBoxsExpired']);
+        Route::get('getPartnerBoxsbystatus/{status}', [PartnerController::class, 'getPartnerBoxsbystatus']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
 
         // orders
