@@ -462,7 +462,8 @@ class PartnerController extends Controller
             "lat" => $lat,
 
             "partnerList" => $data,
-            "distan" => "$d : $unity",
+            "input_dis"=> $dist,
+            "output_distan" => "$d : $unity",
 
         ], 200);
     }

@@ -64,7 +64,7 @@ class partner extends Seeder
                 'openingtime' => '08:00:00',
                 'closingtime' => '20:00:00',
                 'long' => 10.6381,
-                'lat' => 35.8300,
+                'lat' =>    35.9017,
                 'role_id' => 3,
                 // 'created_at' => date('d-m-Y H:i:s'),
                 // 'updated_at' => date('d-m-Y H:i:s'),
