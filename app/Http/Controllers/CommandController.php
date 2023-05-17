@@ -194,14 +194,18 @@ class CommandController extends Controller
     }
 
     //Partner Orders
-    public function getPartnerOrders()
+    public function getPartnerOrders($status)
     {
         $partner = Partner::where('id', auth()->user()->id)
-            ->with('partnerCommands.command.user', 'partnerCommands.box')->get();
-        $partnerOrders = $partner->flatMap(function ($partner) {
-            return $partner->partnerCommands->map(function ($partnerCommand) {
+            ->with('partnerCommands.command.user', 'partnerCommands.box')
+            ->get();
+
+        $partnerOrders = $partner->flatMap(function ($partner) use ($status) {
+            return $partner->partnerCommands->filter(function ($partnerCommand) use ($status) {
+                return $partnerCommand->command->status === $status;
+            })->map(function ($partnerCommand) {
                 return [
-                    "partner_id " => $partnerCommand->box->partner_id,
+                    "partner_id" => $partnerCommand->box->partner_id,
                     'command_id' => $partnerCommand->command->id,
                     'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,
@@ -224,6 +228,7 @@ class CommandController extends Controller
 
         return $partnerOrders;
     }
+
 
     //Update Status
     public function updateOrderStatus(Request $request, $id)
