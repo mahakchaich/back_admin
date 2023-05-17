@@ -454,8 +454,8 @@ class PartnerController extends Controller
                 };
             };
         return response([
-            // "long" => $long,
-            // "lat" => $lat,
+            "long" => $long,
+            "lat" => $lat,
             "partnerList" => $data,
             "distan" =>"$d : $unity",
             
