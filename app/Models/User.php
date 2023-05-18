@@ -20,11 +20,7 @@ class User extends Authenticatable
     protected $fillable = ['name', 'email', 'phone', 'password', 'status', 'role_id'];
 
 
-    public function commands()
-    {
-        return $this->hasMany(Command::class);
-    }
-
+    
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -33,6 +29,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+    public function commands()
+    {
+        return $this->hasMany(Command::class);
+    }
 
 
     public function scopeUsers($query)

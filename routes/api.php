@@ -31,11 +31,16 @@ function common(string $scope)
     Route::put('passwordpartner', [AuthController::class, 'updatePassworPartner']);
     Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
+    Route::post('verifCode', [UserController::class, 'verifCode']);
 
 
 
     Route::middleware(['auth:sanctum', $scope])->group(
         function () {
+            //Commande
+            Route::get('commandes', [CommandController::class, 'index']);
+            Route::get('commande/{id}', [CommandController::class, 'commande']);
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('user', [AuthController::class, 'user']);
             Route::put('users/info', [AuthController::class, 'updateInfo']);
@@ -49,6 +54,8 @@ Route::prefix('admin')->group(function () {
     common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
         // role management
+        Route::put('addRole', [UserController::class, "addRole"]);
+
         //Boxs Management
         Route::apiResource('boxs', BoxController::class);
         Route::get('searchBoxs', [BoxController::class, 'searchBoxs']);
@@ -121,10 +128,7 @@ Route::prefix('user')->group(function () {
         Route::get('/showboxs', [BoxController::class, 'index2']);
         // order
         Route::post('orders/addorder', [CommandController::class, 'addOrder']);
-
-        //
         Route::get('getUserOrders/{status}', [CommandController::class, 'getOrdersByUser']);
-
         Route::post('orders/verif', [CommandController::class, 'verifQr']);
 
 
@@ -133,6 +137,9 @@ Route::prefix('user')->group(function () {
         Route::get('/boxs/{id}/checklikes', [LikeController::class, 'verifLike']);
         Route::post('/partners/{id}/likes', [LikeController::class, 'likeOrUnlikePartner']);
         Route::get('/partners/{id}/checklikes', [LikeController::class, 'verifLikePartner']);
+
+        // stats
+        Route::get('/userStats', [UserController::class, 'userStats']);
     });
 });
 
@@ -143,17 +150,15 @@ Route::prefix('partner')->group(function () {
     Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
         Route::get('user', [PartnerController::class, 'currentPartner']);
         Route::put('changepassword', [PartnerController::class, 'changePassword']);
-        Route::post('logout', [PartnerController::class, 'logout']);
+        Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
+        Route::put('partners/info', [AuthController::class, 'update']);
+        // Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
-
-        //
         Route::get('partnerboxes', [PartnerController::class, 'showpartnerboxes']);
 
-        Route::put('partners/info', [AuthController::class, 'update']);
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
         Route::get('getPartnerBoxsbystatus/{status}', [PartnerController::class, 'getPartnerBoxsbystatus']);
-        Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
 
         // orders
         Route::get('getPartnerOrders/{status}', [CommandController::class, 'getPartnerOrders']);
@@ -167,15 +172,4 @@ Route::prefix('partner')->group(function () {
 
 
 
-//Commande
-Route::get('commandes', [CommandController::class, 'index']);
-Route::get('commande/{id}', [CommandController::class, 'commande']);
 
-
-
-
-
-//
-Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
-Route::post('verifCode', [UserController::class, 'verifCode']);
-Route::put('addRole', [UserController::class, "addRole"]);

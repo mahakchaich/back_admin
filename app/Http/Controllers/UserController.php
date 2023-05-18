@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Roles;
+use App\Models\BoxCommand;
+use App\Models\Command;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
@@ -13,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 use App\Http\Resources\CommandResource;
+use App\Models\Box;
 use App\Models\Partner;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -360,5 +363,34 @@ class UserController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+    public function userStats()
+    {
+     $savedMoney = 0;
+    //  $savedBoxs = 0;  
+     $commands = User::find(auth()->user()->id)->commands()->where("status" ,"SUCCESS")->get();
+        $commandsList = [];
+        $boxs = [];
+        
+        foreach($commands as $command){
+            $orderBoxs = BoxCommand::where("command_id","=",$command->id)->get();
+            array_push($commandsList,$orderBoxs[0]);
+       } ;
+        foreach($commandsList as $command){
+            $orderBox = box::find($command->box_id);        
+                $savedMoney += $orderBox->oldprice - $orderBox->newprice; // saved money calculation
+
+                array_push($boxs,$orderBox);
+           
+       } ;
+
+
+        return response()->json([
+            // "commandsList "=>$commandsList,
+            // "boxs "=>$boxs,
+            "savedMoney" => $savedMoney,
+            "savedBoxs" => count($boxs) 
+        ]);
     }
 }
