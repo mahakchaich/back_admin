@@ -24,8 +24,8 @@ class BoxObserver
      */
     public function updated(Box $box)
     {
-        $box->remaining_quantity <= 0 ? $box->status = 'FINISHED' : $box->status = 'PENDING';
-        $box->save();
+        // $box->remaining_quantity <= 0 ? $box->status = 'FINISHED' : $box->status = 'PENDING';
+        // $box->save();
     }
 
 

@@ -42,10 +42,17 @@ class computeBoxsAvailiblityCommand extends Command
         // get list 
         // map
         //test date
+
         $boxs = Box::all();
+
         foreach ($boxs as $box) {
-            echo "" . $box->id;
+            if ($box->remaining_quantity === 0) {
+                $box->status = 'FINISHED';
+                $box->save();
+            }
+
             $trigger = new Carbon($box->enddate);
+
             if ($trigger->lt(now())) {
                 $box->status = 'EXPIRED';
                 $box->save();
