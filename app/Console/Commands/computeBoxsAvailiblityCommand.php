@@ -42,13 +42,32 @@ class computeBoxsAvailiblityCommand extends Command
         // get list 
         // map
         //test date
-        $boxs = Box::all();
-        foreach ($boxs as $box) {
-            echo "" . $box->id;
-            $trigger = new Carbon($box->enddate);
-            if ($trigger->lt(now())) {
-                $box->status = 'EXPIRED';
-                $box->save();
+        $boxCommands = \App\Models\BoxCommand::all();
+
+        foreach ($boxCommands as $boxCommand) {
+            $box = $boxCommand->box;
+
+            $boxs = Box::all();
+
+            foreach ($boxs as $box) {
+                if ($box->remaining_quantity === 0 && $box->status === 'ACCEPTED') {
+                    $box->status = 'FINISHED';
+                    $box->save();
+                }
+
+
+                $trigger = new Carbon($box->enddate);
+                $allowedStatuses = ['ACCEPTED', 'PENDING'];
+                if ($trigger->lt(now()) && in_array($box->status, $allowedStatuses)) {
+                    $box->status = 'EXPIRED';
+                    $box->save();
+                }
+                // Change the status of the command to CANCEL
+                $command = $boxCommand->command;
+                if ($command && $command->status === 'PENDING') {
+                    $command->status = 'CANCEL';
+                    $command->save();
+                }
             }
         }
     }
