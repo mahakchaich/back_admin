@@ -19,22 +19,22 @@ class commands extends Seeder
                 'user_id' => 2,
                 'price' => 10,
                 'status' => "PENDING",
-                'created_at' => "2023-05-12 13:51:46",
-                'updated_at' =>"2023-05-12 14:47:08",
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'user_id' => 2,
                 'price' => 10,
                 'status' => "PENDING",
-                'created_at' => "2023-05-12 13:51:46",
-                'updated_at' =>"2023-05-12 14:47:08",
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'user_id' => 2,
                 'price' => 10,
                 'status' => "PENDING",
-                'created_at' => "2023-05-12 13:51:46",
-                'updated_at' =>"2023-05-12 14:47:08",
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
             
         ]); 

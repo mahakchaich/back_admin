@@ -18,7 +18,8 @@ class like_boxs extends Seeder
             [
                 'user_id' => 2,
                 'box_id' => 1,
-           
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 // 'created_at' => date('d-m-Y H:i:s'),
                 // 'updated_at' => date('d-m-Y H:i:s'),
             ],

@@ -482,4 +482,14 @@ class PartnerController extends Controller
 
         ], 200);
     }
+    public function salesStats($date,$type)
+    {   
+
+        $user = auth()->user()->id;
+      return response([
+        "user"=>$user,
+            "date" => $date,
+            "type" => $type,
+        ], 200);
+    }
 }

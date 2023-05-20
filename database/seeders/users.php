@@ -25,8 +25,8 @@ class users extends Seeder
                 'phone' => 53406288,
                 'role_id' => 1,
                 'status' => 'ACTIVE',
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 
             ],
             [
@@ -36,8 +36,8 @@ class users extends Seeder
                 'password' => Hash::make("aaaaaa"),
                 'role_id' => 2,
                 'status' => 'ACTIVE',
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 
             ],
             [
@@ -47,8 +47,8 @@ class users extends Seeder
                 'password' => Hash::make("aaaaaa"),
                 'role_id' => 2,
                 'status' => 'ACTIVE',
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 
             ],
             [
@@ -58,8 +58,8 @@ class users extends Seeder
                 'password' => Hash::make("aaaaaa"),
                 'role_id' => 2,
                 'status' => 'INACTIVE',
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 
             ],
    

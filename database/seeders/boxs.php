@@ -28,8 +28,8 @@ class boxs extends Seeder
                 'partner_id' => 1,
                 'startdate' => date('2023-03-11 13:22:22'),
                 'enddate' => date('2023-03-29 15:22:22'),
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'title' => "aaaaa",
@@ -44,8 +44,8 @@ class boxs extends Seeder
                 'partner_id' => 1,
                 'startdate' => date('2023-03-11 13:22:22'),
                 'enddate' => date('2023-03-29 15:22:22'),
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
         ]); 
        }

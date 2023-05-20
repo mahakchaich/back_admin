@@ -31,8 +31,6 @@ function common(string $scope)
     Route::put('passwordpartner', [AuthController::class, 'updatePassworPartner']);
     Route::post('registerpartner', [PartnerController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
-    Route::post('verifCode', [UserController::class, 'verifCode']);
 
 
 
@@ -95,6 +93,9 @@ Route::prefix('admin')->group(function () {
 
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);
+
+
+        // stats
     });
 });
 
@@ -166,10 +167,15 @@ Route::prefix('partner')->group(function () {
 
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);
+        
+        // stats
+        Route::get('/salesStats/{date}&{type}', [PartnerController::class, 'salesStats']);
     });
 });
 
 
+Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
+Route::post('verifCode', [UserController::class, 'verifCode']);
 
 
 

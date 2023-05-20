@@ -29,10 +29,11 @@ class partner extends Seeder
                 'closingtime' => '20:00:00',
                 'long' => 10.6369,
                 'lat' =>  35.8247,
+                'adress' =>  "sousse sude",
                 'status' => 'ACTIVE',
                 'role_id' => 3,
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
                 'name' => 'hamda',
@@ -47,9 +48,11 @@ class partner extends Seeder
                 'closingtime' => '20:00:00',
                 'long' => 10.5975,
                 'lat' => 35.9017,
+                'adress' =>  "hammam sousse",
+
                 'role_id' => 3,
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 
             ],
             [
@@ -65,9 +68,11 @@ class partner extends Seeder
                 'closingtime' => '20:00:00',
                 'long' => 10.6381,
                 'lat' =>    35.9017,
+                'adress' =>  "sousse nord",
+
                 'role_id' => 3,
-                // 'created_at' => date('d-m-Y H:i:s'),
-                // 'updated_at' => date('d-m-Y H:i:s'),
+                'created_at' =>date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 
             ],
    
