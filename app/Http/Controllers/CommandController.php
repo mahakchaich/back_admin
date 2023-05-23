@@ -82,11 +82,24 @@ class CommandController extends Controller
         $qt = $box->remaining_quantity - $quantity;
         box::where('id', $boxId)->update(['remaining_quantity' => $qt]);
 
-        // Retourner la réponse
-        return response()->json([
-            'message' => 'Commande créée avec succès',
-            'status' => '200'
-        ]);
+        // // Retourner la réponse
+        // return response()->json([
+        //     'message' => 'Commande créée avec succès',
+        //     'status' => '200',
+        //     'order' => [
+        //         'user_id' => $command->user_id,
+        //         'price' => $command->price,
+        //         'status' => $command->status,
+        //         'box_id' => $boxCommand->box_id,
+        //         'quantity' => $boxCommand->quantity
+        //     ]
+
+        // ]);
+        // Charger les détails de la commande
+        $commande = Command::with('user', 'boxs')->findOrFail($command->id);
+
+        // Retourner la réponse avec les détails de la commande
+        return new CommandResource($commande);
     }
 
 
