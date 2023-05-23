@@ -486,10 +486,12 @@ class PartnerController extends Controller
     {   
 
         $user = auth()->user()->id;
+        $boxs = Partner::find($user)->boxs()->groupBy("oldprice")->count() ;
       return response([
         "user"=>$user,
-            "date" => $date,
-            "type" => $type,
+        "boxs"=>$boxs,
+            // "date" => $date,
+            // "type" => $type,
         ], 200);
     }
 }
