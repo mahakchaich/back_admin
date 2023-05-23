@@ -96,7 +96,7 @@ class CommandController extends Controller
 
         // ]);
         // Charger les détails de la commande
-        $commande = Command::with('user', 'boxs')->findOrFail($command->id);
+        $commande = Command::with('user', 'boxs', 'boxs.partner')->findOrFail($command->id);
 
         // Retourner la réponse avec les détails de la commande
         return new CommandResource($commande);
@@ -222,6 +222,7 @@ class CommandController extends Controller
                     'command_id' => $partnerCommand->command->id,
                     'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,
+                    'partner_name' => $partnerCommand->command->box->partner_name,
                     'user_email' => $partnerCommand->command->user->email,
                     'user_phone' => $partnerCommand->command->user->phone,
                     'box_name' => $partnerCommand->box->title,
@@ -278,7 +279,7 @@ class CommandController extends Controller
     public function getOrdersByUser($status = null)
     {
         $user = auth()->user();
-        $query = Command::where('user_id', $user->id)->with('user', 'boxs');
+        $query = Command::where('user_id', $user->id)->with('user', 'boxs', 'boxs.partner');
 
         if ($status) {
             $query->where('status', $status);
