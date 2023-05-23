@@ -223,6 +223,8 @@ class CommandController extends Controller
                     'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,
                     'partner_name' => $partnerCommand->command->box->partner_name,
+                    'partner_email' => $partnerCommand->command->box->partner_email,
+                    'partner_phone' => $partnerCommand->command->box->partner_phone,
                     'user_email' => $partnerCommand->command->user->email,
                     'user_phone' => $partnerCommand->command->user->phone,
                     'box_name' => $partnerCommand->box->title,
