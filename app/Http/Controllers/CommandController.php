@@ -216,15 +216,15 @@ class CommandController extends Controller
         $partnerOrders = $partner->flatMap(function ($partner) use ($status) {
             return $partner->partnerCommands->filter(function ($partnerCommand) use ($status) {
                 return $partnerCommand->command->status === $status;
-            })->map(function ($partnerCommand) {
+            })->map(function ($partnerCommand) use ($partner) {
                 return [
                     "partner_id" => $partnerCommand->box->partner_id,
                     'command_id' => $partnerCommand->command->id,
                     'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,
-                    'partner_name' => $partnerCommand->command->box->partner_name,
-                    'partner_email' => $partnerCommand->command->box->partner_email,
-                    'partner_phone' => $partnerCommand->command->box->partner_phone,
+                    'partner_name' => $partner->name,
+                    'partner_email' => $partner->email,
+                    'partner_phone' => $partner->phone,
                     'user_email' => $partnerCommand->command->user->email,
                     'user_phone' => $partnerCommand->command->user->phone,
                     'box_name' => $partnerCommand->box->title,
