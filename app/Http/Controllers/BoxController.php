@@ -340,8 +340,7 @@ class BoxController extends Controller
 
 
     //Search Box
-
-    public function searchBox(Request $request)
+    public function searchBoxs(Request $request)
     {
         $search = $request->has('search') ? $request->input('search') : "";
         $status = $request->has('status') ? $request->input('status') : "";
@@ -349,9 +348,9 @@ class BoxController extends Controller
         $boxs = Box::where('status', 'like', "%" . $status . "%")
             ->where(function ($q) use ($search) {
 
-                $q->Where('partner_id', 'LIKE', "%{$search}%")
+                $q->Where('newprice', 'LIKE', "%{$search}%")
                     ->orWhere('title', 'LIKE', "%{$search}%")
-                    ->orWhere('id', 'LIKE', "%{$search}%");
+                    ->orWhere('category', 'LIKE', "%{$search}%");
             })
             ->get();
         return response()->json($boxs);

@@ -167,7 +167,7 @@ Route::prefix('partner')->group(function () {
 
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);
-        
+
         // stats
         Route::get('/salesStats/{date}&{type}', [PartnerController::class, 'salesStats']);
     });
@@ -176,6 +176,3 @@ Route::prefix('partner')->group(function () {
 
 Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
 Route::post('verifCode', [UserController::class, 'verifCode']);
-
-
-
