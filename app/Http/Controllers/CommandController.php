@@ -96,7 +96,7 @@ class CommandController extends Controller
 
         // ]);
         // Charger les détails de la commande
-        $commande = Command::with('user', 'boxs')->findOrFail($command->id);
+        $commande = Command::with('user', 'boxs', 'boxs.partner')->findOrFail($command->id);
 
         // Retourner la réponse avec les détails de la commande
         return new CommandResource($commande);
@@ -216,12 +216,15 @@ class CommandController extends Controller
         $partnerOrders = $partner->flatMap(function ($partner) use ($status) {
             return $partner->partnerCommands->filter(function ($partnerCommand) use ($status) {
                 return $partnerCommand->command->status === $status;
-            })->map(function ($partnerCommand) {
+            })->map(function ($partnerCommand) use ($partner) {
                 return [
                     "partner_id" => $partnerCommand->box->partner_id,
                     'command_id' => $partnerCommand->command->id,
                     'price' => $partnerCommand->command->price,
                     'user_name' => $partnerCommand->command->user->name,
+                    'partner_name' => $partner->name,
+                    'partner_email' => $partner->email,
+                    'partner_phone' => $partner->phone,
                     'user_email' => $partnerCommand->command->user->email,
                     'user_phone' => $partnerCommand->command->user->phone,
                     'box_name' => $partnerCommand->box->title,
@@ -278,7 +281,7 @@ class CommandController extends Controller
     public function getOrdersByUser($status = null)
     {
         $user = auth()->user();
-        $query = Command::where('user_id', $user->id)->with('user', 'boxs');
+        $query = Command::where('user_id', $user->id)->with('user', 'boxs', 'boxs.partner');
 
         if ($status) {
             $query->where('status', $status);

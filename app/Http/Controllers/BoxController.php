@@ -146,14 +146,14 @@ class BoxController extends Controller
             "startdate" => "required",
             "enddate" => "required",
             "category" => "required",
-            // "status" => "required",
         ]);
-
         if ($user->role_id === 1) { // if user is admin
             $valid->addRules([
-                "partner_id" => "required|exists:partners,id",
+                "partner_email" => "required|exists:partners,email",
             ]);
         }
+
+
 
         if ($valid->fails()) {
             return response()->json([
@@ -165,8 +165,6 @@ class BoxController extends Controller
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
-        // $partnerId = $request->input('partner_id');
-
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
         if ($oldprice <= $newprice) {
@@ -195,7 +193,6 @@ class BoxController extends Controller
         $box = new Box;
 
         // upload image section 
-
         if ($request->hasFile('image')) { // if file existe in the url with image type
             $completeFileName = $request->file('image')->getClientOriginalName();
             $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
@@ -204,9 +201,6 @@ class BoxController extends Controller
             $path = $request->file('image')->storeAs('public/boxs_imgs', $compPic);
             $box->image = $compPic;
         }
-
-
-
         $box->title = $request->title;
         $box->description = $request->description;
         $box->oldprice = $request->oldprice;
@@ -221,9 +215,10 @@ class BoxController extends Controller
 
         // Vérifie si l'utilisateur connecté a le rôle d'administrateur
         if ($user->role_id == 1) {
-            // Si oui, vérifie si le partenaire associé à l'id existe
-            if (Partner::where('id', $request->partner_id)->exists()) {
-                $box->partner_id = $request->partner_id;
+            // Si oui, vérifie si le partenaire associé à l'email existe
+            $partner = Partner::where('email', $request->partner_email)->first();
+            if ($partner) {
+                $box->partner_id = $partner->id;
             } else {
                 return response()->json([
                     'message' => 'Partner not found',
@@ -235,6 +230,7 @@ class BoxController extends Controller
             $box->partner_id = auth()->user()->id;
         }
 
+
         $box->save();
 
         // Vérifie si le partenaire associé à l'id existe
@@ -245,7 +241,6 @@ class BoxController extends Controller
         ]);
     }
 
-
     // get single box
     public function show($id)
     {
@@ -253,7 +248,6 @@ class BoxController extends Controller
             'box' => Box::where('id', $id)->withCount('likes')->get()
         ], 200);
     }
-
     // get single box
     public function showPartner($id)
     {
@@ -340,8 +334,7 @@ class BoxController extends Controller
 
 
     //Search Box
-
-    public function searchBox(Request $request)
+    public function searchBoxs(Request $request)
     {
         $search = $request->has('search') ? $request->input('search') : "";
         $status = $request->has('status') ? $request->input('status') : "";
@@ -349,9 +342,9 @@ class BoxController extends Controller
         $boxs = Box::where('status', 'like', "%" . $status . "%")
             ->where(function ($q) use ($search) {
 
-                $q->Where('partner_id', 'LIKE', "%{$search}%")
+                $q->Where('newprice', 'LIKE', "%{$search}%")
                     ->orWhere('title', 'LIKE', "%{$search}%")
-                    ->orWhere('id', 'LIKE', "%{$search}%");
+                    ->orWhere('category', 'LIKE', "%{$search}%");
             })
             ->get();
         return response()->json($boxs);
