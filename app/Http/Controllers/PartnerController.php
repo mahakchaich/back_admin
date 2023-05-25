@@ -197,8 +197,8 @@ class PartnerController extends Controller
                 Rule::unique('partners')->ignore($id)
             ],
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
-            'password' => 'required|string|min:6',
-            'image' => 'required',
+            // 'password' => 'required|string|min:6',
+            // 'image' => 'required',
             'category' => 'required',
             'description' => 'required'
         ]);
@@ -225,23 +225,23 @@ class PartnerController extends Controller
 
         // Update the resource with the new values from the request
 
-        if ($request->hasFile('image')) { // if file existe in the url with image type
-            $completeFileName = $request->file('image')->getClientOriginalName();
-            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
-            $extention = $request->file('image')->getClientOriginalExtension();
-            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
-            $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
-            $partner->image = $compPic;
-        }
+        // if ($request->hasFile('image')) { // if file existe in the url with image type
+        //     $completeFileName = $request->file('image')->getClientOriginalName();
+        //     $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+        //     $extention = $request->file('image')->getClientOriginalExtension();
+        //     $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+        //     $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
+        //     $partner->image = $compPic;
+        // }
         $partner->name = $request->name;
         $partner->description = $request->description;
         $partner->email = $request->email;
         $partner->phone = $request->phone;
-        $partner->password = Hash::make($request->password);
+        // $partner->password = Hash::make($request->password);
         $partner->category = $request->category;
         $partner->openingtime = $request->openingtime;
         $partner->closingtime = $request->closingtime;
-        $partner->save();
+        $partner->update();
 
         return response()->json([
             'message' => 'Resource updated successfully',
