@@ -24,6 +24,18 @@ use Illuminate\Support\Facades\Validator;
 
 class CommandController extends Controller
 {
+
+    //calcul total orders :
+    public function total()
+    {
+        $commands = Command::all();
+        $commandsCount = $commands->count();
+
+        return response()->json([
+            'commands_count' => $commandsCount
+        ], 200);
+    }
+
     public function addOrder(Request $request)
     {
         $user = auth()->user();

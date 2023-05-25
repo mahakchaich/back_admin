@@ -31,6 +31,17 @@ class UserController extends Controller
         return response()->json($users, 200);
     }
 
+    public function total()
+    {
+        $users = User::where('role_id', 2)->get();
+        $usersCount = $users->count();
+
+        return response()->json([
+            'users_count' => $usersCount
+        ], 200);
+    }
+
+
     public function store(Request $request)
     {
         //valdiate
@@ -154,7 +165,7 @@ class UserController extends Controller
     // send random code to virif mail
     public function forgetPassWord(Request $request)
     {
-    
+
         $validator = Validator::make($request->all(), [
             'email' => [
                 'required',
@@ -166,8 +177,8 @@ class UserController extends Controller
                 },
             ],
         ]);
-            
-       
+
+
         if ($validator->fails()) {
             return response()->json([
                 $validator->errors(),
@@ -179,10 +190,10 @@ class UserController extends Controller
         $partner = Partner::where('email', $request->email)->first();
         $code = self::randomcode(4);
         // make old codes expired
-        $oldCodes = verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status"=>"expired"]) ;
+        $oldCodes = verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status" => "expired"]);
         // $oldCodes->update("status","expired");
         // $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending","code"=>$code])->orderBy('created_at', 'desc')->first();
-// 
+        // 
         if ($user) {
             $data = [
                 "email" => $request->email,
@@ -200,7 +211,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
             ]);
-        } else if($partner) {
+        } else if ($partner) {
             $data = [
                 "email" => $request->email,
                 "name" => $partner->name,
@@ -217,12 +228,11 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 'sucess',
                 'message' => "partner",
             ]);
-
         }
     }
 
@@ -238,7 +248,7 @@ class UserController extends Controller
                     }
                 },
             ],
-            'code' =>[
+            'code' => [
                 "required",
                 "string",
                 "min:4",
@@ -246,8 +256,8 @@ class UserController extends Controller
                 "exists:verification_codes,code"
             ]
         ]);
-            
-       
+
+
         if ($validator->fails()) {
             return response()->json([
                 $validator->errors(),
@@ -255,7 +265,7 @@ class UserController extends Controller
             ]);
         }
         $code = $request->code;
-        $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending","code"=>$code])->orderBy('created_at', 'desc')->first();
+        $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending", "code" => $code])->orderBy('created_at', 'desc')->first();
 
         if ($dataBaseCode) {
             $dataBaseCode->status = "used";
@@ -367,30 +377,29 @@ class UserController extends Controller
 
     public function userStats()
     {
-     $savedMoney = 0;
-    //  $savedBoxs = 0;  
-     $commands = User::find(auth()->user()->id)->commands()->where("status" ,"SUCCESS")->get();
+        $savedMoney = 0;
+        //  $savedBoxs = 0;  
+        $commands = User::find(auth()->user()->id)->commands()->where("status", "SUCCESS")->get();
         $commandsList = [];
         $boxs = [];
-        
-        foreach($commands as $command){
-            $orderBoxs = BoxCommand::where("command_id","=",$command->id)->get();
-            array_push($commandsList,$orderBoxs[0]);
-       } ;
-        foreach($commandsList as $command){
-            $orderBox = box::find($command->box_id);        
-                $savedMoney += $orderBox->oldprice - $orderBox->newprice; // saved money calculation
 
-                array_push($boxs,$orderBox);
-           
-       } ;
+        foreach ($commands as $command) {
+            $orderBoxs = BoxCommand::where("command_id", "=", $command->id)->get();
+            array_push($commandsList, $orderBoxs[0]);
+        };
+        foreach ($commandsList as $command) {
+            $orderBox = box::find($command->box_id);
+            $savedMoney += $orderBox->oldprice - $orderBox->newprice; // saved money calculation
+
+            array_push($boxs, $orderBox);
+        };
 
 
         return response()->json([
             // "commandsList "=>$commandsList,
             // "boxs "=>$boxs,
             "savedMoney" => $savedMoney,
-            "savedBoxs" => count($boxs) 
+            "savedBoxs" => count($boxs)
         ]);
     }
 }

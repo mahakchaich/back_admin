@@ -62,6 +62,7 @@ Route::prefix('admin')->group(function () {
         Route::get('filterboxs', [BoxController::class, 'filterBoxs']);
         Route::post('updateBox/{id}', [BoxController::class, 'updateBox']);
         Route::put('boxs/status/{id}', [BoxController::class, 'updateBoxStatus']);
+        Route::get('boxestotal', [BoxController::class, 'total']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
@@ -70,7 +71,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/users/userdetails/{id}', [UserController::class, 'showuser']);
         Route::get('searchUser', [UserController::class, 'searchUser']);
         Route::get('filterusers', [UserController::class, 'filterUsers']);
-
+        Route::get('userstotal', [UserController::class, 'total']);
         //Orders Management
         Route::get('orders', [CommandController::class, 'getOrder']);
         Route::get('orders/getorder/{id}', [CommandController::class, 'getOrderById']);
@@ -82,7 +83,7 @@ Route::prefix('admin')->group(function () {
         Route::get('searchOrder', [CommandController::class, 'searchOrder']);
         Route::get('filterorders', [CommandController::class, 'filterOrders']);
         Route::put('orders/status/{id}', [CommandController::class, 'updateOrderStatus']);
-
+        Route::get('orderstotal', [CommandController::class, 'total']);
         //Partners Management
         Route::apiResource('partners', PartnerController::class);
         Route::get('partners/partnerdetails/{id}', [PartnerController::class, 'showdetails']);
@@ -90,6 +91,7 @@ Route::prefix('admin')->group(function () {
         Route::get('filter', [PartnerController::class, 'filterPartners']);
         Route::post('update/{id}', [PartnerController::class, 'updatePartner']);
         Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
+        Route::get('partnerstotal', [PartnerController::class, 'total']);
 
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);

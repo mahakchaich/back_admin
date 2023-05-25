@@ -31,6 +31,18 @@ class PartnerController extends Controller
         return response()->json($partners, 200);
     }
 
+    //calcul total partners :
+    public function total()
+    {
+        $partners = Partner::all();
+        $partnersCount = $partners->count();
+
+        return response()->json([
+            'partners_count' => $partnersCount
+        ], 200);
+    }
+
+
 
     public function store(Request $request)
     {
@@ -477,17 +489,17 @@ class PartnerController extends Controller
             "lat" => $lat,
 
             "partnerList" => $data,
-            "input_dis"=> $dist,
+            "input_dis" => $dist,
             "output_distan" => "$d : $unity",
 
         ], 200);
     }
-    public function salesStats($date,$type)
-    {   
+    public function salesStats($date, $type)
+    {
 
         $user = auth()->user()->id;
-      return response([
-        "user"=>$user,
+        return response([
+            "user" => $user,
             "date" => $date,
             "type" => $type,
         ], 200);

@@ -21,6 +21,20 @@ class BoxController extends Controller
         //get box
         return Box::all();
     }
+
+    //calcul total boxes :
+    public function total()
+    {
+        $boxes = Box::all();
+        $boxesCount = $boxes->count();
+
+        return response()->json([
+            'boxes_count' => $boxesCount
+        ], 200);
+    }
+
+
+
     public function availableBoxs()
     {
         //get box
