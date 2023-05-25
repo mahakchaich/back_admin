@@ -36,6 +36,19 @@ class CommandController extends Controller
         ], 200);
     }
 
+    public function getTotalCounts()
+    {
+        $pendingCount = Command::where('status', 'PENDING')->count();
+        $successCount = Command::where('status', 'SUCCESS')->count();
+        $cancelCount = Command::where('status', 'CANCEL')->count();
+
+        return response()->json([
+            'pending_count' => $pendingCount,
+            'success_count' => $successCount,
+            'cancel_count' => $cancelCount
+        ], 200);
+    }
+
     public function addOrder(Request $request)
     {
         $user = auth()->user();
