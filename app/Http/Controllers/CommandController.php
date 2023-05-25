@@ -148,7 +148,7 @@ class CommandController extends Controller
     //get order
     public function getOrder()
     {
-        return response()->json(Command::with('user')->get(), 200);
+        return response()->json(Command::with('user', 'boxs.partner')->get(), 200);
     }
 
 
