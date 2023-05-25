@@ -197,8 +197,6 @@ class PartnerController extends Controller
                 Rule::unique('partners')->ignore($id)
             ],
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
-            // 'password' => 'required|string|min:6',
-            // 'image' => 'required',
             'category' => 'required',
             'description' => 'required'
         ]);
@@ -223,21 +221,11 @@ class PartnerController extends Controller
             return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
         }
 
-        // Update the resource with the new values from the request
-
-        // if ($request->hasFile('image')) { // if file existe in the url with image type
-        //     $completeFileName = $request->file('image')->getClientOriginalName();
-        //     $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
-        //     $extention = $request->file('image')->getClientOriginalExtension();
-        //     $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
-        //     $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
-        //     $partner->image = $compPic;
-        // }
+  
         $partner->name = $request->name;
         $partner->description = $request->description;
         $partner->email = $request->email;
         $partner->phone = $request->phone;
-        // $partner->password = Hash::make($request->password);
         $partner->category = $request->category;
         $partner->openingtime = $request->openingtime;
         $partner->closingtime = $request->closingtime;
@@ -281,6 +269,7 @@ class PartnerController extends Controller
             $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
             $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
             $partner->image = $compPic;
+
         }
         $partner->update();
 
@@ -290,7 +279,38 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
+    
+    public function updatePartnerPassword($id, Request $request)
+    {
 
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            // If validation fails, return an error response
+            return response()->json([
+                'errors' => $validator->errors(),
+                'status' => 400
+            ]);
+        }
+        // Find the resource to be updated
+        $partner = Partner::findOrFail($id);
+
+        if (is_null($partner)) {
+            return response()->json(['message' => 'partenaire introuvable'], 404);
+        }
+
+              $partner->password = Hash::make($request->password);
+        $partner->update();
+
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'resource' => $partner,
+            'status' => 200
+        ]);
+    }
 
     public function getPartnerBoxs()
     {

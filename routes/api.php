@@ -92,6 +92,7 @@ Route::prefix('admin')->group(function () {
         Route::get('filter', [PartnerController::class, 'filterPartners']);
         Route::post('update/{id}', [PartnerController::class, 'updatePartner']);
         Route::post('updateImage/{id}', [PartnerController::class, 'updatePartnerImage']);
+        Route::post('updatePassword/{id}', [PartnerController::class, 'updatePartnerPassword']);
         Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
         Route::get('partnerstotal', [PartnerController::class, 'total']);
 
