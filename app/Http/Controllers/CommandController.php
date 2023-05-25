@@ -138,7 +138,9 @@ class CommandController extends Controller
 
     public function show($id)
     {
-        $commande = Command::with('user', 'boxs')->findOrFail($id);
+        $commande = Command::with('user', 'boxs', 'boxs.partner')->findOrFail($id);
+        return new CommandResource($commande);
+        // Retourner la réponse avec les détails de la commande
         return new CommandResource($commande);
     }
 
