@@ -350,6 +350,34 @@ class UserController extends Controller
         return response()->json(['message' => 'User status updated successfully'], 200);
     }
 
+    // update user password
+    public function updateUserPassword(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found','status' => 404], 404);
+        }
+
+        $user->password =Hash::make($request->input('password')) ;
+        $user->update();
+
+        return response()->json(
+            [
+                'message' => 'User password updated successfully',
+            'status' => 200
+                ]
+    , 200);
+    }
+
     //afficher la liste des commands de chaque user
     public function showuser($userId)
     {
