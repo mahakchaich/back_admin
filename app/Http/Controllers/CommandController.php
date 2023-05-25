@@ -7,11 +7,14 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Box;
+
+use App\Models\User;
+
 use App\Models\Command;
+
 use App\Models\Partner;
 
 use App\Models\BoxCommand;
-
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
@@ -42,6 +45,12 @@ class CommandController extends Controller
             "status" => "sometimes|required",
         ]);
 
+        if ($user->role_id === 1) { // if user is admin
+            $valid->addRules([
+                "user_email" => "required|exists:users,email",
+            ]);
+        }
+
         if ($valid->fails()) {
             return response()->json([
                 "message" => $valid->errors(),
@@ -61,13 +70,24 @@ class CommandController extends Controller
             ]);
         }
 
-        $box = Box::findOrFail($boxId);
         $command = new Command;
         $boxCommand = new BoxCommand();
         $price = $quantity * $box->newprice;
 
-        // Créer la commande
-        $command->user_id = $user->role_id === 1 ? $request->input('user_id') : $user->id;
+        if ($user->role_id === 1) {
+            // Utilisateur administrateur
+            $user = User::where('email', $request->user_email)->first();
+            if ($user) {
+                $command->user_id =  $user->id;
+            } else {
+                // Utilisateur normal
+                $command->user_id = $user->id;
+            }
+        } else {
+            // Utilisateur normal
+            $command->user_id = $user->id;
+        }
+
         $command->price = $price;
         $command->status = $status;
         $command->save();
@@ -82,26 +102,12 @@ class CommandController extends Controller
         $qt = $box->remaining_quantity - $quantity;
         box::where('id', $boxId)->update(['remaining_quantity' => $qt]);
 
-        // // Retourner la réponse
-        // return response()->json([
-        //     'message' => 'Commande créée avec succès',
-        //     'status' => '200',
-        //     'order' => [
-        //         'user_id' => $command->user_id,
-        //         'price' => $command->price,
-        //         'status' => $command->status,
-        //         'box_id' => $boxCommand->box_id,
-        //         'quantity' => $boxCommand->quantity
-        //     ]
-
-        // ]);
         // Charger les détails de la commande
         $commande = Command::with('user', 'boxs', 'boxs.partner')->findOrFail($command->id);
 
         // Retourner la réponse avec les détails de la commande
         return new CommandResource($commande);
     }
-
 
     public function updateOrder(Request $request, $id)
     {
@@ -132,7 +138,9 @@ class CommandController extends Controller
 
     public function show($id)
     {
-        $commande = Command::with('user', 'boxs')->findOrFail($id);
+        $commande = Command::with('user', 'boxs', 'boxs.partner')->findOrFail($id);
+        return new CommandResource($commande);
+        // Retourner la réponse avec les détails de la commande
         return new CommandResource($commande);
     }
 
@@ -140,8 +148,9 @@ class CommandController extends Controller
     //get order
     public function getOrder()
     {
-        return response()->json(Command::all(), 200);
+        return response()->json(Command::with('user', 'boxs.partner')->get(), 200);
     }
+
 
 
     //get order by id
@@ -172,21 +181,30 @@ class CommandController extends Controller
     //Search User
     public function searchOrder(Request $request)
     {
+        // Récupérer les paramètres de recherche
+        $search = $request->input('search', '');
+        $status = $request->input('status', '');
 
-        $search = $request->has('search') ? $request->input('search') : "";
-        $status = $request->has('status') ? $request->input('status') : "";
-
-        //recherche des patners en fonction du paramètre:
-        $commands = Command::Where('status', 'like', '%' . $status . '%')
-            ->where(function ($q) use ($search) {
-                $q->Where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('user_id', 'LIKE', "%{$search}%");
+        // Rechercher les commandes en fonction des paramètres
+        $commands = Command::with('user')
+            ->where('status', 'like', '%' . $status . '%')
+            ->when($search, function ($query) use ($search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('price', 'LIKE', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('email', 'LIKE', "%{$search}%");
+                        });
+                });
             })
             ->get();
 
-
+        // Retourner les résultats en tant que réponse JSON
         return response()->json($commands);
     }
+
+
+
+
 
 
 
