@@ -181,21 +181,30 @@ class CommandController extends Controller
     //Search User
     public function searchOrder(Request $request)
     {
+        // Récupérer les paramètres de recherche
+        $search = $request->input('search', '');
+        $status = $request->input('status', '');
 
-        $search = $request->has('search') ? $request->input('search') : "";
-        $status = $request->has('status') ? $request->input('status') : "";
-
-        //recherche des patners en fonction du paramètre:
-        $commands = Command::Where('status', 'like', '%' . $status . '%')
-            ->where(function ($q) use ($search) {
-                $q->Where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('user_id', 'LIKE', "%{$search}%");
+        // Rechercher les commandes en fonction des paramètres
+        $commands = Command::with('user')
+            ->where('status', 'like', '%' . $status . '%')
+            ->when($search, function ($query) use ($search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('price', 'LIKE', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('email', 'LIKE', "%{$search}%");
+                        });
+                });
             })
             ->get();
 
-
+        // Retourner les résultats en tant que réponse JSON
         return response()->json($commands);
     }
+
+
+
+
 
 
 
