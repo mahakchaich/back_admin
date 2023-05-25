@@ -249,6 +249,47 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
+    
+    public function updatePartnerImage($id, Request $request)
+    {
+
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+      'image' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            // If validation fails, return an error response
+            return response()->json([
+                'errors' => $validator->errors(),
+                'status' => 400
+            ]);
+        }
+        // Find the resource to be updated
+        $partner = Partner::findOrFail($id);
+
+        if (is_null($partner)) {
+            return response()->json(['message' => 'partenaire introuvable'], 404);
+        }
+
+        // Update the resource with the new values from the request
+
+        if ($request->hasFile('image')) { // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName();
+            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+            $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
+            $partner->image = $compPic;
+        }
+        $partner->update();
+
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'resource' => $partner,
+            'status' => 200
+        ]);
+    }
 
 
     public function getPartnerBoxs()
