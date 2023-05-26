@@ -63,6 +63,7 @@ Route::prefix('admin')->group(function () {
         Route::post('updateBox/{id}', [BoxController::class, 'updateBox']);
         Route::put('boxs/status/{id}', [BoxController::class, 'updateBoxStatus']);
         Route::get('boxestotal', [BoxController::class, 'total']);
+        Route::get('getTotalBoxCounts', [BoxController::class, 'getTotalBoxCounts']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
