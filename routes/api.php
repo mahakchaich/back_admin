@@ -74,6 +74,7 @@ Route::prefix('admin')->group(function () {
         Route::get('searchUser', [UserController::class, 'searchUser']);
         Route::get('filterusers', [UserController::class, 'filterUsers']);
         Route::get('userstotal', [UserController::class, 'total']);
+        Route::get('getTotalUserCounts', [UserController::class, 'getTotalUserCounts']);
         //Orders Management
         Route::get('orders', [CommandController::class, 'getOrder']);
         Route::get('orders/getorder/{id}', [CommandController::class, 'getOrderById']);

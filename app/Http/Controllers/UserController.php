@@ -41,6 +41,23 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function getTotalUserCounts()
+    {
+        $activeCount = User::where('status', 'ACTIVE')
+            ->where('role_id', 2)
+            ->count();
+
+        $inactiveCount = User::where('status', 'INACTIVE')
+            ->where('role_id', 2)
+            ->count();
+
+        return response()->json([
+            'active_count' => $activeCount,
+            'inactive_count' => $inactiveCount,
+        ], 200);
+    }
+
+
 
     public function store(Request $request)
     {
@@ -364,18 +381,19 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'User not found','status' => 404], 404);
+            return response()->json(['message' => 'User not found', 'status' => 404], 404);
         }
 
-        $user->password =Hash::make($request->input('password')) ;
+        $user->password = Hash::make($request->input('password'));
         $user->update();
 
         return response()->json(
             [
                 'message' => 'User password updated successfully',
-            'status' => 200
-                ]
-    , 200);
+                'status' => 200
+            ],
+            200
+        );
     }
 
     //afficher la liste des commands de chaque user
