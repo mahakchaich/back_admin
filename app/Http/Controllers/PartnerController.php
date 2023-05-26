@@ -42,7 +42,18 @@ class PartnerController extends Controller
         ], 200);
     }
 
+    public function getTotalPartnerCounts()
+    {
+        $pendingCount = Partner::where('status', 'PENDING')->count();
+        $activeCount = Partner::where('status', 'ACTIVE')->count();
+        $inactiveCount = Partner::where('status', 'INACTIVE')->count();
 
+        return response()->json([
+            'pending_count' => $pendingCount,
+            'active_count' => $activeCount,
+            'inactive_count' => $inactiveCount,
+        ], 200);
+    }
 
     public function store(Request $request)
     {
@@ -221,7 +232,7 @@ class PartnerController extends Controller
             return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
         }
 
-  
+
         $partner->name = $request->name;
         $partner->description = $request->description;
         $partner->email = $request->email;
@@ -237,13 +248,13 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
-    
+
     public function updatePartnerImage($id, Request $request)
     {
 
         // Validate the request data
         $validator = Validator::make($request->all(), [
-      'image' => 'required'
+            'image' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -269,7 +280,6 @@ class PartnerController extends Controller
             $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
             $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
             $partner->image = $compPic;
-
         }
         $partner->update();
 
@@ -279,7 +289,7 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
-    
+
     public function updatePartnerPassword($id, Request $request)
     {
 
@@ -302,7 +312,7 @@ class PartnerController extends Controller
             return response()->json(['message' => 'partenaire introuvable'], 404);
         }
 
-              $partner->password = Hash::make($request->password);
+        $partner->password = Hash::make($request->password);
         $partner->update();
 
         return response()->json([
@@ -559,10 +569,10 @@ class PartnerController extends Controller
     {
 
         $user = auth()->user()->id;
-        $boxs = Partner::find($user)->boxs()->groupBy("oldprice")->count() ;
-      return response([
-        "user"=>$user,
-        "boxs"=>$boxs,
+        $boxs = Partner::find($user)->boxs()->groupBy("oldprice")->count();
+        return response([
+            "user" => $user,
+            "boxs" => $boxs,
             "date" => $date,
             "type" => $type,
 

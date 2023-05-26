@@ -98,7 +98,7 @@ Route::prefix('admin')->group(function () {
         Route::post('updatePassword/{id}', [PartnerController::class, 'updatePartnerPassword']);
         Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
         Route::get('partnerstotal', [PartnerController::class, 'total']);
-
+        Route::get('getTotalPartnerCounts', [PartnerController::class, 'getTotalPartnerCounts']);
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);
 
