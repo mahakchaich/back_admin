@@ -175,7 +175,7 @@ Route::prefix('partner')->group(function () {
         Route::post('addAddress', [AddressController::class, 'store']);
 
         // stats
-        Route::get('/salesStats/{date}&{type}', [PartnerController::class, 'salesStats']);
+        Route::get('/salesStats/{type}', [PartnerController::class, 'salesStats']);
     });
 });
 

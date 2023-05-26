@@ -221,7 +221,7 @@ class PartnerController extends Controller
             return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
         }
 
-  
+
         $partner->name = $request->name;
         $partner->description = $request->description;
         $partner->email = $request->email;
@@ -237,13 +237,13 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
-    
+
     public function updatePartnerImage($id, Request $request)
     {
 
         // Validate the request data
         $validator = Validator::make($request->all(), [
-      'image' => 'required'
+            'image' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -269,7 +269,6 @@ class PartnerController extends Controller
             $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
             $path = $request->file('image')->storeAs('public/partner_imgs', $compPic);
             $partner->image = $compPic;
-
         }
         $partner->update();
 
@@ -279,7 +278,7 @@ class PartnerController extends Controller
             'status' => 200
         ]);
     }
-    
+
     public function updatePartnerPassword($id, Request $request)
     {
 
@@ -302,7 +301,7 @@ class PartnerController extends Controller
             return response()->json(['message' => 'partenaire introuvable'], 404);
         }
 
-              $partner->password = Hash::make($request->password);
+        $partner->password = Hash::make($request->password);
         $partner->update();
 
         return response()->json([
@@ -555,17 +554,21 @@ class PartnerController extends Controller
 
         ], 200);
     }
-    public function salesStats($date, $type)
+    public function salesStats($type)
     {
-
         $user = auth()->user()->id;
-        $boxs = Partner::find($user)->boxs()->groupBy("oldprice")->count() ;
-      return response([
-        "user"=>$user,
-        "boxs"=>$boxs,
-            "date" => $date,
-            "type" => $type,
+        $boxs = Partner::find($user)->boxs()
+            ->select("created_at", DB::raw('COUNT(*) as count'))
+            ->groupBy('created_at')
+            ->get();
 
+            $boxCounts = Box::selectRaw('DATE_FORMAT(created_at, "%Y-%m-%d") AS month, COUNT(*) AS count')
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+        return response([
+            // "boxs" => $boxs,
+            "boxs" => $boxCounts,
         ], 200);
     }
 }
