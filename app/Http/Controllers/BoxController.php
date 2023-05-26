@@ -33,7 +33,22 @@ class BoxController extends Controller
         ], 200);
     }
 
+    public function getTotalBoxCounts()
+    {
+        $pendingCount = Box::where('status', 'PENDING')->count();
+        $acceptedCount = Box::where('status', 'ACCEPTED')->count();
+        $rejectedCount = Box::where('status', 'REJECTED')->count();
+        $finishedCount = Box::where('status', 'FINISHED')->count();
+        $expiredCount = Box::where('status', 'EXPIRED')->count();
 
+        return response()->json([
+            'pending_count' => $pendingCount,
+            'accepted_count' => $acceptedCount,
+            'rejected_count' => $rejectedCount,
+            'finished_count' =>  $finishedCount,
+            'expired_count' => $expiredCount,
+        ], 200);
+    }
 
     public function availableBoxs()
     {

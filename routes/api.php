@@ -63,6 +63,7 @@ Route::prefix('admin')->group(function () {
         Route::post('updateBox/{id}', [BoxController::class, 'updateBox']);
         Route::put('boxs/status/{id}', [BoxController::class, 'updateBoxStatus']);
         Route::get('boxestotal', [BoxController::class, 'total']);
+        Route::get('getTotalBoxCounts', [BoxController::class, 'getTotalBoxCounts']);
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
@@ -73,6 +74,7 @@ Route::prefix('admin')->group(function () {
         Route::get('searchUser', [UserController::class, 'searchUser']);
         Route::get('filterusers', [UserController::class, 'filterUsers']);
         Route::get('userstotal', [UserController::class, 'total']);
+        Route::get('getTotalUserCounts', [UserController::class, 'getTotalUserCounts']);
         //Orders Management
         Route::get('orders', [CommandController::class, 'getOrder']);
         Route::get('orders/getorder/{id}', [CommandController::class, 'getOrderById']);
@@ -96,7 +98,7 @@ Route::prefix('admin')->group(function () {
         Route::post('updatePassword/{id}', [PartnerController::class, 'updatePartnerPassword']);
         Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
         Route::get('partnerstotal', [PartnerController::class, 'total']);
-
+        Route::get('getTotalPartnerCounts', [PartnerController::class, 'getTotalPartnerCounts']);
         //Address Management
         Route::post('addAddress', [AddressController::class, 'store']);
 

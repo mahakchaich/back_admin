@@ -42,7 +42,18 @@ class PartnerController extends Controller
         ], 200);
     }
 
+    public function getTotalPartnerCounts()
+    {
+        $pendingCount = Partner::where('status', 'PENDING')->count();
+        $activeCount = Partner::where('status', 'ACTIVE')->count();
+        $inactiveCount = Partner::where('status', 'INACTIVE')->count();
 
+        return response()->json([
+            'pending_count' => $pendingCount,
+            'active_count' => $activeCount,
+            'inactive_count' => $inactiveCount,
+        ], 200);
+    }
 
     public function store(Request $request)
     {
@@ -561,6 +572,7 @@ class PartnerController extends Controller
             ->select("created_at", DB::raw('COUNT(*) as count'))
             ->groupBy('created_at')
             ->get();
+
 
             $boxCounts = Box::selectRaw('DATE_FORMAT(created_at, "%Y-%m-%d") AS month, COUNT(*) AS count')
                 ->groupBy('month')
