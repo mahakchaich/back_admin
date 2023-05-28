@@ -347,7 +347,7 @@ class PartnerController extends Controller
     public function getPartnerBoxsbystatus($status)
     {
         $boxs = Box::where("partner_id", "=", auth()->user()->id)
-            ->where("status", "=", $status) // Utilisez la valeur dynamique du statut
+            ->where("status", "=",strtoupper($status) ) // Utilisez la valeur dynamique du statut
             ->get();
 
         return response()->json([
