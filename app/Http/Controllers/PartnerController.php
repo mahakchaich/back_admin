@@ -249,6 +249,57 @@ class PartnerController extends Controller
         ]);
     }
 
+
+    public function updateSelfData(Request $request)
+    {
+
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+            'category' => 'required',
+            'description' => 'required',
+            'closingtime' => 'required',
+            'openingtime' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            // If validation fails, return an error response
+            return response()->json([
+                'errors' => $validator->errors(),
+                'status' => 400
+            ]);
+        }
+
+        // get partner from his token
+        $partner = Partner::findOrFail(Auth::user()->id);
+        
+        // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
+        if (strtotime($request->input('openingtime')) >= strtotime($request->input('closingtime'))) {
+            return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
+        }
+
+        $partner->name = $request->name;
+        $partner->description = $request->description;
+        $partner->phone = $request->phone;
+        $partner->category = $request->category;
+        $partner->openingtime = $request->openingtime;
+        $partner->closingtime = $request->closingtime;
+        $partner->update();
+        return response()->json([
+            'message' => 'updated successfully',
+            'resource' => $partner,
+            'status' => 200
+        ]);
+    }
+
+
+
+
+
+
+
+    
     public function updatePartnerImage($id, Request $request)
     {
 

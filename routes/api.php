@@ -159,6 +159,7 @@ Route::prefix('partner')->group(function () {
     Route::middleware(['auth:sanctum', 'scope.partner'])->group(function () {
         Route::get('user', [PartnerController::class, 'currentPartner']);
         Route::put('changepassword', [PartnerController::class, 'changePassword']);
+        Route::patch('updateData', [PartnerController::class, 'updateSelfData']);
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
         Route::put('partners/info', [AuthController::class, 'update']);
         // Route::post('logout', [PartnerController::class, 'logout']);
