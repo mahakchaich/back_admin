@@ -477,7 +477,7 @@ class UserController extends Controller
         }
         
         //Search User
-        public function getPartnerRates()
+        public function getUsersRates()
         {
 
         $rates = User::find(Auth::user()->id)->partnerRating()->select('id','partner_id','rating','comment')->get();

@@ -120,6 +120,8 @@ Route::prefix('user')->group(function () {
         Route::put('user/password', [AuthController::class, 'updatePassword']);
         //partner
         Route::get('getNearbyPartners/{lat}&{long}&{dist}&{unity?}', [PartnerController::class, 'getNearbyPartners']);
+       
+       // rates
         Route::post('RatePartner', [UserController::class, 'ratePartner']);
         Route::get('getPartnerRates', [UserController::class, 'getPartnerRates']);
 
@@ -181,6 +183,10 @@ Route::prefix('partner')->group(function () {
 
         // stats
         Route::get('/salesStats/{type}', [PartnerController::class, 'salesStats']);
+
+        // rates 
+        Route::get('getUsersRates', [PartnerController::class, 'getUserRates']);
+
     });
 });
 

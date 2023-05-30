@@ -634,4 +634,12 @@ class PartnerController extends Controller
             "boxs" => $boxCounts,
         ], 200);
     }
+
+    public function getUserRates()
+    {
+    $rates = Partner::find(Auth::user()->id)->ratings()->select('id','user_id','rating','comment')->get();
+        return response()->json($rates);
+    }
+
+
 }
