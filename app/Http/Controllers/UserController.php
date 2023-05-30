@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\CommandResource;
 use App\Models\Box;
 use App\Models\Partner;
+use App\Models\rating;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -420,11 +422,10 @@ class UserController extends Controller
 
         return response()->json($users);
     }
-
+// get user stats
     public function userStats()
     {
         $savedMoney = 0;
-        //  $savedBoxs = 0;  
         $commands = User::find(auth()->user()->id)->commands()->where("status", "SUCCESS")->get();
         $commandsList = [];
         $boxs = [];
@@ -448,4 +449,40 @@ class UserController extends Controller
             "savedBoxs" => count($boxs)
         ]);
     }
+
+
+
+        //Search User
+        public function ratePartner(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'partner_id' => 'required|exists:partners,id',
+                'comment' => 'required|string',
+                'rating' => 'required|int|max:3',
+                
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+
+           $rate = new Rating;
+            $rate->user_id =Auth::user()->id ;
+            $rate->partner_id =$request->input('partner_id') ;
+            $rate->comment =$request->input('comment') ;
+            $rate->rating =$request->input('rating') ;
+            $rate->save();
+            return response()->json($rate);
+        }
+        
+        //Search User
+        public function getPartnerRates()
+        {
+
+        $rates = User::find(Auth::user()->id)->partnerRating()->select('id','partner_id','rating','comment')->get();
+            return response()->json($rates);
+        }
+
+
 }

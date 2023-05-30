@@ -120,6 +120,8 @@ Route::prefix('user')->group(function () {
         Route::put('user/password', [AuthController::class, 'updatePassword']);
         //partner
         Route::get('getNearbyPartners/{lat}&{long}&{dist}&{unity?}', [PartnerController::class, 'getNearbyPartners']);
+        Route::post('RatePartner', [UserController::class, 'ratePartner']);
+        Route::get('getPartnerRates', [UserController::class, 'getPartnerRates']);
 
         // Box
         Route::get('boxs', [BoxController::class, 'index']); // all boxs

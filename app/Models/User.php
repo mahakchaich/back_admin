@@ -68,4 +68,9 @@ class User extends Authenticatable
         // return $this->hasMany(Roles::class);
         return  $this->hasOne(Roles::class, 'id', 'role_id');
     }
+    public function partnerRating()
+    {
+        // return $this->hasMany(Roles::class);
+        return  $this->hasMany(Rating::class);
+    }
 }

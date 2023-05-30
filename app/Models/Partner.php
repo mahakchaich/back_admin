@@ -65,4 +65,9 @@ class Partner extends Model
     {
         return $this->hasManyThrough(BoxCommand::class, Box::class);
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }
