@@ -211,8 +211,6 @@ class BoxController extends Controller
             ]);
         }
 
-
-
         // Vérifie si la date de début est antérieure à la date de fin
         if (strtotime($startdate) >= strtotime($enddate)) {
             return
@@ -221,6 +219,16 @@ class BoxController extends Controller
                     'status' => 403
                 ]);
         }
+        // Vérifie si la différence entre la date de début et la date de fin est supérieure à deux jours
+        $diffInSeconds = strtotime($enddate) - strtotime($startdate);
+        $diffInDays = floor($diffInSeconds / (60 * 60 * 24));
+        if ($diffInDays > 2) {
+            return response()->json([
+                'error' => 'The difference between start date and end date must not exceed two days.',
+                'status' => 404
+            ]);
+        }
+
         $box = new Box;
 
         // upload image section 
