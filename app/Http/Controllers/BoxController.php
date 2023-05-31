@@ -168,7 +168,7 @@ class BoxController extends Controller
         $valid = Validator::make($request->all(), [
             "title" => "required",
             "description" => "required",
-            "quantity" => "required",
+            "quantity" => "required|gte:1",
             "image" => "required",
             "oldprice" => "required",
             "newprice" => "required",
@@ -199,7 +199,7 @@ class BoxController extends Controller
         if ($oldprice <= $newprice) {
             return response()->json([
                 'error' => 'The old price must be higher than the new price.',
-                "status" => Response::HTTP_BAD_REQUEST
+                "status" => 422
             ]);
         }
 
@@ -211,12 +211,14 @@ class BoxController extends Controller
             ]);
         }
 
+
+
         // Vérifie si la date de début est antérieure à la date de fin
         if (strtotime($startdate) >= strtotime($enddate)) {
             return
                 response()->json([
                     'error' => 'The start date must be before the end date.',
-                    'status' => Response::HTTP_BAD_REQUEST
+                    'status' => 403
                 ]);
         }
         $box = new Box;
@@ -266,7 +268,7 @@ class BoxController extends Controller
         return response()->json([
             'message' => 'created successfully',
             "box_info" => $box,
-            'status' => Response::HTTP_CREATED
+            'status' => 200
         ]);
     }
 
@@ -284,6 +286,7 @@ class BoxController extends Controller
             'partner' => Partner::where('id', $id)->with('likes')->get()
         ], 200);
     }
+
 
 
     public function update(Request $request, Box $box)
