@@ -185,11 +185,15 @@ class BoxController extends Controller
 
 
         if ($valid->fails()) {
+            // Vérifier si un des champs est vide
+            $isEmptyField = in_array('', $request->all());
+
             return response()->json([
                 "message" => $valid->errors(),
-                "status" => 400
+                "status" => $isEmptyField ? 401 : 400
             ]);
         }
+
         $oldprice = $request->input('oldprice');
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
