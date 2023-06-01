@@ -219,70 +219,7 @@ class AuthController extends Controller
     }
 
     // // change password
-    // public function updatePasswordeux(Request $request)
-    // {
-    //     // Validate the request data
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|email',
-    //         'password' => 'required|min:6',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         // If validation fails, return an error response
-    //         return response()->json([
-    //             'errors' => $validator->errors(),
-    //             'status' => 400
-    //         ]);
-    //     }
-    //     // Find the user with the specified email
-    //     $user = User::where('email', $request->email)->first();
-
-    //     if (is_null($user)) {
-    //         // If no user is found, return an error response
-    //         return response()->json(['message' => 'User not found'], 404);
-    //     }
-    //     // Update the user's password with the new value from the request
-    //     $user->password = bcrypt($request->password);
-    //     $user->save();
-
-    //     return response()->json([
-    //         'message' => 'Password updated successfully',
-    //         'status' => 200
-    //     ]);
-    // }
-
-    // // change password partner
-    // public function updatePassworPartner(Request $request)
-    // {
-    //     // Validate the request data
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|email',
-    //         'password' => 'required|min:6',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         // If validation fails, return an error response
-    //         return response()->json([
-    //             'errors' => $validator->errors(),
-    //             'status' => 400
-    //         ]);
-    //     }
-    //     // Find the user with the specified email
-    //     $partner = Partner::where('email', $request->email)->first();
-
-    //     if (is_null($partner)) {
-    //         // If no user is found, return an error response
-    //         return response()->json(['message' => 'Partner not found'], 404);
-    //     }
-    //     // Update the user's password with the new value from the request
-    //     $partner->password = bcrypt($request->password);
-    //     $partner->save();
-
-    //     return response()->json([
-    //         'message' => 'Password updated successfully',
-    //         'status' => 200
-    //     ]);
-    // }
+ 
     public function updatePasswordeux(Request $request)
     {
         // Validate the request data

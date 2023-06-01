@@ -94,7 +94,7 @@ Route::prefix('admin')->group(function () {
         Route::get('searchPartner', [PartnerController::class, 'searchPartner']);
         Route::get('filter', [PartnerController::class, 'filterPartners']);
         Route::post('update/{id}', [PartnerController::class, 'updatePartner']);
-        Route::post('updateImage/{id}', [PartnerController::class, 'updatePartnerImage']);
+        Route::post('updateImage/{id?}', [PartnerController::class, 'updatePartnerImage']);
         Route::post('updatePassword/{id}', [PartnerController::class, 'updatePartnerPassword']);
         Route::put('partners/status/{id}', [PartnerController::class, 'updatePartnerStatus']);
         Route::get('partnerstotal', [PartnerController::class, 'total']);
@@ -164,8 +164,11 @@ Route::prefix('partner')->group(function () {
         Route::get('user', [PartnerController::class, 'currentPartner']);
         Route::put('changepassword', [PartnerController::class, 'changePassword']);
         Route::patch('updateData', [PartnerController::class, 'updateSelfData']);
+        // Route::patch('partners/info', [AuthController::class, 'update']);
+        // Route::post('updateImage', [PartnerController::class, 'updatePartnerImage']);
+        Route::post('updateImage/{id?}', [PartnerController::class, 'updatePartnerImage']);
+
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
-        Route::put('partners/info', [AuthController::class, 'update']);
         // Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);

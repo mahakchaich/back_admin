@@ -63,7 +63,7 @@ class PartnerController extends Controller
             'email' => 'required|string|unique:users|unique:partners',
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
-            'image' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category' => 'required',
             'description' => 'required',
             'openingtime' => 'required',
@@ -300,12 +300,12 @@ class PartnerController extends Controller
 
 
     
-    public function updatePartnerImage($id, Request $request)
+    public function updatePartnerImage($id = null , Request $request)
     {
 
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'image' => 'required'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -315,6 +315,7 @@ class PartnerController extends Controller
                 'status' => 400
             ]);
         }
+        if($id == null) $id = Auth::user()->id ;
         // Find the resource to be updated
         $partner = Partner::findOrFail($id);
 
@@ -335,8 +336,9 @@ class PartnerController extends Controller
         $partner->update();
 
         return response()->json([
-            'message' => 'Resource updated successfully',
+            'message' => 'image updated successfully',
             'resource' => $partner,
+            // 'resource' => $id,
             'status' => 200
         ]);
     }
