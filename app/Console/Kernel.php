@@ -15,7 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('box:availibilty')->everyMinute();
+        $schedule->command('box:availibilty')->everyMinute()->withoutOverlapping();
+        // $schedule->command('box:archive')->everyMinute();
+        $schedule->command('box:archive')->dailyAt('00:00')->timezone('Africa/Tunis')->withoutOverlapping();
+
     }
 
     /**
