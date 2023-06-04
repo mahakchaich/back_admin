@@ -213,7 +213,7 @@ class UserController extends Controller
         // $oldCodes->update("status","expired");
         // $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending","code"=>$code])->orderBy('created_at', 'desc')->first();
         // 
-        if ($user) {
+        if ($user || $partner) {
             $data = [
                 "email" => $request->email,
                 "name" => $user->name,
@@ -225,34 +225,38 @@ class UserController extends Controller
             $verifTable->email = $request->email;
             $verifTable->code = $code;
             $verifTable->status = "pending";
-            $verifTable->save();
+            // $verifTable->save();
 
             return response()->json([
                 'status' => 'success',
-            ]);
-        } else if ($partner) {
-            $data = [
-                "email" => $request->email,
-                "name" => $partner->name,
-                "code" => $code,
-                "subject" => "forget password",
-            ];
-            Mail::to($data["email"])->send(new forgetPasswordCode($data));
-            $verifTable = new verification_code();
-            $verifTable->email = $request->email;
-            $verifTable->code = $code;
-            $verifTable->status = "pending";
-            $verifTable->save();
-
-            return response()->json([
-                'status' => 'success',
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'sucess',
-                'message' => "partner",
+                'data' => $data,
+                'new code' => $verifTable,
             ]);
         }
+        //  else if ($partner) {
+        //     $data = [
+        //         "email" => $request->email,
+        //         "name" => $partner->name,
+        //         "code" => $code,
+        //         "subject" => "forget password",
+        //     ];
+        //     Mail::to($data["email"])->send(new forgetPasswordCode($data));
+        //     $verifTable = new verification_code();
+        //     $verifTable->email = $request->email;
+        //     $verifTable->code = $code;
+        //     $verifTable->status = "pending";
+        //     $verifTable->save();
+
+        //     return response()->json([
+        //         'status' => 'success',
+        //     ]);
+        // } 
+        // else {
+        //     return response()->json([
+        //         'status' => 'sucess',
+        //         'message' => "partner",
+        //     ]);
+        // }
     }
 
     public function verifCode(Request $request)
