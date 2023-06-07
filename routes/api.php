@@ -36,7 +36,6 @@ function common(string $scope)
 
     Route::middleware(['auth:sanctum', $scope])->group(
         function () {
-            //Commande
             Route::get('commandes', [CommandController::class, 'index']);
             Route::get('commande/{id}', [CommandController::class, 'commande']);
             Route::post('logout', [AuthController::class, 'logout']);
@@ -51,6 +50,9 @@ function common(string $scope)
 Route::prefix('admin')->group(function () {
     common('scope.admin');
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
+
+
+        
         // role management
         Route::put('addRole', [UserController::class, "addRole"]);
 
@@ -120,8 +122,8 @@ Route::prefix('user')->group(function () {
         Route::put('user/password', [AuthController::class, 'updatePassword']);
         //partner
         Route::get('getNearbyPartners/{lat}&{long}&{dist}&{unity?}', [PartnerController::class, 'getNearbyPartners']);
-       
-       // rates
+
+        // rates
         Route::post('RatePartner', [UserController::class, 'ratePartner']);
         Route::get('getPartnerRates', [UserController::class, 'getPartnerRates']);
 
@@ -189,7 +191,6 @@ Route::prefix('partner')->group(function () {
 
         // rates 
         Route::get('getUsersRates', [PartnerController::class, 'getUserRates']);
-
     });
 });
 
