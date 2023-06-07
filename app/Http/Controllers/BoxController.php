@@ -10,6 +10,7 @@ use App\Http\Resources\PartnerResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Partner;
+use Illuminate\Support\Facades\Auth;
 
 use function PHPSTORM_META\map;
 
@@ -507,6 +508,29 @@ class BoxController extends Controller
     //Update Status
     public function updateBoxStatus(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:PENDING,ACCEPTED,REJECTED,FINISHED,EXPIRED',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $box = Box::find($id);
+
+        if (!$box) {
+            return response()->json(['message' => 'Box not found'], 404);
+        }
+
+        $box->status = $request->input('status');
+        $box->save();
+
+        return response()->json(['message' => 'Box status updated successfully'], 200);
+    }
+   
+    public function updateBoxDetails(Request $request, $id)
+    {
+        $partner = Auth::user();
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:PENDING,ACCEPTED,REJECTED,FINISHED,EXPIRED',
         ]);

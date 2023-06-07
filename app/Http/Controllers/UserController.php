@@ -209,11 +209,8 @@ class UserController extends Controller
         $partner = Partner::where('email', $request->email)->first();
         $code = self::randomcode(4);
         // make old codes expired
-        $oldCodes = verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status" => "expired"]);
-        // $oldCodes->update("status","expired");
-        // $dataBaseCode = verification_code::where(["email" => $request->email, "status" => "pending","code"=>$code])->orderBy('created_at', 'desc')->first();
-        // 
-        if ($user) {
+       verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status" => "expired"]); 
+        if ($user || $partner) {
             $data = [
                 "email" => $request->email,
                 "name" => $user->name,
@@ -229,28 +226,8 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'success',
-            ]);
-        } else if ($partner) {
-            $data = [
-                "email" => $request->email,
-                "name" => $partner->name,
-                "code" => $code,
-                "subject" => "forget password",
-            ];
-            Mail::to($data["email"])->send(new forgetPasswordCode($data));
-            $verifTable = new verification_code();
-            $verifTable->email = $request->email;
-            $verifTable->code = $code;
-            $verifTable->status = "pending";
-            $verifTable->save();
-
-            return response()->json([
-                'status' => 'success',
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'sucess',
-                'message' => "partner",
+                'data' => $data,
+                'new code' => $verifTable,
             ]);
         }
     }

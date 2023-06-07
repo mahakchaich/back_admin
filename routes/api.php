@@ -41,7 +41,6 @@ function common(string $scope)
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('user', [AuthController::class, 'user']);
             Route::put('users/info', [AuthController::class, 'updateInfo']);
-            Route::put('users/password', [AuthController::class, 'updatePassword']);
         }
     );
 }
@@ -178,6 +177,7 @@ Route::prefix('partner')->group(function () {
 
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
         Route::get('getPartnerBoxsbystatus/{status}', [PartnerController::class, 'getPartnerBoxsbystatus']);
+        Route::patch('updateBoxDetails/{id}', [PartnerController::class, 'updateBoxDetails']);
 
         // orders
         Route::get('getPartnerOrders/{status}', [CommandController::class, 'getPartnerOrders']);
@@ -194,6 +194,9 @@ Route::prefix('partner')->group(function () {
     });
 });
 
-
+Route::put('users/password', [AuthController::class, 'updatePassword']);
 Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
 Route::post('verifCode', [UserController::class, 'verifCode']);
+
+Route::post('/send-notification', [FirebaseNotification::class,'sendNotification']);
+
