@@ -109,13 +109,11 @@ class PartnerController extends Controller
         $partner->adress = $request->adress;
         $partner->save();
 
-        // create token for partner
-        $token = $partner->createToken('Personal Access Token')->plainTextToken;
-
+      
         return response()->json([
             'message' => 'Successfully registered',
+            'partner' => $partner,
             'status' => Response::HTTP_CREATED,
-            'token' => $token,
         ]);
     }
 
