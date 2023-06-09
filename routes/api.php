@@ -177,7 +177,8 @@ Route::prefix('partner')->group(function () {
 
         Route::get('getPartnerBoxs', [PartnerController::class, 'getPartnerBoxs']);
         Route::get('getPartnerBoxsbystatus/{status}', [PartnerController::class, 'getPartnerBoxsbystatus']);
-        Route::patch('updateBoxDetails/{id}', [PartnerController::class, 'updateBoxDetails']);
+        Route::put('updateBoxDetails/{id}', [BoxController::class, 'updateBoxDetails']);
+        Route::post('updateBoxImage/{id}', [BoxController::class, 'updateBoxImage']);
 
         // orders
         Route::get('getPartnerOrders/{status}', [CommandController::class, 'getPartnerOrders']);

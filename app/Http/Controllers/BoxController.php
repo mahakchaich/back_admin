@@ -527,27 +527,109 @@ class BoxController extends Controller
 
         return response()->json(['message' => 'Box status updated successfully'], 200);
     }
-   
-    public function updateBoxDetails(Request $request, $id)
+
+    public function updateBoxDetails(Request $request,  $id)
     {
-        $partner = Auth::user();
-        $validator = Validator::make($request->all(), [
-            'status' => 'required|in:PENDING,ACCEPTED,REJECTED,FINISHED,EXPIRED',
+        $valid = Validator::make($request->all(), [
+            "title" => "required",
+            "description" => "required",
+            "quantity" => "required|gte:1",
+            "oldprice" => "required",
+            "newprice" => "required",
+            "startdate" => "required",
+            "enddate" => "required",
+            "category" => "required",
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        $oldprice = $request->input('oldprice');
+        $newprice = $request->input('newprice');
+        $startdate = $request->input('startdate');
+        $enddate = $request->input('enddate');
+        $quantity = $request->input('quantity');
+        $remainingQuantity = $request->input('remaining_quantity');
+        // Vérifie si l'ancien prix est superieur au nouveau prix
+        if ($oldprice <= $newprice) {
+            return response(['error' => 'L\'ancien prix de vente doit être supérieur au prix nouveau prix.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $box = Box::find($id);
-
-        if (!$box) {
-            return response()->json(['message' => 'Box not found'], 404);
+        // Vérifie si la date de début est postérieure ou égale à la date actuelle
+        if (strtotime($startdate) < time()) {
+            return response(['error' => 'La date de début doit être postérieure ou égale à la date actuelle.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $box->status = $request->input('status');
+        // Vérifie si la date de début est antérieure à la date de fin
+        if (strtotime($startdate) >= strtotime($enddate)) {
+            return response(['error' => 'La date de début doit être antérieure à la date de fin.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $partner = Auth::user();
+
+        $box = $partner->boxs()->find($id);
+
+        // Mise à jour de la boîte
+        // $box->update($request->all());
+
+        // Mettre à jour la quantité restante
+
+        if ($quantity !== null && $remainingQuantity === null) {
+            $box->remaining_quantity = $quantity;
+        } elseif ($quantity !== null && $remainingQuantity !== null && $remainingQuantity <= $quantity) {
+            $box->remaining_quantity = $remainingQuantity;
+        } else {
+            return response(['error' => 'La quantité restante doit être inférieure ou égale à la quantité.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $box->update($request->only('title', 'description', 'oldprice', 'newprice', 'startdate', 'enddate', 'quantity', 'remaining_quantity', 'category'));
+
+        return response()->json([
+            // 'partner' => $partner,
+            'box' => $box,
+            'message' => 'Box status updated successfully'
+        ], 200);
+    }
+
+
+
+    public function updateBoxImage(Request $request,$id)
+    { // Vérifie si l'utilisateur connecté est un partenaire ou un administrateur
+        $user = auth()->user();
+        if ($user->role_id !== 3 && $user->role_id !== 1) {
+            return response()->json([
+                'error' => 'Only connected partners or admins can create a box.',
+                'status' => Response::HTTP_UNAUTHORIZED
+            ]);
+        }
+
+        $valid = Validator::make($request->all(), [
+            "image" => "required",
+        ]);
+       
+        if ($valid->fails()) {
+            // Vérifier si un des champs est vide
+            $isEmptyField = in_array('', $request->all());
+            return response()->json([
+                "message" => $valid->errors(),
+                "status" => $isEmptyField ? 401 : 400
+            ]);
+        }
+        $partner = Auth::user();
+
+        $box = $partner->boxs()->find($id);
+
+        // upload image section 
+        if ($request->hasFile('image')) { // if file existe in the url with image type
+            $completeFileName = $request->file('image')->getClientOriginalName();
+            $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME);
+            $extention = $request->file('image')->getClientOriginalExtension();
+            $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
+            $path = $request->file('image')->storeAs('public/boxs_imgs', $compPic);
+            $box->image = $compPic;
+        }
         $box->save();
-
-        return response()->json(['message' => 'Box status updated successfully'], 200);
+        // Vérifie si le partenaire associé à l'id existe
+        return response()->json([
+            'message' => 'created successfully',
+            "box_info" => $box,
+            'status' => 200
+        ]);
     }
 }
