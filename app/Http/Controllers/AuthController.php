@@ -29,7 +29,7 @@ class AuthController extends Controller
         //valdiate
         $rules = [
             'name' => 'required|string',
-            'email' => 'required|string|unique:users|unique:partners',
+            'email' => 'required|string|unique:users|unique:partners|email',
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
             'roleId' => 'exists:roles,id'
@@ -51,7 +51,12 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('Personal Access Token')->plainTextToken;
-        $response = ['user' => $user, 'token' => $token];
+        $response = [
+        // 'user' => $user, 
+        'token' => $token,
+        'status' => 200,
+        'message' => "register with success"
+    ];
         return response()->json($response, 201);
     }
 
