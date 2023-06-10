@@ -51,6 +51,26 @@ class BoxController extends Controller
         ], 200);
     }
 
+    public function getTotalBoxCountsstat()
+    {
+        $partnerId = auth()->user()->partner_id;
+
+        $pendingCount = Box::where('status', 'PENDING')->where('partner_id', $partnerId)->count();
+        $acceptedCount = Box::where('status', 'ACCEPTED')->where('partner_id', $partnerId)->count();
+        $rejectedCount = Box::where('status', 'REJECTED')->where('partner_id', $partnerId)->count();
+        $finishedCount = Box::where('status', 'FINISHED')->where('partner_id', $partnerId)->count();
+        $expiredCount = Box::where('status', 'EXPIRED')->where('partner_id', $partnerId)->count();
+
+        return response()->json([
+            'pending_count' => $pendingCount,
+            'accepted_count' => $acceptedCount,
+            'rejected_count' => $rejectedCount,
+            'finished_count' =>  $finishedCount,
+            'expired_count' => $expiredCount,
+        ], 200);
+    }
+
+
     public function availableBoxs()
     {
         //get box
@@ -589,7 +609,7 @@ class BoxController extends Controller
 
 
 
-    public function updateBoxImage(Request $request,$id)
+    public function updateBoxImage(Request $request, $id)
     { // Vérifie si l'utilisateur connecté est un partenaire ou un administrateur
         $user = auth()->user();
         if ($user->role_id !== 3 && $user->role_id !== 1) {
@@ -602,7 +622,7 @@ class BoxController extends Controller
         $valid = Validator::make($request->all(), [
             "image" => "required",
         ]);
-       
+
         if ($valid->fails()) {
             // Vérifier si un des champs est vide
             $isEmptyField = in_array('', $request->all());

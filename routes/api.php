@@ -51,7 +51,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
 
 
-        
+
         // role management
         Route::put('addRole', [UserController::class, "addRole"]);
 
@@ -65,6 +65,7 @@ Route::prefix('admin')->group(function () {
         Route::put('boxs/status/{id}', [BoxController::class, 'updateBoxStatus']);
         Route::get('boxestotal', [BoxController::class, 'total']);
         Route::get('getTotalBoxCounts', [BoxController::class, 'getTotalBoxCounts']);
+
         //Users Management
         Route::apiResource('users', UserController::class);
         Route::get('getuser/{id}', [UserController::class, 'getUserById']);
@@ -182,6 +183,7 @@ Route::prefix('partner')->group(function () {
 
         // orders
         Route::get('getPartnerOrders/{status}', [CommandController::class, 'getPartnerOrders']);
+        Route::get('getPartnerOrderCount/{status}', [CommandController::class, 'getPartnerOrderCount']);
 
 
         //Address Management
@@ -189,6 +191,7 @@ Route::prefix('partner')->group(function () {
 
         // stats
         Route::get('/salesStats/{type}', [PartnerController::class, 'salesStats']);
+        Route::get('getTotalBoxCountsstat', [BoxController::class, 'getTotalBoxCountsstat']);
 
         // rates 
         Route::get('getUsersRates', [PartnerController::class, 'getUserRates']);
@@ -199,5 +202,4 @@ Route::put('users/password', [AuthController::class, 'updatePassword']);
 Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
 Route::post('verifCode', [UserController::class, 'verifCode']);
 
-Route::post('/send-notification', [FirebaseNotification::class,'sendNotification']);
-
+Route::post('/send-notification', [FirebaseNotification::class, 'sendNotification']);
