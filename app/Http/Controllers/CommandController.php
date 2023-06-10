@@ -291,20 +291,25 @@ class CommandController extends Controller
     }
 
 
-    public function getPartnerOrderCount($status)
+    public function getPartnerOrderCount()
     {
         $partner = Partner::where('id', auth()->user()->id)
             ->with('partnerCommands.command.user', 'partnerCommands.box')
             ->get();
 
-        $orderCount = $partner->flatMap(function ($partner) use ($status) {
-            return $partner->partnerCommands->filter(function ($partnerCommand) use ($status) {
-                return $partnerCommand->command->status === strtoupper($status);
-            });
-        })->count();
+        $orderCount = $partner->flatMap(function ($partner) {
+            return $partner->partnerCommands;
+        });
 
-        return $orderCount;
+        $countByStatus = $orderCount->groupBy(function ($partnerCommand) {
+            return $partnerCommand->command->status;
+        })->map(function ($group) {
+            return $group->count();
+        });
+
+        return $countByStatus;
     }
+
 
 
 

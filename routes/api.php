@@ -184,7 +184,7 @@ Route::prefix('partner')->group(function () {
 
         // orders
         Route::get('getPartnerOrders/{status}', [CommandController::class, 'getPartnerOrders']);
-        Route::get('getPartnerOrderCount/{status}', [CommandController::class, 'getPartnerOrderCount']);
+        Route::get('getPartnerOrderCount', [CommandController::class, 'getPartnerOrderCount']);
 
 
         //Address Management
