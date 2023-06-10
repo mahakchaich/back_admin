@@ -434,23 +434,37 @@ class UserController extends Controller
         {
             $validator = Validator::make($request->all(), [
                 'partner_id' => 'required|exists:partners,id',
-                'comment' => 'required|string',
+                'command_id' => 'required|exists:commands,id',
+                // 'comment' => 'required|string',
                 'rating' => 'required|int|max:3',
-                
             ]);
     
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
 
+            $oldRate = Rating::where('partner_id','=',$request->input('partner_id'),'and','user_id','=',Auth::user()->id)->get();
+
+            if(count($oldRate) != 0 ){
+                return response()->json([
+                    // "data" => $oldRate,
+                    "message" => "you have allready rate this partner",
+                    "status" => 400
+                ]);
+            }
 
            $rate = new Rating;
             $rate->user_id =Auth::user()->id ;
             $rate->partner_id =$request->input('partner_id') ;
-            $rate->comment =$request->input('comment') ;
+            $rate->command_id =$request->input('command_id') ;
+            // $rate->comment =$request->input('comment') ;
             $rate->rating =$request->input('rating') ;
             $rate->save();
-            return response()->json($rate);
+            return response()->json([
+                "rates" =>$rate,
+                "message" => "sucess",
+                "status" => 200
+            ]);
         }
         
         //Search User

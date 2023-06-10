@@ -171,6 +171,7 @@ Route::prefix('partner')->group(function () {
         Route::post('updateImage/{id?}', [PartnerController::class, 'updatePartnerImage']);
 
         Route::get('getPartnerDetails', [PartnerController::class, 'showPartnerDetails']);
+        Route::put('updatePosition', [PartnerController::class, 'updatePosition']);
         // Route::post('logout', [PartnerController::class, 'logout']);
         //Box
         Route::apiResource('boxs', BoxController::class);
