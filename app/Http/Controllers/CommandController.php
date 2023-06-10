@@ -365,6 +365,11 @@ class CommandController extends Controller
                 'message' => 'this code already verified',
                 'status' => '200',
             ]);
+        } elseif ($cmd->status == "CANCEL") {
+            return response()->json([
+                'message' => 'THIS BOX CANCELED',
+                'status' => '200',
+            ]);
         }
     }
 }

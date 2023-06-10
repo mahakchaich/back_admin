@@ -32,4 +32,9 @@ class Command extends Model
     {
         return $this->belongsToMany(Box::class)->withPivot('quantity');
     }
+
+    public function rates()
+    {
+        return $this->belongsToMany(Rating::class);
+    }
 }

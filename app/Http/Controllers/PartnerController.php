@@ -109,7 +109,7 @@ class PartnerController extends Controller
         $partner->adress = $request->adress;
         $partner->save();
 
-      
+
         return response()->json([
             'message' => 'Successfully registered',
             'partner' => $partner,
@@ -271,7 +271,7 @@ class PartnerController extends Controller
 
         // get partner from his token
         $partner = Partner::findOrFail(Auth::user()->id);
-        
+
         // Vérifier que l'heure d'ouverture est antérieure à l'heure de fermeture
         if (strtotime($request->input('openingtime')) >= strtotime($request->input('closingtime'))) {
             return response()->json(['message' => 'L\'heure d\'ouverture doit être antérieure à l\'heure de fermeture'], 400);
@@ -291,14 +291,7 @@ class PartnerController extends Controller
         ]);
     }
 
-
-
-
-
-
-
-    
-    public function updatePartnerImage($id = null , Request $request)
+    public function updatePartnerImage($id = null, Request $request)
     {
 
         // Validate the request data
@@ -313,7 +306,7 @@ class PartnerController extends Controller
                 'status' => 400
             ]);
         }
-        if($id == null) $id = Auth::user()->id ;
+        if ($id == null) $id = Auth::user()->id;
         // Find the resource to be updated
         $partner = Partner::findOrFail($id);
 
@@ -398,7 +391,7 @@ class PartnerController extends Controller
     public function getPartnerBoxsbystatus($status)
     {
         $boxs = Box::where("partner_id", "=", auth()->user()->id)
-            ->where("status", "=",strtoupper($status) ) // Utilisez la valeur dynamique du statut
+            ->where("status", "=", strtoupper($status)) // Utilisez la valeur dynamique du statut
             ->get();
 
         return response()->json([
@@ -410,56 +403,54 @@ class PartnerController extends Controller
 
 
 
-    public function getPartnerBoxsRejected()
-    {
-        $boxs = Box::where("partner_id", "=", auth()->user()->id)
-            ->where("status", "=", "REJECTED")
-            ->get();
-        return response()->json([
-            "message" => "all Partner boxs with status rejected",
-            "Boxs" => $boxs,
-            "status" => 200,
-        ]);
-    }
+    // public function getPartnerBoxsRejected()
+    // {
+    //     $boxs = Box::where("partner_id", "=", auth()->user()->id)
+    //         ->where("status", "=", "REJECTED")
+    //         ->get();
+    //     return response()->json([
+    //         "message" => "all Partner boxs with status rejected",
+    //         "Boxs" => $boxs,
+    //         "status" => 200,
+    //     ]);
+    // }
 
-    public function getPartnerBoxsFinished()
-    {
-        $boxs = Box::where("partner_id", "=", auth()->user()->id)
-            ->where("status", "=", "FINISHED")
-            ->get();
-        return response()->json([
-            "message" => "all Partner boxs with status finished",
-            "Boxs" => $boxs,
-            "status" => 200,
-        ]);
-    }
-
-
-    public function getPartnerBoxsPending()
-    {
-        $boxs = Box::where("partner_id", "=", auth()->user()->id)
-            ->where("status", "=", "PENDING")
-            ->get();
-        return response()->json([
-            "message" => "all Partner boxs with status pending",
-            "Boxs" => $boxs,
-            "status" => 200,
-        ]);
-    }
-
-    public function getPartnerBoxsExpired()
-    {
-        $boxs = Box::where("partner_id", "=", auth()->user()->id)
-            ->where("status", "=", "EXPIRED")
-            ->get();
-        return response()->json([
-            "message" => "all Partner boxs with status expired",
-            "Boxs" => $boxs,
-            "status" => 200,
-        ]);
-    }
+    // public function getPartnerBoxsFinished()
+    // {
+    //     $boxs = Box::where("partner_id", "=", auth()->user()->id)
+    //         ->where("status", "=", "FINISHED")
+    //         ->get();
+    //     return response()->json([
+    //         "message" => "all Partner boxs with status finished",
+    //         "Boxs" => $boxs,
+    //         "status" => 200,
+    //     ]);
+    // }
 
 
+    // public function getPartnerBoxsPending()
+    // {
+    //     $boxs = Box::where("partner_id", "=", auth()->user()->id)
+    //         ->where("status", "=", "PENDING")
+    //         ->get();
+    //     return response()->json([
+    //         "message" => "all Partner boxs with status pending",
+    //         "Boxs" => $boxs,
+    //         "status" => 200,
+    //     ]);
+    // }
+
+    // public function getPartnerBoxsExpired()
+    // {
+    //     $boxs = Box::where("partner_id", "=", auth()->user()->id)
+    //         ->where("status", "=", "EXPIRED")
+    //         ->get();
+    //     return response()->json([
+    //         "message" => "all Partner boxs with status expired",
+    //         "Boxs" => $boxs,
+    //         "status" => 200,
+    //     ]);
+    // }
 
     public function showPartnerDetails()
     {
@@ -502,8 +493,6 @@ class PartnerController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-
-
         // Chiffrer le nouveau mot de passe
         $password_hashed = Hash::make($request->password);
 
@@ -532,6 +521,29 @@ class PartnerController extends Controller
         }
 
         $partner->status = $request->input('status');
+        $partner->save();
+
+        return response()->json(['message' => 'Partner status updated successfully'], 200);
+    }
+    
+    //Update Status
+    public function updatePosition(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lat' => 'required',
+            'long' => 'required',
+            'adress' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $partner = Partner::find(Auth::user()->id) ;
+
+        $partner->lat = $request->input('lat');
+        $partner->long = $request->input('long');
+        $partner->adress = $request->input('adress');
         $partner->save();
 
         return response()->json(['message' => 'Partner status updated successfully'], 200);
@@ -625,10 +637,10 @@ class PartnerController extends Controller
             ->get();
 
 
-            $boxCounts = Box::selectRaw('DATE_FORMAT(created_at, "%Y-%m-%d") AS month, COUNT(*) AS count')
-                ->groupBy('month')
-                ->orderBy('month')
-                ->get();
+        $boxCounts = Box::selectRaw('DATE_FORMAT(created_at, "%Y-%m-%d") AS month, COUNT(*) AS count')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
         return response([
             // "boxs" => $boxs,
             "boxs" => $boxCounts,
@@ -637,9 +649,7 @@ class PartnerController extends Controller
 
     public function getUserRates()
     {
-    $rates = Partner::find(Auth::user()->id)->ratings()->select('id','user_id','rating','comment')->get();
+        $rates = Partner::find(Auth::user()->id)->ratings()->select('id', 'user_id', 'rating', 'comment')->get();
         return response()->json($rates);
     }
-
-
 }
