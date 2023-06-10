@@ -307,8 +307,9 @@ class CommandController extends Controller
             return $group->count();
         });
 
-        return $countByStatus;
+        return $countByStatus->toArray();
     }
+
 
 
 
