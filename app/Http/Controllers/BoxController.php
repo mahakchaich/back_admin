@@ -53,13 +53,13 @@ class BoxController extends Controller
 
     public function getTotalBoxCountsstat()
     {
-        $partnerId = auth()->user()->partner_id;
+        $partnerId = auth()->user()->id;
 
-        $pendingCount = Box::where('status', 'PENDING')->where('partner_id', $partnerId)->count();
-        $acceptedCount = Box::where('status', 'ACCEPTED')->where('partner_id', $partnerId)->count();
-        $rejectedCount = Box::where('status', 'REJECTED')->where('partner_id', $partnerId)->count();
-        $finishedCount = Box::where('status', 'FINISHED')->where('partner_id', $partnerId)->count();
-        $expiredCount = Box::where('status', 'EXPIRED')->where('partner_id', $partnerId)->count();
+        $pendingCount = Box::where('partner_id', $partnerId)->where('status', 'PENDING')->count();
+        $acceptedCount = Box::where('partner_id', $partnerId)->where('status', 'ACCEPTED')->count();
+        $rejectedCount = Box::where('partner_id', $partnerId)->where('status', 'REJECTED')->count();
+        $finishedCount = Box::where('partner_id', $partnerId)->where('status', 'FINISHED')->count();
+        $expiredCount = Box::where('partner_id', $partnerId)->where('status', 'EXPIRED')->count();
 
         return response()->json([
             'pending_count' => $pendingCount,
@@ -69,6 +69,8 @@ class BoxController extends Controller
             'expired_count' => $expiredCount,
         ], 200);
     }
+
+
 
 
     public function availableBoxs()
