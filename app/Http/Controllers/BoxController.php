@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PartnerResource;
@@ -651,6 +652,30 @@ class BoxController extends Controller
         return response()->json([
             'message' => 'created successfully',
             "box_info" => $box,
+            'status' => 200
+        ]);
+    }
+    public function recommanded(Request $request,$name)
+    { 
+
+        // $valid = Validator::make($request->all(), [
+        //     "image" => "required",
+        // ]);
+
+        // if ($valid->fails()) {
+        //     // Vérifier si un des champs est vide
+        //     $isEmptyField = in_array('', $request->all());
+        //     return response()->json([
+        //         "message" => $valid->errors(),
+        //         "status" => $isEmptyField ? 401 : 400
+        //     ]);
+        // }
+        $response = Http::get('http://127.0.0.1:5000/api/data/'.$name);
+        $data = $response->json();
+
+              return response()->json([
+            'message' => 'created successfully',
+            'data' => $data,
             'status' => 200
         ]);
     }
