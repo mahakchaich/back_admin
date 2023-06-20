@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Roles;
 use App\Models\BoxCommand;
-use App\Models\Command;
-use Illuminate\Support\Str;
+
 use Illuminate\Http\Request;
 use App\Mail\forgetPasswordCode;
 use App\Models\verification_code;
@@ -19,7 +18,6 @@ use App\Models\Box;
 use App\Models\Partner;
 use App\Models\rating;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,6 +68,8 @@ class UserController extends Controller
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
             'status' => 'required',
+            'birthday' => ['required', 'date', 'before:'.\Carbon\Carbon::now()->subYears(18)->format('Y-m-d')],
+            'sexe' => ['required', 'in:MALE,FEMALE'], // Only 'male' or 'female' values are accepted
             'roleId' => 'exists:roles,id'
         ];
         $validator = Validator::make($request->all(), $rules);

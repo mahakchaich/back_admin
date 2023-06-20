@@ -32,6 +32,8 @@ class AuthController extends Controller
             'email' => 'required|string|unique:users|unique:partners|email',
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
+            'birthday' => ['required', 'date', 'before:'.\Carbon\Carbon::now()->subYears(18)->format('Y-m-d')],
+            'sexe' => ['required', 'in:MALE,FEMALE'], // Only 'male' or 'female' values are accepted
             'roleId' => 'exists:roles,id'
         ];
         $validator = Validator::make($request->all(), $rules);

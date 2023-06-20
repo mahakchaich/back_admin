@@ -17,7 +17,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = true;
-    protected $fillable = ['name', 'email', 'phone', 'password', 'status', 'role_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'status','sexe','birthday', 'role_id'];
 
 
     
