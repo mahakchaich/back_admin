@@ -17,7 +17,7 @@ class CreateRatingsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('partner_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('command_id');
+            $table->unsignedBigInteger('command_id')->nullable();
             $table->unsignedInteger('rating');
             $table->text('comment')->nullable();
             $table->timestamps();
@@ -25,7 +25,6 @@ class CreateRatingsTable extends Migration
             $table->foreign('partner_id')->references('id')->on('partners');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('command_id')->references('id')->on('commands');
-
         });
     }
 

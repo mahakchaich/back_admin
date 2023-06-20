@@ -63,11 +63,11 @@ class BoxController extends Controller
         $expiredCount = Box::where('partner_id', $partnerId)->where('status', 'EXPIRED')->count();
 
         return response()->json([
-            'pending_count' => $pendingCount,
-            'accepted_count' => $acceptedCount,
-            'rejected_count' => $rejectedCount,
-            'finished_count' =>  $finishedCount,
-            'expired_count' => $expiredCount,
+            'PENDING' => $pendingCount,
+            'ACCEPTED' => $acceptedCount,
+            'REJECTED' => $rejectedCount,
+            'FINISHED' =>  $finishedCount,
+            'EXPIRED' => $expiredCount,
         ], 200);
     }
 
