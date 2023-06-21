@@ -122,6 +122,7 @@ Route::prefix('user')->group(function () {
         Route::put('user/password', [AuthController::class, 'updatePassword']);
         //partner
         Route::get('getNearbyPartners/{lat}&{long}&{dist}&{unity?}', [PartnerController::class, 'getNearbyPartners']);
+        Route::get('recommandedPartners/{name}', [PartnerController::class, 'recommandedPartners']);
 
         // rates
         Route::post('RatePartner', [UserController::class, 'ratePartner']);
@@ -130,7 +131,7 @@ Route::prefix('user')->group(function () {
         // Box
         Route::get('boxs', [BoxController::class, 'index']); // all boxs
         Route::get('availableBoxs', [BoxController::class, 'availableBoxs']);
-        Route::get('recommanded/{name}', [BoxController::class, 'recommanded']);
+        Route::get('recommandedBoxs/{name}', [BoxController::class, 'recommandedBoxs']);
 
         Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']);
         Route::get('boxs/favorites', [BoxController::class, 'getfavorsBoxs']);

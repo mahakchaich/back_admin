@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(roles::class);
         $this->call(users::class);
-        $this->call(partner::class);
-        $this->call(boxs::class);
-        $this->call(like_boxs::class);
-        $this->call(like_partner::class);
-        $this->call(commands::class);
-        $this->call(box_command::class);
+        // $this->call(partner::class);
+        // $this->call(boxs::class);
+        // $this->call(like_boxs::class);
+        // $this->call(like_partner::class);
+        // $this->call(commands::class);
+        // $this->call(box_command::class);
         // \App\Models\User::factory(10)->create();
     }
 }

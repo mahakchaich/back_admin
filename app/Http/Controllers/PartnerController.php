@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\PartnerResource;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -651,5 +652,17 @@ class PartnerController extends Controller
     {
         $rates = Partner::find(Auth::user()->id)->ratings()->select('id', 'user_id', 'rating', 'comment')->get();
         return response()->json($rates);
+    }
+
+    public function recommandedPartners(Request $request,$name)
+    { 
+        $response = Http::get('http://127.0.0.1:5000/api/data/'.$name);
+        $data = $response->json();
+
+              return response()->json([
+            'message' => 'created successfully',
+            'data' => $data,
+            'status' => 200
+        ]);
     }
 }

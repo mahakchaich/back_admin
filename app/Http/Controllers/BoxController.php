@@ -655,27 +655,33 @@ class BoxController extends Controller
             'status' => 200
         ]);
     }
-    public function recommanded(Request $request,$name)
+    public function recommandedBoxs(Request $request,$name)
     { 
-
-        // $valid = Validator::make($request->all(), [
-        //     "image" => "required",
-        // ]);
-
-        // if ($valid->fails()) {
-        //     // Vérifier si un des champs est vide
-        //     $isEmptyField = in_array('', $request->all());
-        //     return response()->json([
-        //         "message" => $valid->errors(),
-        //         "status" => $isEmptyField ? 401 : 400
-        //     ]);
-        // }
+        $status = 'ACCEPTED';
         $response = Http::get('http://127.0.0.1:5000/api/data/'.$name);
         $data = $response->json();
+        // $boxs = Box::where("partner_id",$data)->get();
+        // $boxs = Partner::whereIn("name",$data['recommended_partner_names'])->boxs()->get();
+    // $boxs = Partner::whereIn("name", $data['recommended_partner_names'])
+    //     ->with(['boxs' => function ($query) use ($status) {
+    //         $query->where('status', $status);
+    //     }])
+    //     ->get();
+    $boxs = Partner::whereIn("name", $data['recommended_partner_names'])
+    ->whereHas('boxs', function ($query) use ($status) {
+        $query->where('status', $status);
+    })
+    ->with(['boxs' => function ($query) use ($status) {
+        $query->where('status', $status);
+    }])
+    ->get()
+    ->pluck('boxs')
+    ->flatten();
 
               return response()->json([
             'message' => 'created successfully',
-            'data' => $data,
+            // 'data' => $data,
+            'boxs' => $boxs, 
             'status' => 200
         ]);
     }
