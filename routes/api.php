@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CommandController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\SqlImportController;
 use App\Models\Partner;
 
 /*
@@ -206,3 +207,8 @@ Route::post('forgetPassWord', [UserController::class, 'forgetPassWord']);
 Route::post('verifCode', [UserController::class, 'verifCode']);
 
 Route::post('/send-notification', [FirebaseNotification::class, 'sendNotification']);
+Route::post('/import-sql', [SqlImportController::class, 'importSql']);
+Route::post('/import-csv', [SqlImportController::class, 'importCsv']);
+// Route::post('/import-sql', 'SqlImportController@importSql');
+// Route::post('/import-csv', 'SqlImportController@importCsv');
+

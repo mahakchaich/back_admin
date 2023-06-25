@@ -679,7 +679,7 @@ class BoxController extends Controller
     ->flatten();
 
               return response()->json([
-            'message' => 'created successfully',
+            'message' => 'recommanded successfully',
             // 'data' => $data,
             'boxs' => $boxs, 
             'status' => 200
