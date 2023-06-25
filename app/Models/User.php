@@ -17,10 +17,10 @@ class User extends Authenticatable
     protected $guarded = [];
 
     public $timestamps = true;
-    protected $fillable = ['name', 'email', 'phone', 'password', 'status','sexe','birthday', 'role_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'status', 'birthday', 'sexe', 'role_id'];
 
 
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
