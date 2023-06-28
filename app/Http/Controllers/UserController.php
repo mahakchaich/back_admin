@@ -68,8 +68,8 @@ class UserController extends Controller
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
             'password' => 'required|string|min:6',
             'status' => 'required',
-            'birthday' => ['required', 'date', 'before:'.\Carbon\Carbon::now()->subYears(18)->format('Y-m-d')],
-            'sexe' => ['required', 'in:MALE,FEMALE'], // Only 'male' or 'female' values are accepted
+            'birthday' => ['required', 'date', 'before:' . \Carbon\Carbon::now()->subYears(18)->format('Y-m-d')],
+            'sexe' => ['required', 'in:male,female'],
             'roleId' => 'exists:roles,id'
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -126,6 +126,8 @@ class UserController extends Controller
                 'regex:/^[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}$/'
             ],
             'phone' => ['required', 'regex:/^[0-9]{8}$/'],
+            'birthday' => ['required', 'date', 'before:' . \Carbon\Carbon::now()->subYears(18)->format('Y-m-d')],
+            'sexe' => ['required', 'in:male,female'],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -142,7 +144,7 @@ class UserController extends Controller
                 ]
             );
         }
-        $user->update($request->only('name', 'email', 'phone', 'status'));
+        $user->update($request->only('name', 'email', 'phone', 'birthday', 'sexe', 'status'));
         return response()->json([
             "message" => "Updated Successefully",
             "status" => 200,
@@ -209,7 +211,7 @@ class UserController extends Controller
         $partner = Partner::where('email', $request->email)->first();
         $code = self::randomcode(4);
         // make old codes expired
-       verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status" => "expired"]); 
+        verification_code::where(["email" => $request->email, "status" => "pending"])->update(["status" => "expired"]);
         if ($user || $partner) {
             $data = [
                 "email" => $request->email,
@@ -399,7 +401,7 @@ class UserController extends Controller
 
         return response()->json($users);
     }
-// get user stats
+    // get user stats
     public function userStats()
     {
         $savedMoney = 0;
@@ -429,51 +431,49 @@ class UserController extends Controller
 
 
 
-        //Search User
-        public function ratePartner(Request $request)
-        {
-            $validator = Validator::make($request->all(), [
-                'partner_id' => 'required|exists:partners,id',
-                'command_id' => 'required|exists:commands,id',
-                // 'comment' => 'required|string',
-                'rating' => 'required|int|max:3',
-            ]);
-    
-            if ($validator->fails()) {
-                return response()->json(['errors' => $validator->errors()], 422);
-            }
+    //Search User
+    public function ratePartner(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'partner_id' => 'required|exists:partners,id',
+            'command_id' => 'required|exists:commands,id',
+            // 'comment' => 'required|string',
+            'rating' => 'required|int|max:3',
+        ]);
 
-            $oldRate = Rating::where('partner_id','=',$request->input('partner_id'),'and','user_id','=',Auth::user()->id)->get();
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-            if(count($oldRate) != 0 ){
-                return response()->json([
-                    // "data" => $oldRate,
-                    "message" => "you have allready rate this partner",
-                    "status" => 400
-                ]);
-            }
+        $oldRate = Rating::where('partner_id', '=', $request->input('partner_id'), 'and', 'user_id', '=', Auth::user()->id)->get();
 
-           $rate = new Rating;
-            $rate->user_id =Auth::user()->id ;
-            $rate->partner_id =$request->input('partner_id') ;
-            $rate->command_id =$request->input('command_id') ;
-            // $rate->comment =$request->input('comment') ;
-            $rate->rating =$request->input('rating') ;
-            $rate->save();
+        if (count($oldRate) != 0) {
             return response()->json([
-                "rates" =>$rate,
-                "message" => "sucess",
-                "status" => 200
+                // "data" => $oldRate,
+                "message" => "you have allready rate this partner",
+                "status" => 400
             ]);
         }
-        
-        //Search User
-        public function getUsersRates()
-        {
 
-        $rates = User::find(Auth::user()->id)->partnerRating()->select('id','partner_id','rating','comment')->get();
-            return response()->json($rates);
-        }
+        $rate = new Rating;
+        $rate->user_id = Auth::user()->id;
+        $rate->partner_id = $request->input('partner_id');
+        $rate->command_id = $request->input('command_id');
+        // $rate->comment =$request->input('comment') ;
+        $rate->rating = $request->input('rating');
+        $rate->save();
+        return response()->json([
+            "rates" => $rate,
+            "message" => "sucess",
+            "status" => 200
+        ]);
+    }
 
+    //Search User
+    public function getUsersRates()
+    {
 
+        $rates = User::find(Auth::user()->id)->partnerRating()->select('id', 'partner_id', 'rating', 'comment')->get();
+        return response()->json($rates);
+    }
 }
