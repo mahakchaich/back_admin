@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommandResource;
+use Auth;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -377,6 +378,16 @@ class CommandController extends Controller
             ]);
         }
         $cmd = Command::findOrFail($request->command_id);
+
+        if (auth()->user()->id != $cmd->user_id) {
+            return response()->json([
+                'message' => 'error authentification',
+                'status' => '400',
+                "cmd" => $cmd
+            ]);
+        }
+
+
         if ($cmd->status == "PENDING") {
             $cmd->status = "SUCCESS";
             $cmd->save();
