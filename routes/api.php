@@ -133,6 +133,7 @@ Route::prefix('user')->group(function () {
         Route::get('boxs', [BoxController::class, 'index']); // all boxs
         Route::get('availableBoxs', [BoxController::class, 'availableBoxs']);
         Route::get('recommandedBoxs/{name}', [BoxController::class, 'recommandedBoxs']);
+        Route::get('graphRecommandedBoxs/{gender}', [BoxController::class, 'graphRecommandedBoxs']);
 
         Route::get('boxs/boxdetails/{id}', [BoxController::class, 'boxdetails']);
         Route::get('boxs/favorites', [BoxController::class, 'getfavorsBoxs']);
