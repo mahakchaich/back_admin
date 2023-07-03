@@ -681,7 +681,6 @@ class BoxController extends Controller
         $status = 'ACCEPTED';
         $response = Http::get('http://127.0.0.1:5000/api/GrapData/' . $gender);
         $data = $response->json();
-        $boxs = [];
         $boxsids = [];
         foreach ($data as $id) {
             array_push($boxsids, $id["id"]);
