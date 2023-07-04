@@ -443,7 +443,7 @@ class BoxController extends Controller
                 "title" => "required",
                 "description" => "required",
                 "quantity" => "required",
-                "image" => "required",
+                // "image" => "required",
                 "oldprice" => "required",
                 "newprice" => "required",
                 "startdate" => "required",
@@ -479,7 +479,7 @@ class BoxController extends Controller
         $newprice = $request->input('newprice');
         $startdate = $request->input('startdate');
         $enddate = $request->input('enddate');
-        $partnerId = $request->input('partner_id');
+        // $partnerId = $request->input('partner_id');
 
         // Vérifie si l'ancien prix est superieur au nouveau prix
         if ($oldprice <= $newprice) {
@@ -515,15 +515,12 @@ class BoxController extends Controller
             $extention = $request->file('image')->getClientOriginalExtension();
             $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extention; // create new file name 
             $path = $request->file('image')->storeAs('public/boxs_imgs', $compPic);
-            // $box->image = $compPic;
             $boxData['image'] = $compPic;
         }
 
         Box::where('id', $id)->update($boxData);
-        $box = Box::find($id);
         return response()->json([
             'message' => 'Resource updated successfully',
-            'resource' => $boxData,
             'status' => 200
         ]);
     }
@@ -676,9 +673,10 @@ class BoxController extends Controller
             'status' => 200
         ]);
     }
-    public function graphRecommandedBoxs($gender)
+    public function graphRecommandedBoxs()
     {
         $status = 'ACCEPTED';
+        $gender = auth()->user()->sexe;
         $response = Http::get('http://127.0.0.1:5000/api/GrapData/' . $gender);
         $data = $response->json();
         $boxsids = [];
@@ -687,8 +685,6 @@ class BoxController extends Controller
         }
         return response()->json([
             'message' => 'recommanded successfully',
-            'boxsIds' => $boxsids,
-            // 'boxs' => $boxs,
             'boxs' => Box::whereIn('id', $boxsids)->get(),
             'status' => 200
         ]);
